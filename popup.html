@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Extension Popup</title>
+  <link rel="stylesheet" type="text/css" href="popup.css">
+</head>
+<body>
+  <h1>Settings</h1>
+  <label for="variable1">Homepage URL:</label>
+  <input type="text" id="variable1">
+  <br>
+  <label for="variable2">New tab URL:</label>
+  <input type="text" id="variable2">
+  <br>
+  <label for="variable3">Toolbar height:</label>
+  <input type="text" id="variable3">
+  <br>
+  <button id="saveButton">Save</button>
+  
+  <h2>Exclude settings</h2>
+  <label for="customUrl">URL:</label>
+  <input type="text" id="customUrl">
+  <br>
+  <button id="addUrlButton">Exclude URL</button>
+  <ul id="excludedUrls"></ul>
+  
+  <p id="statusMessage"></p>
+  <script src="popup.js"></script>
+</body>
+</html>
