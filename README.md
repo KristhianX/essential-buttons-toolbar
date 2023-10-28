@@ -38,10 +38,7 @@ Though opening a new tab and closing tabs is not difficult, why not make them ev
 ## Installation instructions for Firefox Beta, Fennec F-Droid and Mull.
 *You will need a version of firefox that support Custom Add-on collections. Such as Firefox Beta, Fennec F-Droid or Mull.*
 
-The extension is available at:  
-https://addons.mozilla.org/en-US/android/addon/a-real-home-button/
-
-Ignore the warning about it not being compatible with your Firefox version. You'll need to add a Custom Add-on collection. You can either add the add-on to your own collection or use my collection if you don't have a Mozilla account or don't want to create a collection.
+You'll need to add a Custom Add-on collection. You can either add the add-on to your own collection or use my collection if you don't have a Mozilla account or don't want to create a collection.
 
 <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-202606.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-202706.png?raw=true" width="200px"/>
 
@@ -57,13 +54,18 @@ The browser will restart to apply the changes.
 Now, you can go to **Menu** -> **Settings** -> **Add-ons.** Scroll the list until you find **A real home button** add-on.
 
 ## Installation instructions for Firefox Nightly.
-It's very easy. Just go to the add-on link and tap **Add to Firefox.**
+It's very easy. Just go to the add-on link and tap **Add to Firefox.**  
+https://addons.mozilla.org/en-US/android/addon/a-real-home-button/
 
 ## Tips and tricks.
 There is no way to set the Firefox homepage to the one opened by this add-on.  
 While some users use the Firefox home button as a new tab button, I suggest that you ignore that button and disable all the settings by going to **Menu** -> **Settings** -> **Homepage**, and under Opening screen, select **Last tab.**
 
 <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-202422.png?raw=true" width="200px"/>
+
+It is also very useful to change the settings in **Delete browsing data on quit.** You can uncheck all the options except for **Cached images and files.** Enabling this option will display a **Quit** option at the bottom of the Firefox menu. Closing the browser in this way is ideal, as the next time you open the browser, it will load the pages you had opened.
+
+<img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-202443.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-212100.png?raw=true" width="200px"/>
 
 ## Default homepage.
 
