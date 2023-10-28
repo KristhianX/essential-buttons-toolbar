@@ -6,6 +6,9 @@ This initially began as a user script, which I later developed into an extension
 You can still find the original user script here, but I'm unlikely to make further updates to it:  
 https://github.com/KristhianX/a-real-home-button
 
+## Some screenshots.
+<img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231025-173119.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231025-173231.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-203438.png?raw=true" width="200px"/>
+
 ## Why?  
 I want to clarify from the beginning that this add-on is not meant as negative criticism of Firefox's developers. I genuinely appreciate Firefox and its core values.  
 The purpose of this add-on is to assist users like me who find it challenging to adapt to the behavior of the home button in Android Firefox.  
@@ -40,6 +43,8 @@ https://addons.mozilla.org/en-US/android/addon/a-real-home-button/
 
 Ignore the warning about it not being compatible with your Firefox version. You'll need to add a Custom Add-on collection. You can either add the add-on to your own collection or use my collection if you don't have a Mozilla account or don't want to create a collection.
 
+<img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-202606.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-202706.png?raw=true" width="200px"/>
+
 Follow these steps: Open the **Menu** -> Tap on **Settings** ->
 If the Custom Add-on collection is not available, tap on **About Firefox** -> Tap the Firefox logo several times to activate debug options.
 Now, go back and tap **Custom Add-on collection.**
@@ -58,6 +63,7 @@ It's very easy. Just go to the add-on link and tap **Add to Firefox.**
 There is no way to set the Firefox homepage to the one opened by this add-on.  
 While some users use the Firefox home button as a new tab button, I suggest that you ignore that button and disable all the settings by going to **Menu** -> **Settings** -> **Homepage**, and under Opening screen, select **Last tab.**
 
+<img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-202422.png?raw=true" width="200px"/>
 
 ## Default homepage.
 
