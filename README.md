@@ -19,21 +19,21 @@ The home button should not behave as the new tab button. This behavior isn't int
 You can check other user opinions here:  
 https://connect.mozilla.org/t5/ideas/on-firefox-mobile-make-home-page-links-open-in-current-tab/idi-p/15672
 
-## Ok, but what about the other buttons?  
+**Ok, but what about the other buttons?**  
 Though opening a new tab and closing tabs is not difficult, why not make them even more accessible?
 
-## Features.
+## Features.  
 **Buttons in the toolbar:**  
-**- Home button:** Opens the default homepage URL. Can be changed in options.  
-**- Hide button:** Hides the toolbar. Refresh the page to display it again.  
-**- Move button:** Moves the toolbar to the top of the page or to the bottom if it is at the top.  
-**- Close button:** Closes the current tab. If the current tab is the only open tab, it opens the homepage URL instead.  
-**- New tab button:** Opens the default new tab page URL. Can be changed in options.
+- **Home button:** Opens the default homepage URL. Can be changed in options.  
+- **Hide button:** Hides the toolbar. Refresh the page to display it again.  
+- **Move button:** Moves the toolbar to the top of the page or to the bottom if it is at the top.  
+- **Close button:** Closes the current tab. If the current tab is the only open tab, it opens the homepage URL instead.  
+- **New tab button:** Opens the default new tab page URL. Can be changed in options.
 
 **Other features:**  
-**- The toolbar automatically hides when scrolling.**  
-**- Toolbar height:** The number of pixels. The default value is set to 46 for ease of use.  
-**- Exclude URLs:** Specify which web addresses to exclude.
+- **The toolbar automatically hides when scrolling.**  
+- **Toolbar height:** The number of pixels. The default value is set to 46 for ease of use.  
+- **Exclude URLs:** Specify which web addresses to exclude.
 
 ## Installation instructions for Firefox Beta, Fennec F-Droid and Mull.
 *You will need a version of firefox that support Custom Add-on collections. Such as Firefox Beta, Fennec F-Droid or Mull.*
@@ -47,8 +47,8 @@ If the Custom Add-on collection is not available, tap on **About Firefox** -> Ta
 Now, go back and tap **Custom Add-on collection.**
 Fill the prompt with these values to use my collection. Don't worry; you can go back to the default collection after installing the add-on by removing these values and tapping **OK.**
 
-Collection owner (User ID): **12488393**
-Collection name: **Kris-selection**
+Collection owner (User ID): `12488393`  
+Collection name: `Kris-selection`
 
 The browser will restart to apply the changes.
 Now, you can go to **Menu** -> **Settings** -> **Add-ons.** Scroll the list until you find **A real home button** add-on.
@@ -68,4 +68,34 @@ It is also very useful to change the settings in **Delete browsing data on quit.
 <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-202443.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-212100.png?raw=true" width="200px"/>
 
 ## Default homepage.
+The default homepage URL used in this add-on is the beautiful and awesome Tabliss.  
+https://tabliss.io/  
+Their Firefox add-on has the recommended tag.  
+https://addons.mozilla.org/es/firefox/addon/tabliss/  
+However, it does not work for Android Firefox due to the current restrictions in the functionality of mobile add-ons.  
+Nevertheless, we can use its web version.  
+https://web.tabliss.io/  
+
+Here is a list of the pros and cons of this web homepage:  
+
+**Pros:**  
+- Beautiful and customizable.
+- Option for persistent storage, making it available offline.
+- Responsive design that adapts very well to phone screens.
+
+<img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231021-210418.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231021-210327.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231021-210343.png?raw=true" width="200px"/>  
+
+**Cons:**  
+- Last updated two years ago.
+- The inspirational quotes widget does not work.
+- Adding links to the Quick Links widget is time-consuming.
+
+Remember, you can choose any website, even 'about:blank' if you wish. Another good option could be booky.io:  
+https://booky.io/
+
+## Known issues:
+Some websites are not well optimized for mobile. Some will have a little zoom that will make the toolbar be displayed outside of the viewport or display only a part of it. You can find the toolbar by zooming out, as shown in the following screenshots:
+
+<img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-202946.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-203000.png?raw=true" width="200px"/>
+
 
