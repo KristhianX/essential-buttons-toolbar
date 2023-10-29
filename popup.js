@@ -13,7 +13,7 @@ const statusMessage = document.getElementById("statusMessage");
 browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     if (tabs[0] && tabs[0].url) {
         customUrlInput.value = tabs[0].url;
-    }
+    };
 });
 
 
@@ -38,7 +38,7 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
             li.appendChild(removeButton);
             excludedUrlsList.appendChild(li);
         });
-    }
+    };
 });
 
 
@@ -68,7 +68,7 @@ addUrlButton.addEventListener("click", () => {
                 customUrlInput.value = ""; // Clear the input field.
             });
         });
-    }
+    };
 });
 
 

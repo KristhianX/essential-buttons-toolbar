@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Extension Popup</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" type="text/css" href="popup.css">
 </head>
 <body>
@@ -16,15 +17,14 @@
   <input type="text" id="variable3">
   <br>
   <button id="saveButton">Save</button>
-  
+  <p id="statusMessage"></p>
   <h2>Exclude settings</h2>
-  <label for="customUrl">URL:</label>
+  <label for="customUrl">URL: example.com/*</label>
   <input type="text" id="customUrl">
   <br>
   <button id="addUrlButton">Exclude URL</button>
+  <h2>Excluded URLs:</h2>
   <ul id="excludedUrls"></ul>
-  
-  <p id="statusMessage"></p>
   <script src="popup.js"></script>
 </body>
 </html>

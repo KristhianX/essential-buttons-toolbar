@@ -1,8 +1,8 @@
 // Retrieve the settings from storage.
 browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']).then((result) => {
-    const homepageURL = result.variable1;
-    const newTabURL = result.variable2;
-    const toolbarHeight = result.variable3;
+    const homepageURL = result.variable1 || "https://web.tabliss.io";
+    const newTabURL = result.variable2 || "https://web.tabliss.io";
+    const toolbarHeight = result.variable3 || "46";
     const excludedUrls = result.excludedUrls || [];
     const currentUrl = window.location.href;
     
@@ -15,26 +15,6 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
     
     
     if (!isCurrentPageExcluded) {
-        //console.log('Current page is not excluded.');
-        
-        // Use the variables as needed
-        // if (variable1) {
-        //     console.log('Variable 1:', variable1);
-        //     // You can manipulate the webpage content here with variable1
-        // }
-        // if (variable2) {
-        //     console.log('Variable 2:', variable2);
-        //     // You can manipulate the webpage content here with variable2
-        // }
-        
-        
-        // URL for the homepage and new tab buttons.
-        // Set the height of the toolbar.
-        //const homepageURL = 'https://web.tabliss.io';
-        //const newTabURL = 'https://web.tabliss.io';
-        //const toolbarHeight = '6';
-        
-        
         // Inline svg icons and default css style for the buttons.
         // All icons from https://github.com/feathericons/feather
         const svgHome = '<svg xmlns="http://www.w3.org/2000/svg" width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" background="transparent" color="#fff" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>';
@@ -49,7 +29,7 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
         // Define the event handler function
         function closeTabHandler() {
             browser.runtime.sendMessage({ action: "closeTab", url: homepageURL });
-        }
+        };
         
         
         // Creating the iframe with the maximum z-index value to ensure it is allways on top.
@@ -162,11 +142,8 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
                 iframeToolbar.style.display = 'none';
             };
             prevScrollPos = currentScrollPos;
-        });
-        
-        
-        
+        });   
     } else {
         return;
-    }
+    };
 });
