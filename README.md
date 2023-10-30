@@ -2,7 +2,7 @@
 *An extension that adds homepage, new tab, and close tab buttons to Android Firefox.*
 
 **Note:**
-This initially began as a user script, which I later developed into an extension to access additional features.  
+This initially began as a userscript, which I later developed into an extension to access additional features.  
 You can still find the original user script here, but I'm unlikely to make further updates to it:  
 https://github.com/KristhianX/a-real-home-button
 
@@ -37,6 +37,9 @@ Though opening a new tab and closing tabs is not difficult, why not make them ev
 
 ## Installation instructions for Firefox Beta, Fennec F-Droid and Mull.
 *You will need a version of firefox that support Custom Add-on collections. Such as Firefox Beta, Fennec F-Droid or Mull.*
+
+The add-on is available at:  
+https://addons.mozilla.org/en-US/android/addon/a-real-home-button/
 
 You'll need to add a Custom Add-on collection. You can either add the add-on to your own collection or use my collection if you don't have a Mozilla account or don't want to create a collection.
 
