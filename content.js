@@ -92,7 +92,7 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
             hideToolbarButton.style.background = '#6eb9f7cc';
             setTimeout(function() {
                 hideToolbarButton.style.background = 'transparent';
-                customToolbar.style = 'display: none';
+                iframeToolbar.style = 'display: none';
             }, 100);
         });
         
