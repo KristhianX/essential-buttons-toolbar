@@ -17,14 +17,14 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
     if (!isCurrentPageExcluded) {
         // Inline svg icons and default css style for the buttons.
         // All icons from https://github.com/feathericons/feather
-        const svgHome = '<svg xmlns="http://www.w3.org/2000/svg" width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" background="transparent" color="#fff" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>';
+        //const svgHome = '<svg xmlns="http://www.w3.org/2000/svg" width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" background="transparent" color="#fff" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>';
         const svgPlus = '<svg xmlns="http://www.w3.org/2000/svg" width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" background="transparent" color="#fff" class="feather feather-plus-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>';
         const svgUp = '<svg xmlns="http://www.w3.org/2000/svg" width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" background="transparent" color="#fff" class="feather feather-arrow-up-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="16 12 12 8 8 12"></polyline><line x1="12" y1="16" x2="12" y2="8"></line></svg>';
         const svgDown = '<svg xmlns="http://www.w3.org/2000/svg" width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" background="transparent" color="#fff" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg>';
         const svgEyeOff = '<svg xmlns="http://www.w3.org/2000/svg" width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" background="transparent" color="#fff" class="feather feather-eye-off"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
         const svgClose = '<svg xmlns="http://www.w3.org/2000/svg" width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" background="transparent" color="#fff" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
         const defaultButtonStyle = 'height: 100%; aspect-ratio: 1; cursor: pointer; border: none; border-radius: 20%; background: transparent';
-        
+        const defaultImgStyle = 'height: 60%; aspect-ratio: 1';
         
         // Define the event handler function
         function closeTabHandler() {
@@ -50,8 +50,11 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
         
         // Creating the buttons. All of them will have a simple background change as pressed feedback and then the action will be executed. Default delay 200ms.
         const homeButton = document.createElement('button');
-        homeButton.innerHTML = svgHome;
+        const homeButtonImg = document.createElement('img');
+        homeButton.appendChild(homeButtonImg);
         homeButton.style = defaultButtonStyle;
+        homeButtonImg.src = browser.extension.getURL('icons/featherIcons/home.svg');
+        homeButtonImg.style = defaultImgStyle;
         homeButton.addEventListener('click', function() {
             homeButton.style.background = '#6eb9f7cc';
             setTimeout(function() {
@@ -62,8 +65,11 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
         
         
         const moveButton = document.createElement('button');
-        moveButton.innerHTML = svgUp;
+        const moveButtonImg = document.createElement('img');
+        moveButton.appendChild(moveButtonImg);
         moveButton.style = defaultButtonStyle;
+        moveButtonImg.src = browser.extension.getURL('icons/featherIcons/up.svg');
+        moveButtonImg.style = defaultImgStyle;
         moveButton.addEventListener('click', function() {
             moveButton.style.background = '#6eb9f7cc';
             setTimeout(function() {
@@ -72,13 +78,13 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
                     iframeToolbar.style.top = '0px';
                     customToolbar.style.borderTop = 'unset';
                     customToolbar.style.borderBottom = '2px solid #38373f';
-                    moveButton.innerHTML = svgDown;
+                    moveButtonImg.src = browser.extension.getURL('icons/featherIcons/down.svg');
                 } else {
                     iframeToolbar.style.top = 'unset';
                     iframeToolbar.style.bottom = '0px';
                     customToolbar.style.borderBottom = 'unset';
                     customToolbar.style.borderTop = '2px solid #38373f';
-                    moveButton.innerHTML = svgUp;
+                    moveButtonImg.src = browser.extension.getURL('icons/featherIcons/up.svg');
                 };
                 moveButton.style.background = 'transparent';
             }, 100);
@@ -86,8 +92,11 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
         
         
         const hideToolbarButton = document.createElement('button');
-        hideToolbarButton.innerHTML = svgEyeOff;
+        const hideToolbarButtonImg = document.createElement('img');
+        hideToolbarButton.appendChild(hideToolbarButtonImg);
         hideToolbarButton.style = defaultButtonStyle;
+        hideToolbarButtonImg.src = browser.extension.getURL('icons/featherIcons/eyeOff.svg');
+        hideToolbarButtonImg.style = defaultImgStyle;
         hideToolbarButton.addEventListener('click', function() {
             hideToolbarButton.style.background = '#6eb9f7cc';
             setTimeout(function() {
@@ -98,8 +107,11 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
         
         
         const closeTabButton = document.createElement('button');
-        closeTabButton.innerHTML = svgClose;
+        const closeTabButtonImg = document.createElement('img');
+        closeTabButton.appendChild(closeTabButtonImg);
         closeTabButton.style = defaultButtonStyle;
+        closeTabButtonImg.src = browser.extension.getURL('icons/featherIcons/close.svg');
+        closeTabButtonImg.style = defaultImgStyle;
         closeTabButton.addEventListener('click', function() {
             closeTabButton.style.background = '#6eb9f7cc';
             closeTabHandler();
@@ -110,8 +122,11 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
         
         
         const newTabButton = document.createElement('button');
-        newTabButton.innerHTML = svgPlus;
+        const newTabButtonImg = document.createElement('img');
+        newTabButton.appendChild(newTabButtonImg);
         newTabButton.style = defaultButtonStyle;
+        newTabButtonImg.src = browser.extension.getURL('icons/featherIcons/plus.svg');
+        newTabButtonImg.style = defaultImgStyle;
         newTabButton.addEventListener('click', function() {
             newTabButton.style.background = '#6eb9f7cc';
             setTimeout(function() {
