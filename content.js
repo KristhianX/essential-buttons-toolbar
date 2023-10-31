@@ -47,7 +47,7 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
         const homeButtonImg = document.createElement('img');
         homeButton.appendChild(homeButtonImg);
         homeButton.style = defaultButtonStyle;
-        homeButtonImg.src = browser.extension.getURL('icons/featherIcons/home.svg');
+        homeButtonImg.src = browser.runtime.getURL('icons/featherIcons/home.svg');
         homeButtonImg.style = defaultImgStyle;
         homeButton.addEventListener('click', function() {
             homeButton.style.background = '#6eb9f7cc';
@@ -62,7 +62,7 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
         const moveButtonImg = document.createElement('img');
         moveButton.appendChild(moveButtonImg);
         moveButton.style = defaultButtonStyle;
-        moveButtonImg.src = browser.extension.getURL('icons/featherIcons/up.svg');
+        moveButtonImg.src = browser.runtime.getURL('icons/featherIcons/up.svg');
         moveButtonImg.style = defaultImgStyle;
         moveButton.addEventListener('click', function() {
             moveButton.style.background = '#6eb9f7cc';
@@ -72,13 +72,13 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
                     iframeToolbar.style.top = '0px';
                     customToolbar.style.borderTop = 'unset';
                     customToolbar.style.borderBottom = '2px solid #38373f';
-                    moveButtonImg.src = browser.extension.getURL('icons/featherIcons/down.svg');
+                    moveButtonImg.src = browser.runtime.getURL('icons/featherIcons/down.svg');
                 } else {
                     iframeToolbar.style.top = 'unset';
                     iframeToolbar.style.bottom = '0px';
                     customToolbar.style.borderBottom = 'unset';
                     customToolbar.style.borderTop = '2px solid #38373f';
-                    moveButtonImg.src = browser.extension.getURL('icons/featherIcons/up.svg');
+                    moveButtonImg.src = browser.runtime.getURL('icons/featherIcons/up.svg');
                 };
                 moveButton.style.background = 'transparent';
             }, 100);
@@ -89,7 +89,7 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
         const hideToolbarButtonImg = document.createElement('img');
         hideToolbarButton.appendChild(hideToolbarButtonImg);
         hideToolbarButton.style = defaultButtonStyle;
-        hideToolbarButtonImg.src = browser.extension.getURL('icons/featherIcons/eyeOff.svg');
+        hideToolbarButtonImg.src = browser.runtime.getURL('icons/featherIcons/eyeOff.svg');
         hideToolbarButtonImg.style = defaultImgStyle;
         hideToolbarButton.addEventListener('click', function() {
             hideToolbarButton.style.background = '#6eb9f7cc';
@@ -104,7 +104,7 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
         const closeTabButtonImg = document.createElement('img');
         closeTabButton.appendChild(closeTabButtonImg);
         closeTabButton.style = defaultButtonStyle;
-        closeTabButtonImg.src = browser.extension.getURL('icons/featherIcons/close.svg');
+        closeTabButtonImg.src = browser.runtime.getURL('icons/featherIcons/close.svg');
         closeTabButtonImg.style = defaultImgStyle;
         closeTabButton.addEventListener('click', function() {
             closeTabButton.style.background = '#6eb9f7cc';
@@ -119,7 +119,7 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
         const newTabButtonImg = document.createElement('img');
         newTabButton.appendChild(newTabButtonImg);
         newTabButton.style = defaultButtonStyle;
-        newTabButtonImg.src = browser.extension.getURL('icons/featherIcons/plus.svg');
+        newTabButtonImg.src = browser.runtime.getURL('icons/featherIcons/plus.svg');
         newTabButtonImg.style = defaultImgStyle;
         newTabButton.addEventListener('click', function() {
             newTabButton.style.background = '#6eb9f7cc';
