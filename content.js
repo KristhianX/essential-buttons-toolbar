@@ -5,6 +5,7 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
     const toolbarHeight = result.variable3 || "46";
     const excludedUrls = result.excludedUrls || [];
     const currentUrl = window.location.href;
+    let iframeHidden = false;
     
     
     // Check if the current page's URL should be excluded.
@@ -18,7 +19,7 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
         // Inline svg icons and default css style for the buttons.
         // All icons from https://github.com/feathericons/feather
         const defaultButtonStyle = 'height: 100%; aspect-ratio: 1; cursor: pointer; border: none; border-radius: 20%; background: transparent';
-        const defaultImgStyle = 'height: 60%; aspect-ratio: 1';
+        const defaultImgStyle = 'height: 50%; aspect-ratio: 1';
         
         // Define the event handler function
         function closeTabHandler() {
@@ -29,7 +30,7 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
         // Creating the iframe with the maximum z-index value to ensure it is allways on top.
         // Placing it outside the body to make it be on top of other elements with max z-index in the body.
         const iframeToolbar = document.createElement('iframe');
-        iframeToolbar.style = 'height: ' + toolbarHeight + 'px; bottom: 0px; left: 0px; width: 100vw; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light';
+        iframeToolbar.style = 'height: ' + toolbarHeight + 'px; bottom: 0px; left: 0px; width: 100vw; display: block; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light';
         document.body.insertAdjacentElement('afterend', iframeToolbar);
         
         
@@ -95,7 +96,8 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
             hideToolbarButton.style.background = '#6eb9f7cc';
             setTimeout(function() {
                 hideToolbarButton.style.background = 'transparent';
-                iframeToolbar.style = 'display: none';
+                iframeToolbar.style.display = 'none';
+                iframeHidden = true;
             }, 100);
         });
         
@@ -145,9 +147,11 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
             if (Math.abs(prevScrollPos - currentScrollPos) <= 10) {
                 return;
             }
-            if (prevScrollPos > currentScrollPos) {
+            if (prevScrollPos > currentScrollPos ) {
+                if ( !iframeHidden && iframeToolbar.style.display === 'none' ) {
                 iframeToolbar.style.display = 'block';
-            } else {
+                };
+            } else if ( iframeToolbar.style.display === 'block' ) {
                 iframeToolbar.style.display = 'none';
             };
             prevScrollPos = currentScrollPos;
