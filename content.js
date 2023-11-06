@@ -1,16 +1,18 @@
 // Retrieve the settings from storage.
-browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']).then((result) => {
-    const homepageURL = result.variable1 || "https://web.tabliss.io";
-    const newTabURL = result.variable2 || "https://web.tabliss.io";
-    const toolbarHeight = result.variable3 || "46";
+browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'hideMethod', 'excludedUrls']).then((result) => {
+    const homepageURL = result.homepageURL || 'https://web.tabliss.io';
+    const newTabURL = result.newTabURL || 'https://web.tabliss.io';
+    const toolbarHeight = result.toolbarHeight || '46';
+    const hideMethod = result.hideMethod || 'scroll';
     const excludedUrls = result.excludedUrls || [];
     const currentUrl = window.location.href;
     let iframeHidden = false;
+    let iframeVisible = true;
     
-    
+
     // Check if the current page's URL should be excluded.
     const isCurrentPageExcluded = excludedUrls.some((excludedUrl) => {
-        const pattern = new RegExp("^" + excludedUrl.replace(/\*/g, ".*") + "$");
+        const pattern = new RegExp('^' + excludedUrl.replace(/\*/g, '.*') + '$');
         return pattern.test(currentUrl);
     });
     
@@ -20,12 +22,7 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
         // All icons from https://github.com/feathericons/feather
         const defaultButtonStyle = 'height: 100%; aspect-ratio: 1; cursor: pointer; border: none; border-radius: 20%; background: transparent';
         const defaultImgStyle = 'height: 50%; aspect-ratio: 1';
-        
-        // Define the event handler function
-        function closeTabHandler() {
-            browser.runtime.sendMessage({ action: "closeTab", url: homepageURL });
-        };
-        
+
         
         // Creating the iframe with the maximum z-index value to ensure it is allways on top.
         // Placing it outside the body to make it be on top of other elements with max z-index in the body.
@@ -52,9 +49,9 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
         homeButtonImg.style = defaultImgStyle;
         homeButton.addEventListener('click', function() {
             homeButton.style.background = '#6eb9f7cc';
+            browser.runtime.sendMessage({ action: 'updateTab', url: homepageURL });
             setTimeout(function() {
                 homeButton.style.background = 'transparent';
-                window.open(homepageURL, '_self');
             }, 100);
         });
         
@@ -110,7 +107,7 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
         closeTabButtonImg.style = defaultImgStyle;
         closeTabButton.addEventListener('click', function() {
             closeTabButton.style.background = '#6eb9f7cc';
-            closeTabHandler();
+            browser.runtime.sendMessage({ action: 'closeTab', url: homepageURL });
             setTimeout(function() {
                 closeTabButton.style.background = 'transparent';
             }, 100);
@@ -125,9 +122,9 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
         newTabButtonImg.style = defaultImgStyle;
         newTabButton.addEventListener('click', function() {
             newTabButton.style.background = '#6eb9f7cc';
+            browser.runtime.sendMessage({ action: 'createTab', url: newTabURL });
             setTimeout(function() {
                 newTabButton.style.background = 'transparent';
-                window.open(newTabURL, '_blank');
             }, 100);
         });
         
@@ -140,22 +137,58 @@ browser.storage.sync.get(['variable1', 'variable2', 'variable3', 'excludedUrls']
         customToolbar.appendChild(newTabButton);
         
         
-        // Hide the iframe when scrolling. By default ignores changes in the scrolling smaller than 10.
-        let prevScrollPos = window.scrollY;
-        window.addEventListener('scroll', function() {
-            let currentScrollPos = window.scrollY;
-            if (Math.abs(prevScrollPos - currentScrollPos) <= 10) {
-                return;
-            }
-            if (prevScrollPos > currentScrollPos ) {
-                if ( !iframeHidden && iframeToolbar.style.display === 'none' ) {
-                iframeToolbar.style.display = 'block';
+        // Hide the iframe when scrolling. By default ignores changes in the scrolling smaller than 5.
+        let isThrottled;
+        if (hideMethod === 'scroll') {
+            isThrottled = false;
+            let prevScrollPos = window.scrollY;       
+            window.addEventListener('scroll', function() {
+                let currentScrollPos = window.scrollY;
+                if (!isThrottled) {
+                    isThrottled = true;
+                    setTimeout(function() {
+                        isThrottled = false;
+                    }, 100);
+                    if (Math.abs(prevScrollPos - currentScrollPos) <= 5) {
+                        return;
+                    };
+                    if (prevScrollPos > currentScrollPos && !iframeHidden && !iframeVisible) {
+                        iframeToolbar.style.display = 'block';
+                        iframeVisible = true;
+                    } else if (prevScrollPos < currentScrollPos && iframeVisible) {
+                        iframeToolbar.style.display = 'none';
+                        iframeVisible = false;
+                    };
                 };
-            } else if ( iframeToolbar.style.display === 'block' ) {
-                iframeToolbar.style.display = 'none';
-            };
-            prevScrollPos = currentScrollPos;
-        });   
+                prevScrollPos = currentScrollPos;
+            });
+        } else if (hideMethod === 'touch') {
+            isThrottled = false;
+            let prevTouchY;                       
+            window.addEventListener('touchstart', function(event) {
+                prevTouchY = event.touches[0].clientY;
+            });                        
+            window.addEventListener('touchmove', function(event) {
+                let currentTouchY = event.touches[0].clientY;
+                if (!isThrottled) {
+                    isThrottled = true;
+                    setTimeout(function() {
+                        isThrottled = false;
+                    }, 100);
+                    if (Math.abs(prevTouchY - currentTouchY) <= 5) {
+                        return;
+                    };
+                    if (prevTouchY < currentTouchY && !iframeHidden && !iframeVisible) {
+                        iframeToolbar.style.display = 'block';
+                        iframeVisible = true;
+                    } else if (prevTouchY > currentTouchY && iframeVisible) {
+                        iframeToolbar.style.display = 'none';
+                        iframeVisible = false;
+                    };
+                };
+                prevTouchY = currentTouchY;
+            });
+        };
     } else {
         return;
     };

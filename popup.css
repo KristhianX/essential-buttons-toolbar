@@ -4,8 +4,8 @@ body {
     color: #fff;
     font-family: Arial, sans-serif;
     padding: 10px;
-    margin: 0;
-    width: 360px;
+    margin: 0 auto;
+    width: 320px;
 }
 
 h1 {
@@ -19,18 +19,72 @@ h2 {
 label {
     display: block;
     margin-top: 20px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+span {
+    font-size: 14px;
+    margin-top: 4px;
 }
 
 input[type="text"] {
     min-width: 250px;
     padding: 8px;
+    font-size: 14px;
     margin-top: 4px;
     background-color: #333;
     border: 1px solid #444;
     color: #fff;
 }
 
+input[type="range"] {
+    appearance: none;
+    width: 300px;
+    min-width: 266px;
+    margin: 10px 0;
+    height: 14px; 
+    background-color: #333;
+    border: 1px solid #444;
+    outline: none;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #007acc;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+input[type="range"]:focus::-moz-range-thumb {
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+select {
+    width: 120px; /* Set the width as needed */
+    padding: 8px;
+    font-size: 14px;
+    margin-top: 4px;
+    background: #333; /* Background color */
+    color: #fff; /* Text color */
+    border: 1px solid #444; /* Border color */
+    outline: none; /* Remove the default outline */
+}
+
+select option {
+    background: #333; /* Background color */
+    color: #fff; /* Text color */
+}
+
+select:focus {
+    border-color: #007acc;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
 button {
+    margin: 10px auto;
     padding: 8px 16px;
     background-color: #007acc;
     color: #fff;
@@ -51,7 +105,7 @@ ul {
 }
 
 li {
-    margin-top: 20px;
+    font-size: 14px;
 }
 
 li button {
@@ -67,6 +121,6 @@ li button:hover {
 }
 
 #statusMessage {
-    margin-top: 20px;
+    margin: 10px 0;
     font-size: 14px;
 }
