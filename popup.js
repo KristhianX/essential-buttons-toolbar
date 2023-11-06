@@ -3,17 +3,50 @@ const homepageURLInput = document.getElementById('homepageURL');
 const newTabURLInput = document.getElementById('newTabURL');
 const toolbarHeightRangeInput = document.getElementById('toolbarHeight');
 const currentValueDisplay = document.getElementById('currentValue');
-const hideMethodSelect = document.getElementById("hideMethod");
+const hideMethodSelect = document.getElementById('hideMethod');
 const saveButton = document.getElementById('saveButton');
 const customUrlInput = document.getElementById('customUrl');
 const addUrlButton = document.getElementById('addUrlButton');
 const excludedUrlsList = document.getElementById('excludedUrls');
 const statusMessage = document.getElementById('statusMessage');
+const homepageURLQuestionMark = document.getElementById('homepageURLQuestionMark');
+const homepageURLInfo = document.getElementById('homepageURLInfo');
+const homepageURLCloseButton = document.getElementById('homepageURLCloseButton');
+const hideMethodQuestionMark = document.getElementById('hideMethodQuestionMark');
+const hideMethodInfo = document.getElementById('hideMethodInfo');
+const hideMethodCloseButton = document.getElementById('hideMethodCloseButton');
+const customUrlQuestionMark = document.getElementById('customUrlQuestionMark');
+const customUrlInfo = document.getElementById('customUrlInfo');
+const customUrlCloseButton = document.getElementById('customUrlCloseButton');
 
 
-//hideMethodSelect.addEventListener("change", function() {
-//  const selectedValue = hideMethodSelect.value;
-//});
+homepageURLQuestionMark.addEventListener('click', (e) => {
+    e.preventDefault();
+    homepageURLInfo.style.display = 'block';
+    homepageURLQuestionMark.style.display = 'none';
+});
+homepageURLCloseButton.addEventListener('click', () => {
+    homepageURLInfo.style.display = 'none';
+    homepageURLQuestionMark.style.display = 'inline-block';
+});
+hideMethodQuestionMark.addEventListener('click', (e) => {
+    e.preventDefault();
+    hideMethodInfo.style.display = 'block';
+    hideMethodQuestionMark.style.display = 'none';
+});
+hideMethodCloseButton.addEventListener('click', () => {
+    hideMethodInfo.style.display = 'none';
+    hideMethodQuestionMark.style.display = 'inline-block';
+})
+customUrlQuestionMark.addEventListener('click', (e) => {
+    e.preventDefault();
+    customUrlInfo.style.display = 'block';
+    customUrlQuestionMark.style.display = 'none';
+});
+customUrlCloseButton.addEventListener('click', () => {
+    customUrlInfo.style.display = 'none';
+    customUrlQuestionMark.style.display = 'inline-block';
+});
 
 
 // Get the current page's URL and set it as the initial value for 'customUrl' input.
@@ -34,7 +67,9 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'hideMeth
     if (result.excludedUrls) {
         result.excludedUrls.forEach((url) => {
             const li = document.createElement('li');
-            li.textContent = url;
+            const liSpan = document.createElement('span');
+            li.appendChild(liSpan);
+            liSpan.textContent = url;
             const removeButton = document.createElement('button');
             removeButton.textContent = 'Remove';
             removeButton.addEventListener('click', () => {
@@ -69,7 +104,9 @@ addUrlButton.addEventListener('click', () => {
             browser.storage.sync.set({ 'excludedUrls': excludedUrls }).then(() => {
                 // Add the URL to the displayed list.
                 const li = document.createElement('li');
-                li.textContent = urlToAdd;
+                const liSpan = document.createElement('span');
+                li.appendChild(liSpan);
+                liSpan.textContent = urlToAdd;
                 const removeButton = document.createElement('button');
                 removeButton.textContent = 'Remove';
                 removeButton.addEventListener('click', () => {

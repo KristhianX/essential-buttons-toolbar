@@ -1,8 +1,8 @@
-// Listener to close the current tab.
+// Listener to close or create tabs.
 browser.runtime.onMessage.addListener((message, sender) => {
     if (message.action === 'closeTab') {
         // Check if there is more than one tab open
-        browser.tabs.query({ windowType: 'normal', url: '*://*/*' }, (tabs) => {
+        browser.tabs.query({ windowType: 'normal' }, (tabs) => {
             if (tabs.length > 1) {
                 // Close the current tab.
                 browser.tabs.remove(sender.tab.id);
