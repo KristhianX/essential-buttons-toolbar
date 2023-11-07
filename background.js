@@ -2,7 +2,7 @@
 browser.runtime.onMessage.addListener((message, sender) => {
     if (message.action === 'closeTab') {
         // Check if there is more than one tab open
-        browser.tabs.query({ windowType: 'normal' }, (tabs) => {
+        browser.tabs.query({ windowType: 'normal', url: '*://*/*' }, (tabs) => {
             if (tabs.length > 1) {
                 // Close the current tab.
                 browser.tabs.remove(sender.tab.id);
