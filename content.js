@@ -9,7 +9,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'hideMeth
     let iframeHidden = false;
     let iframeVisible = true;
     
-
+    
     // Check if the current page's URL should be excluded.
     const isCurrentPageExcluded = excludedUrls.some((excludedUrl) => {
         const pattern = new RegExp('^' + excludedUrl.replace(/\*/g, '.*') + '$');
@@ -18,11 +18,11 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'hideMeth
     
     
     if (!isCurrentPageExcluded) {
-        // Inline svg icons and default css style for the buttons.
-        // All icons from https://github.com/feathericons/feather
+        // Default css style for the buttons.
+        // Icons from https://github.com/feathericons/feather
         const defaultButtonStyle = 'height: 100%; aspect-ratio: 1; cursor: pointer; border: none; border-radius: 20%; background: transparent';
         const defaultImgStyle = 'height: 50%; aspect-ratio: 1';
-
+        
         
         // Creating the iframe with the maximum z-index value to ensure it is allways on top.
         // Placing it outside the body to make it be on top of other elements with max z-index in the body.
@@ -64,6 +64,15 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'hideMeth
         moveButtonImg.style = defaultImgStyle;
         moveButton.addEventListener('click', function() {
             moveButton.style.background = '#6eb9f7cc';
+            browser.runtime.sendMessage({ action: 'debugTabs' }, (response) => {
+                if (browser.runtime.lastError) {
+                    console.error(browser.runtime.lastError);
+                } else {
+                    console.log(response && response.response);
+                };
+            });
+
+            
             setTimeout(function() {
                 if (iframeToolbar.style.bottom === '0px') {
                     iframeToolbar.style.bottom = 'unset';
@@ -135,7 +144,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'hideMeth
         customToolbar.appendChild(moveButton);
         customToolbar.appendChild(closeTabButton);
         customToolbar.appendChild(newTabButton);
-        
+
         
         // Hide the iframe when scrolling. By default ignores changes in the scrolling smaller than 5.
         let isThrottled;
