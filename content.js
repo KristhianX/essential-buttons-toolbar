@@ -2,7 +2,7 @@
 browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'hideMethod', 'excludedUrls']).then((result) => {
     const homepageURL = result.homepageURL || 'https://web.tabliss.io';
     const newTabURL = result.newTabURL || 'https://web.tabliss.io';
-    const toolbarHeight = result.toolbarHeight || '46';
+    const toolbarHeight = result.toolbarHeight || '42';
     const hideMethod = result.hideMethod || 'scroll';
     const excludedUrls = result.excludedUrls || [];
     const currentUrl = window.location.href;
@@ -63,16 +63,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'hideMeth
         moveButtonImg.src = browser.runtime.getURL('icons/featherIcons/up.svg');
         moveButtonImg.style = defaultImgStyle;
         moveButton.addEventListener('click', function() {
-            moveButton.style.background = '#6eb9f7cc';
-            browser.runtime.sendMessage({ action: 'debugTabs' }, (response) => {
-                if (browser.runtime.lastError) {
-                    console.error(browser.runtime.lastError);
-                } else {
-                    console.log(response && response.response);
-                };
-            });
-
-            
+            moveButton.style.background = '#6eb9f7cc';            
             setTimeout(function() {
                 if (iframeToolbar.style.bottom === '0px') {
                     iframeToolbar.style.bottom = 'unset';

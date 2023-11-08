@@ -29,7 +29,7 @@ Though opening a new tab and closing tabs is not difficult, why not make them ev
 
 **Other features:**  
 - **Hide on scroll method.** Option to change the used method or to disable it.  
-- **Toolbar height:** The number of pixels. The default value is set to 46 for ease of use.  
+- **Toolbar height:** The number of pixels. The default value is set to 42.  
 - **Exclude URLs:** Specify which web addresses to exclude.
 
 ## Installation instructions for Firefox Beta, Fennec F-Droid and Mull.

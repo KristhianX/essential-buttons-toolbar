@@ -43,6 +43,7 @@ label {
     margin-top: 10px;
     background-color: #333;
     border: 1px solid #444;
+    border-radius: 4px;
     padding: 8px;
     z-index: 1;
 }
@@ -62,6 +63,7 @@ input[type="text"] {
     margin-top: 4px;
     background-color: #333;
     border: 1px solid #444;
+    border-radius: 4px;
     color: #fff;
 }
 
@@ -73,6 +75,7 @@ input[type="range"] {
     height: 10px; 
     background-color: #333;
     border: 1px solid #444;
+    border-radius: 4px;
     outline: none;
 }
 
@@ -90,19 +93,20 @@ input[type="range"]:focus::-moz-range-thumb {
 }
 
 select {
-    width: 120px; /* Set the width as needed */
+    width: 120px;
     padding: 8px;
     font-size: 14px;
     margin-top: 4px;
-    background: #333; /* Background color */
-    color: #fff; /* Text color */
-    border: 1px solid #444; /* Border color */
-    outline: none; /* Remove the default outline */
+    background: #333;
+    color: #fff;
+    border: 1px solid #444;
+    border-radius: 4px;
+    outline: none;
 }
 
 select option {
-    background: #333; /* Background color */
-    color: #fff; /* Text color */
+    background: #333;
+    color: #fff;
 }
 
 select:focus {
@@ -117,6 +121,7 @@ button {
     background-color: #007acc;
     color: #fff;
     border: none;
+    border-radius: 4px;
     cursor: pointer;
 }
 
@@ -135,6 +140,7 @@ li {
     font-size: 14px;
     width: 300px;
     border: 1px solid #444;
+    border-radius: 4px;
     margin: 0 0 10px;
     padding: 0 8px;
     overflow: auto;

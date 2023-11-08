@@ -1,57 +1,31 @@
 // Listener to close or create tabs.
-browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+browser.runtime.onMessage.addListener((message, sender) => {
     if (message.action === 'closeTab') {
-        // Check if there is more than one tab open
-        browser.tabs.query({ active: false }, (tabs) => {
-            if (tabs.length >= 1) {
+        // Promisify the browser.tabs.query function
+        const queryTabs = (url) => new Promise((resolve) => {
+            browser.tabs.query({ url }, (tabs) => {
+                resolve(tabs);
+            });
+        });
+        // Use Promise.all to query both sets of tabs in parallel
+        Promise.all([queryTabs('*://*/*'), queryTabs('moz-extension://*/*')])
+        .then(([webTabs, extensionTabs]) => {
+            const tabsNumber = webTabs.length + extensionTabs.length;   
+            if (tabsNumber > 1) {
                 // Close the current tab.
                 browser.tabs.remove(sender.tab.id);
             } else {
-                // Open new tab page.
+                // Open a new tab with the specified URL.
                 browser.tabs.update(sender.tab.id, { url: message.url });
-            };
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
         });
     } else if (message.action === 'updateTab') {
         browser.tabs.update(sender.tab.id, { url: message.url });
     } else if (message.action === 'createTab') {
         browser.tabs.create({ url: message.url });
-    } else if (message.action === 'debugTabs') {
-        const response = {};
-        
-        browser.tabs.query({ active: false }, (tabs) => {
-            response.activeFalse = tabs.length;
-            checkDone();
-        });
-        
-        browser.tabs.query({ title: '**' }, (tabs) => {
-            response.title = tabs.length;
-            checkDone();
-        });
-        
-        browser.tabs.query({ active: false, title: '**' }, (tabs) => {
-            response.activeTitle = tabs.length;
-            checkDone();
-        });
-        
-        browser.tabs.query({ url: '*://*/*' }, (tabs) => {
-        response.url = tabs.length;
-        checkDone();
-        });
-    
-        browser.tabs.query({}, (tabs) => {
-            response.empty = tabs.length;
-            checkDone();
-        });
-    
-        function checkDone() {
-            if (Object.keys(response).length === 5) {
-                // Once all queries are done, send the response
-                sendResponse({ response });
-            };
-        };
-    
-        // Return true to indicate that we will send a response asynchronously
-        return true;
     };
 });
 
@@ -60,7 +34,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 const defaultVariables = {
     homepageURL: 'https://web.tabliss.io',
     newTabURL: 'https://web.tabliss.io',
-    toolbarHeight: '46',
+    toolbarHeight: '42',
     hideMethod: 'scroll',
 };
 browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'hideMethod']).then((result) => {
