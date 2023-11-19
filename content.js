@@ -1,8 +1,9 @@
 // Retrieve the settings from storage.
-browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'hideMethod', 'excludedUrls']).then((result) => {
+browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'hideMethod', 'excludedUrls']).then((result) => {
     const homepageURL = result.homepageURL || 'https://web.tabliss.io';
     const newTabURL = result.newTabURL || 'https://web.tabliss.io';
     const toolbarHeight = result.toolbarHeight || '42';
+    const defaultPosition = result.defaultPosition || 'bottom';
     const hideMethod = result.hideMethod || 'scroll';
     const excludedUrls = result.excludedUrls || [];
     const currentUrl = window.location.href;
@@ -27,7 +28,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'hideMeth
         // Creating the iframe with the maximum z-index value to ensure it is allways on top.
         // Placing it outside the body to make it be on top of other elements with max z-index in the body.
         const iframeToolbar = document.createElement('iframe');
-        iframeToolbar.style = 'height: ' + toolbarHeight + 'px; bottom: 0px; left: 0px; width: 100vw; display: block; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light';
+        iframeToolbar.style = 'height: ' + toolbarHeight + 'px; ' + defaultPosition + ': 0px; left: 0px; width: 100vw; display: block; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light';
         document.body.insertAdjacentElement('afterend', iframeToolbar);
         
         
@@ -60,7 +61,11 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'hideMeth
         const moveButtonImg = document.createElement('img');
         moveButton.appendChild(moveButtonImg);
         moveButton.style = defaultButtonStyle;
-        moveButtonImg.src = browser.runtime.getURL('icons/featherIcons/up.svg');
+        if (defaultPosition === 'bottom') {
+            moveButtonImg.src = browser.runtime.getURL('icons/featherIcons/up.svg');
+        } else {
+            moveButtonImg.src = browser.runtime.getURL('icons/featherIcons/down.svg');
+        };
         moveButtonImg.style = defaultImgStyle;
         moveButton.addEventListener('click', function() {
             moveButton.style.background = '#6eb9f7cc';            
