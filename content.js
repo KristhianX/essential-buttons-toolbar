@@ -1,9 +1,10 @@
 // Retrieve the settings from storage.
-browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'hideMethod', 'excludedUrls']).then((result) => {
+browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls']).then((result) => {
     const homepageURL = result.homepageURL || 'https://web.tabliss.io';
     const newTabURL = result.newTabURL || 'https://web.tabliss.io';
     const toolbarHeight = result.toolbarHeight || '42';
     const defaultPosition = result.defaultPosition || 'bottom';
+    const iconTheme = result.iconTheme || 'featherIcons';
     const hideMethod = result.hideMethod || 'scroll';
     const excludedUrls = result.excludedUrls || [];
     const currentUrl = window.location.href;
@@ -20,7 +21,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
     
     if (!isCurrentPageExcluded) {
         // Default css style for the buttons.
-        // Icons from https://github.com/feathericons/feather
+        // Icons from https://github.com/feathericons/feather and https://github.com/tailwindlabs/heroicons
         const defaultButtonStyle = 'height: 100%; aspect-ratio: 1; cursor: pointer; border: none; border-radius: 20%; background: transparent';
         const defaultImgStyle = 'height: 50%; aspect-ratio: 1';
         
@@ -46,7 +47,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
         const homeButtonImg = document.createElement('img');
         homeButton.appendChild(homeButtonImg);
         homeButton.style = defaultButtonStyle;
-        homeButtonImg.src = browser.runtime.getURL('icons/featherIcons/home.svg');
+        homeButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/home.svg');
         homeButtonImg.style = defaultImgStyle;
         homeButton.addEventListener('click', function() {
             homeButton.style.background = '#6eb9f7cc';
@@ -62,9 +63,9 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
         moveButton.appendChild(moveButtonImg);
         moveButton.style = defaultButtonStyle;
         if (defaultPosition === 'bottom') {
-            moveButtonImg.src = browser.runtime.getURL('icons/featherIcons/up.svg');
+            moveButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/up.svg');
         } else {
-            moveButtonImg.src = browser.runtime.getURL('icons/featherIcons/down.svg');
+            moveButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/down.svg');
         };
         moveButtonImg.style = defaultImgStyle;
         moveButton.addEventListener('click', function() {
@@ -75,13 +76,13 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                     iframeToolbar.style.top = '0px';
                     customToolbar.style.borderTop = 'unset';
                     customToolbar.style.borderBottom = '2px solid #38373f';
-                    moveButtonImg.src = browser.runtime.getURL('icons/featherIcons/down.svg');
+                    moveButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/down.svg');
                 } else {
                     iframeToolbar.style.top = 'unset';
                     iframeToolbar.style.bottom = '0px';
                     customToolbar.style.borderBottom = 'unset';
                     customToolbar.style.borderTop = '2px solid #38373f';
-                    moveButtonImg.src = browser.runtime.getURL('icons/featherIcons/up.svg');
+                    moveButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/up.svg');
                 };
                 moveButton.style.background = 'transparent';
             }, 100);
@@ -92,7 +93,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
         const hideToolbarButtonImg = document.createElement('img');
         hideToolbarButton.appendChild(hideToolbarButtonImg);
         hideToolbarButton.style = defaultButtonStyle;
-        hideToolbarButtonImg.src = browser.runtime.getURL('icons/featherIcons/eyeOff.svg');
+        hideToolbarButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/eyeOff.svg');
         hideToolbarButtonImg.style = defaultImgStyle;
         hideToolbarButton.addEventListener('click', function() {
             hideToolbarButton.style.background = '#6eb9f7cc';
@@ -108,7 +109,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
         const closeTabButtonImg = document.createElement('img');
         closeTabButton.appendChild(closeTabButtonImg);
         closeTabButton.style = defaultButtonStyle;
-        closeTabButtonImg.src = browser.runtime.getURL('icons/featherIcons/close.svg');
+        closeTabButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/close.svg');
         closeTabButtonImg.style = defaultImgStyle;
         closeTabButton.addEventListener('click', function() {
             closeTabButton.style.background = '#6eb9f7cc';
@@ -123,7 +124,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
         const newTabButtonImg = document.createElement('img');
         newTabButton.appendChild(newTabButtonImg);
         newTabButton.style = defaultButtonStyle;
-        newTabButtonImg.src = browser.runtime.getURL('icons/featherIcons/plus.svg');
+        newTabButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/plus.svg');
         newTabButtonImg.style = defaultImgStyle;
         newTabButton.addEventListener('click', function() {
             newTabButton.style.background = '#6eb9f7cc';

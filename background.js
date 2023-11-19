@@ -36,9 +36,10 @@ const defaultVariables = {
     newTabURL: 'https://web.tabliss.io',
     toolbarHeight: '42',
     defaultPosition: 'bottom',
+    iconTheme: 'featherIcons',
     hideMethod: 'scroll',
 };
-browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'hideMethod']).then((result) => {
+browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod']).then((result) => {
     if (!result.homepageURL) {
         browser.storage.sync.set({ homepageURL: defaultVariables.homepageURL });
     };
@@ -50,7 +51,10 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
     };
     if (!result.defaultPosition) {
         browser.storage.sync.set({ defaultPosition: defaultVariables.defaultPosition });
-    }
+    };
+    if (!result.iconTheme) {
+        browser.storage.sync.set({ iconTheme: defaultVariables.iconTheme });
+    };
     if (!result.hideMethod) {
         browser.storage.sync.set({ hideMethod: defaultVariables.hideMethod });
     };

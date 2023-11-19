@@ -4,6 +4,7 @@ const newTabURLInput = document.getElementById('newTabURL');
 const toolbarHeightRangeInput = document.getElementById('toolbarHeight');
 const currentValueDisplay = document.getElementById('currentValue');
 const defaultPositionSelect = document.getElementById('defaultPosition');
+const iconThemeSelect = document.getElementById('iconTheme');
 const hideMethodSelect = document.getElementById('hideMethod');
 const saveButton = document.getElementById('saveButton');
 const customUrlInput = document.getElementById('customUrl');
@@ -59,12 +60,13 @@ browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 
 
 // Load the values from storage.
-browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'hideMethod', 'excludedUrls']).then((result) => {
+browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls']).then((result) => {
     homepageURLInput.value = result.homepageURL;
     newTabURLInput.value = result.newTabURL;
     toolbarHeightRangeInput.value = result.toolbarHeight;
     currentValueDisplay.textContent = result.toolbarHeight;
     defaultPositionSelect.value = result.defaultPosition;
+    iconThemeSelect.value = result.iconTheme;
     hideMethodSelect.value = result.hideMethod;
     if (result.excludedUrls) {
         result.excludedUrls.forEach((url) => {
@@ -133,9 +135,10 @@ saveButton.addEventListener('click', () => {
     const newTabURL = newTabURLInput.value;
     const toolbarHeight = toolbarHeightRangeInput.value;
     const defaultPosition = defaultPositionSelect.value;
+    const iconTheme = iconThemeSelect.value;
     const hideMethod = hideMethodSelect.value;
     // Save the values to storage.
-    browser.storage.sync.set({ 'homepageURL': homepageURL, 'newTabURL': newTabURL, 'toolbarHeight': toolbarHeight, 'defaultPosition': defaultPosition, 'hideMethod': hideMethod }).then(() => {
+    browser.storage.sync.set({ 'homepageURL': homepageURL, 'newTabURL': newTabURL, 'toolbarHeight': toolbarHeight, 'defaultPosition': defaultPosition, 'iconTheme': iconTheme, 'hideMethod': hideMethod }).then(() => {
         statusMessage.textContent = 'Settings saved!';
         statusMessage.style.color = '#007acc';
         setTimeout(function() {
