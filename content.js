@@ -10,6 +10,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
     const currentUrl = window.location.href;
     let iframeHidden = false;
     let iframeVisible = true;
+    let menuDivHidden = true;
     
     
     // Check if the current page's URL should be excluded.
@@ -28,20 +29,41 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
         
         // Creating the iframe with the maximum z-index value to ensure it is allways on top.
         // Placing it outside the body to make it be on top of other elements with max z-index in the body.
-        const iframeToolbar = document.createElement('iframe');
-        iframeToolbar.style = 'height: ' + toolbarHeight + 'px; ' + defaultPosition + ': 0px; left: 0px; width: 100vw; display: block; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light';
-        document.body.insertAdjacentElement('afterend', iframeToolbar);
+        const toolbarIframe = document.createElement('iframe');
+        toolbarIframe.style = 'height: ' + toolbarHeight + 'px; ' + defaultPosition + ': 0px; left: 0px; width: 100vw; display: block; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light';
+        document.body.insertAdjacentElement('afterend', toolbarIframe);
         
         
         // Creating the toolbar.
-        const customToolbar = document.createElement('div');
-        customToolbar.style = 'height: 100%; padding: 0 4%; box-sizing: border-box; display: flex; justify-content: space-between; width: 100%; background-color: #2b2a33cc; border-top: 2px solid #38373f';
-        iframeToolbar.addEventListener('load', function() {
-            iframeToolbar.contentWindow.document.body.appendChild(customToolbar);
-            iframeToolbar.contentWindow.document.body.style = 'margin: 0; height: 100%';
+        const toolbarDiv = document.createElement('div');
+        toolbarDiv.style = 'height: ' + toolbarHeight + 'px; padding: 0 4%; box-sizing: border-box; display: flex; justify-content: space-between; width: 100%; position: absolute; background-color: #2b2a33cc; border-style: solid; border-color: #38373f';
+
+
+        // Creating the menu.
+        const menuDiv = document.createElement('div');
+        menuDiv.style = 'height: ' + toolbarHeight + 'px; padding: 0 4%; box-sizing: border-box; display: none; justify-content: space-between; width: 100%; position: absolute; background-color: #2b2a33; border-style: solid; border-color: #38373f';
+
+
+        if (defaultPosition === 'top') {
+            toolbarDiv.style.borderWidth = '0 0 2px';
+            toolbarDiv.style.top = '0';
+            menuDiv.style.borderWidth = '0 0 2px';
+            menuDiv.style.bottom = '0';
+        } else {
+            toolbarDiv.style.borderWidth = '2px 0 0';
+            toolbarDiv.style.bottom = '0';
+            menuDiv.style.borderWidth = '2px 0 0';
+            menuDiv.style.top = '0';
+        };
+
+        
+        toolbarIframe.addEventListener('load', function() {
+            toolbarIframe.contentWindow.document.body.appendChild(menuDiv);
+            toolbarIframe.contentWindow.document.body.appendChild(toolbarDiv);
+            toolbarIframe.contentWindow.document.body.style = 'margin: 0; height: 100%';
         });
-        
-        
+
+
         // Creating the buttons. All of them will have a simple background change as pressed feedback and then the action will be executed. Default delay 200ms.
         const homeButton = document.createElement('button');
         const homeButtonImg = document.createElement('img');
@@ -71,19 +93,31 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
         moveButton.addEventListener('click', function() {
             moveButton.style.background = '#6eb9f7cc';            
             setTimeout(function() {
-                if (iframeToolbar.style.bottom === '0px') {
-                    iframeToolbar.style.bottom = 'unset';
-                    iframeToolbar.style.top = '0px';
-                    customToolbar.style.borderTop = 'unset';
-                    customToolbar.style.borderBottom = '2px solid #38373f';
+                if (toolbarIframe.style.bottom === '0px') {
+                    toolbarIframe.style.bottom = 'unset';
+                    toolbarIframe.style.top = '0px';
+                    toolbarDiv.style.bottom = 'unset';
+                    toolbarDiv.style.top = '0';
+                    menuDiv.style.top = 'unset';
+                    menuDiv.style.bottom = '0';
+                    toolbarDiv.style.borderWidth = '0 0 2px';
+                    menuDiv.style.borderWidth = '0 0 2px';
                     moveButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/down.svg');
                 } else {
-                    iframeToolbar.style.top = 'unset';
-                    iframeToolbar.style.bottom = '0px';
-                    customToolbar.style.borderBottom = 'unset';
-                    customToolbar.style.borderTop = '2px solid #38373f';
+                    toolbarIframe.style.top = 'unset';
+                    toolbarIframe.style.bottom = '0px';
+                    toolbarDiv.style.bottom = '0';
+                    toolbarDiv.style.top = 'unset';
+                    menuDiv.style.top = '0';
+                    menuDiv.style.bottom = 'unset';
+                    toolbarDiv.style.borderWidth = '2px 0 0';
+                    menuDiv.style.borderWidth = '2px 0 0';
                     moveButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/up.svg');
                 };
+                menuButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/menu.svg');
+                menuDiv.style.display = 'none';
+                menuDivHidden = true;
+                toolbarIframe.style.height = toolbarHeight + 'px';
                 moveButton.style.background = 'transparent';
             }, 100);
         });
@@ -99,7 +133,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
             hideToolbarButton.style.background = '#6eb9f7cc';
             setTimeout(function() {
                 hideToolbarButton.style.background = 'transparent';
-                iframeToolbar.style.display = 'none';
+                toolbarIframe.style.display = 'none';
                 iframeHidden = true;
             }, 100);
         });
@@ -135,14 +169,63 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
         });
         
         
-        // Appending the buttons.
-        customToolbar.appendChild(homeButton);
-        customToolbar.appendChild(hideToolbarButton);
-        customToolbar.appendChild(moveButton);
-        customToolbar.appendChild(closeTabButton);
-        customToolbar.appendChild(newTabButton);
+        const menuButton = document.createElement('button');
+        const menuButtonImg = document.createElement('img');
+        menuButton.appendChild(menuButtonImg);
+        menuButton.style = defaultButtonStyle;
+        menuButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/menu.svg');
+        menuButtonImg.style = defaultImgStyle;
+        menuButton.addEventListener('click', function() {
+            menuButton.style.background = '#6eb9f7cc';
+            if (menuDivHidden) {
+                menuButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/x.svg');
+                menuDiv.style.display = 'flex';
+                menuDivHidden = false;
+                toolbarIframe.style.height = toolbarHeight * 2 + 'px';
+            } else {
+                menuButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/menu.svg');
+                menuDiv.style.display = 'none';
+                menuDivHidden = true;
+                toolbarIframe.style.height = toolbarHeight + 'px';
+            }
+            setTimeout(function() {
+                menuButton.style.background = 'transparent';
+            }, 100);
+        });
 
+
+        const duplicateTabButton = document.createElement('a');
+        const duplicateTabButtonImg = document.createElement('img');
+        duplicateTabButton.href = currentUrl;
+        duplicateTabButton.appendChild(duplicateTabButtonImg);
+        duplicateTabButton.style = defaultButtonStyle;
+        duplicateTabButton.style.display = 'flex';
+        duplicateTabButton.style.justifyContent = 'center';
+        duplicateTabButton.style.alignItems = 'center';
+        duplicateTabButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/external-link.svg');
+        duplicateTabButtonImg.style = defaultImgStyle;
+        duplicateTabButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            duplicateTabButton.style.background = '#6eb9f7cc';
+            browser.runtime.sendMessage({ action: 'duplicateTab', url: currentUrl });
+            setTimeout(function() {
+                duplicateTabButton.style.background = 'transparent';
+            }, 100);
+        });
+
+
+        // Appending the buttons.
+        toolbarDiv.appendChild(homeButton);
+        toolbarDiv.appendChild(duplicateTabButton);
+        toolbarDiv.appendChild(menuButton);
+        toolbarDiv.appendChild(closeTabButton);
+        toolbarDiv.appendChild(newTabButton);
         
+        
+        menuDiv.appendChild(hideToolbarButton);
+        menuDiv.appendChild(moveButton);
+
+
         // Hide the iframe when scrolling. By default ignores changes in the scrolling smaller than 5.
         let isThrottled;
         if (hideMethod === 'scroll') {
@@ -159,10 +242,10 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                         return;
                     };
                     if (prevScrollPos > currentScrollPos && !iframeHidden && !iframeVisible) {
-                        iframeToolbar.style.display = 'block';
+                        toolbarIframe.style.display = 'block';
                         iframeVisible = true;
                     } else if (prevScrollPos < currentScrollPos && iframeVisible) {
-                        iframeToolbar.style.display = 'none';
+                        toolbarIframe.style.display = 'none';
                         iframeVisible = false;
                     };
                 };
@@ -185,10 +268,10 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                         return;
                     };
                     if (prevTouchY < currentTouchY && !iframeHidden && !iframeVisible) {
-                        iframeToolbar.style.display = 'block';
+                        toolbarIframe.style.display = 'block';
                         iframeVisible = true;
                     } else if (prevTouchY > currentTouchY && iframeVisible) {
-                        iframeToolbar.style.display = 'none';
+                        toolbarIframe.style.display = 'none';
                         iframeVisible = false;
                     };
                 };

@@ -26,6 +26,8 @@ browser.runtime.onMessage.addListener((message, sender) => {
         browser.tabs.update(sender.tab.id, { url: message.url });
     } else if (message.action === 'createTab') {
         browser.tabs.create({ url: message.url });
+    } else if (message.action === 'duplicateTab') {
+        browser.tabs.create({ url: message.url, active: false });
     };
 });
 
