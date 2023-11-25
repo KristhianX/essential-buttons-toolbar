@@ -133,7 +133,7 @@ button:hover {
 ul {
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin: 4px 0;
     width: 318px;
 }
 
@@ -166,6 +166,35 @@ li button {
 
 li button:hover {
     background-color: #aa0000;
+}
+
+.move-up-button, .move-down-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    position: absolute;
+    height: 40px;
+    width: 40px;
+}
+
+.move-down-button {
+    right: 32px;
+}
+
+.move-up-button {
+    right: 78px;
+}
+
+img {
+    height: 90%;
+    aspect-ratio: 1;
+}
+
+li label {
+    display: inline-block;
+    margin : 0;
+    padding : 10px;
 }
 
 #statusMessage {

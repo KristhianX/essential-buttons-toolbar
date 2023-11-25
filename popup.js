@@ -17,6 +17,7 @@ const homepageURLCloseButton = document.getElementById('homepageURLCloseButton')
 const hideMethodQuestionMark = document.getElementById('hideMethodQuestionMark');
 const hideMethodInfo = document.getElementById('hideMethodInfo');
 const hideMethodCloseButton = document.getElementById('hideMethodCloseButton');
+const buttonList = document.getElementById('button-list');
 const customUrlQuestionMark = document.getElementById('customUrlQuestionMark');
 const customUrlInfo = document.getElementById('customUrlInfo');
 const customUrlCloseButton = document.getElementById('customUrlCloseButton');
@@ -59,8 +60,87 @@ browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 });
 
 
+// Add an event listener to the range input.
+toolbarHeightRangeInput.addEventListener('input', function() {
+    const currentValue = toolbarHeightRangeInput.value;
+    currentValueDisplay.textContent = currentValue;
+});  
+
+
+// Disable buttons and change order.
+const buttonsData = [
+    { id: 'homeButton', label: ' Home', defaultChecked: true },
+    { id: 'duplicateTabButton', label: ' Duplicate tab', defaultChecked: true },
+    //{ id: 'menuButton', label: ' Menu', defaultChecked: true },
+    { id: 'closeTabButton', label: ' Close tab', defaultChecked: true },
+    { id: 'newTabButton', label: ' New tab', defaultChecked: true },
+    { id: 'hideButton', label: ' Hide toolbar', defaultChecked: true },
+    { id: 'moveToolbarButton', label: ' Move toolbar', defaultChecked: true },
+];
+
+function moveUp(item) {
+    if (item.previousElementSibling) {
+        item.parentNode.insertBefore(item, item.previousElementSibling);
+        updateButtonOrder();
+    }
+}
+
+function moveDown(item) {
+    if (item.nextElementSibling) {
+        item.parentNode.insertBefore(item.nextElementSibling, item);
+        updateButtonOrder();
+    }
+}
+
+function updateButtonOrder() {
+    const buttonList = document.getElementById('button-list');
+    const checkboxes = buttonList.querySelectorAll('label input[type="checkbox"]');
+    const buttonOrder = Array.from(checkboxes).map(checkbox => checkbox.id);
+
+    // Update the checkbox order based on the visual order
+    browser.storage.sync.set({
+        buttonOrder: buttonOrder,
+    });
+}
+
+function createButtonElement(buttonData, isChecked) {
+    const li = document.createElement('li');
+
+    const checkboxLabel = document.createElement('label');
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = buttonData.id;
+    checkbox.checked = isChecked;
+    checkboxLabel.appendChild(checkbox);
+    checkboxLabel.appendChild(document.createTextNode(` ${buttonData.label}`));
+    li.appendChild(checkboxLabel);
+
+    const moveUpButton = document.createElement('button');
+    const moveUpButtonImg = document.createElement('img');
+    moveUpButtonImg.src = browser.runtime.getURL('icons/featherIcons/up.svg');
+    moveUpButton.appendChild(moveUpButtonImg);
+    moveUpButton.classList.add('move-up-button');
+    moveUpButton.onclick = function () {
+        moveUp(li);
+    };
+    li.appendChild(moveUpButton);
+
+    const moveDownButton = document.createElement('button');
+    const moveDownButtonImg = document.createElement('img');
+    moveDownButtonImg.src = browser.runtime.getURL('icons/featherIcons/down.svg');
+    moveDownButton.appendChild(moveDownButtonImg);
+    moveDownButton.classList.add('move-down-button');
+    moveDownButton.onclick = function () {
+        moveDown(li);
+    };
+    li.appendChild(moveDownButton);
+
+    return li;
+}
+
+
 // Load the values from storage.
-browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls']).then((result) => {
+browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls', 'buttonOrder', 'checkboxStates']).then((result) => {
     homepageURLInput.value = result.homepageURL;
     newTabURLInput.value = result.newTabURL;
     toolbarHeightRangeInput.value = result.toolbarHeight;
@@ -68,6 +148,16 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
     defaultPositionSelect.value = result.defaultPosition;
     iconThemeSelect.value = result.iconTheme;
     hideMethodSelect.value = result.hideMethod;
+    if (result.buttonOrder && result.checkboxStates) {
+        // Create and append the button elements based on the order
+        result.buttonOrder.forEach(buttonId => {
+            const buttonData = buttonsData.find(button => button.id === buttonId);
+            if (buttonData) {
+                const buttonElement = createButtonElement(buttonData, result.checkboxStates[buttonId]);
+                buttonList.appendChild(buttonElement);
+            }
+        });
+    }
     if (result.excludedUrls) {
         result.excludedUrls.forEach((url) => {
             const li = document.createElement('li');
@@ -88,13 +178,6 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
         });
     };
 });
-
-
-// Add an event listener to the range input
-toolbarHeightRangeInput.addEventListener('input', function() {
-    const currentValue = toolbarHeightRangeInput.value;
-    currentValueDisplay.textContent = currentValue;
-});  
 
 
 // Add a URL to the excluded URLs list.
@@ -129,7 +212,6 @@ addUrlButton.addEventListener('click', () => {
 });
 
 
-// Save the values to storage when the Save button is clicked.
 saveButton.addEventListener('click', () => {
     const homepageURL = homepageURLInput.value;
     const newTabURL = newTabURLInput.value;
@@ -137,13 +219,37 @@ saveButton.addEventListener('click', () => {
     const defaultPosition = defaultPositionSelect.value;
     const iconTheme = iconThemeSelect.value;
     const hideMethod = hideMethodSelect.value;
-    // Save the values to storage.
-    browser.storage.sync.set({ 'homepageURL': homepageURL, 'newTabURL': newTabURL, 'toolbarHeight': toolbarHeight, 'defaultPosition': defaultPosition, 'iconTheme': iconTheme, 'hideMethod': hideMethod }).then(() => {
+
+    // Get the checkbox states and button order
+    const checkboxes = document.querySelectorAll('label input[type="checkbox"]');
+    const buttonOrder = Array.from(checkboxes).map(checkbox => checkbox.id);
+
+    // Save the values to storage
+    browser.storage.sync.set({
+        'homepageURL': homepageURL,
+        'newTabURL': newTabURL,
+        'toolbarHeight': toolbarHeight,
+        'defaultPosition': defaultPosition,
+        'iconTheme': iconTheme,
+        'hideMethod': hideMethod,
+        'buttonOrder': buttonOrder, // Save the button order
+        'checkboxStates': getCheckboxStates(), // Save the checkbox states
+    }).then(() => {
         statusMessage.textContent = 'Settings saved!';
         statusMessage.style.color = '#007acc';
-        setTimeout(function() {
+        setTimeout(function () {
             statusMessage.style.color = '#fff';
         }, 1000);
     });
 });
 
+
+// Function to get the states of the checkboxes
+function getCheckboxStates() {
+    const checkboxes = document.querySelectorAll('label input[type="checkbox"]');
+    const checkboxStates = {};
+    checkboxes.forEach(checkbox => {
+        checkboxStates[checkbox.id] = checkbox.checked;
+    });
+    return checkboxStates;
+}

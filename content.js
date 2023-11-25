@@ -1,11 +1,21 @@
 // Retrieve the settings from storage.
-browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls']).then((result) => {
+browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls', 'checkboxStates', 'buttonOrder']).then((result) => {
     const homepageURL = result.homepageURL || 'https://web.tabliss.io';
     const newTabURL = result.newTabURL || 'https://web.tabliss.io';
     const toolbarHeight = result.toolbarHeight || '42';
     const defaultPosition = result.defaultPosition || 'bottom';
     const iconTheme = result.iconTheme || 'featherIcons';
     const hideMethod = result.hideMethod || 'scroll';
+    const checkboxStates = result.checkboxStates || {
+        'homeButton': true,
+        'duplicateTabButton': true,
+        //'menuButton': true,
+        'closeTabButton': true,
+        'newTabButton': true,
+        'hideButton': true,
+        'moveToolbarButton': true,
+    };
+    const buttonOrder = result.buttonOrder || ['homeButton', 'duplicateTabButton', 'hideButton', 'moveToolbarButton', 'closeTabButton', 'newTabButton'];
     const excludedUrls = result.excludedUrls || [];
     const currentUrl = window.location.href;
     let iframeHidden = false;
@@ -37,13 +47,13 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
         // Creating the toolbar.
         const toolbarDiv = document.createElement('div');
         toolbarDiv.style = 'height: ' + toolbarHeight + 'px; padding: 0 4%; box-sizing: border-box; display: flex; justify-content: space-between; width: 100%; position: absolute; background-color: #2b2a33cc; border-style: solid; border-color: #38373f';
-
-
+        
+        
         // Creating the menu.
         const menuDiv = document.createElement('div');
         menuDiv.style = 'height: ' + toolbarHeight + 'px; padding: 0 4%; box-sizing: border-box; display: none; justify-content: space-between; width: 100%; position: absolute; background-color: #2b2a33; border-style: solid; border-color: #38373f';
-
-
+        
+        
         if (defaultPosition === 'top') {
             toolbarDiv.style.borderWidth = '0 0 2px';
             toolbarDiv.style.top = '0';
@@ -55,177 +65,172 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
             menuDiv.style.borderWidth = '2px 0 0';
             menuDiv.style.top = '0';
         };
-
+        
         
         toolbarIframe.addEventListener('load', function() {
             toolbarIframe.contentWindow.document.body.appendChild(menuDiv);
             toolbarIframe.contentWindow.document.body.appendChild(toolbarDiv);
             toolbarIframe.contentWindow.document.body.style = 'margin: 0; height: 100%';
         });
-
-
-        // Creating the buttons. All of them will have a simple background change as pressed feedback and then the action will be executed. Default delay 200ms.
-        const homeButton = document.createElement('button');
-        const homeButtonImg = document.createElement('img');
-        homeButton.appendChild(homeButtonImg);
-        homeButton.style = defaultButtonStyle;
-        homeButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/home.svg');
-        homeButtonImg.style = defaultImgStyle;
-        homeButton.addEventListener('click', function() {
-            homeButton.style.background = '#6eb9f7cc';
-            browser.runtime.sendMessage({ action: 'updateTab', url: homepageURL });
-            setTimeout(function() {
-                homeButton.style.background = 'transparent';
-            }, 100);
-        });
         
         
-        const moveButton = document.createElement('button');
-        const moveButtonImg = document.createElement('img');
-        moveButton.appendChild(moveButtonImg);
-        moveButton.style = defaultButtonStyle;
-        if (defaultPosition === 'bottom') {
-            moveButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/up.svg');
-        } else {
-            moveButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/down.svg');
+        // Map button IDs to their corresponding button elements and their behaviors
+        const buttonElements = {
+            homeButton: {
+                element: document.createElement('button'),
+                behavior: function (button) {
+                    this.style.background = '#6eb9f7cc';
+                    browser.runtime.sendMessage({ action: 'updateTab', url: homepageURL });
+                    setTimeout(() => {
+                        this.style.background = 'transparent';
+                    }, 100);
+                },
+            },
+            duplicateTabButton: {
+                element: document.createElement('a'),
+                behavior: function (e) {
+                    e.preventDefault();
+                    this.style.background = '#6eb9f7cc';
+                    browser.runtime.sendMessage({ action: 'duplicateTab', url: currentUrl });
+                    setTimeout(() => {
+                        this.style.background = 'transparent';
+                    }, 100);
+                },
+            },
+            // menuButton: {
+            //     element: document.createElement('button'),
+            //     behavior: function () {
+            //         this.style.background = '#6eb9f7cc';
+            //         const imgElement = this.querySelector('img');
+            //         if (menuDivHidden) {
+            //             imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/x.svg');
+            //             menuDiv.style.display = 'flex';
+            //             menuDivHidden = false;
+            //             toolbarIframe.style.height = toolbarHeight * 2 + 'px';
+            //         } else {
+            //             imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/menuButton.svg');
+            //             menuDiv.style.display = 'none';
+            //             menuDivHidden = true;
+            //             toolbarIframe.style.height = toolbarHeight + 'px';
+            //         }
+            //         setTimeout(() => {
+            //             this.style.background = 'transparent';
+            //         }, 100);
+            //     },
+            // },
+            closeTabButton: {
+                element: document.createElement('button'),
+                behavior: function () {
+                    this.style.background = '#6eb9f7cc';
+                    browser.runtime.sendMessage({ action: 'closeTab', url: homepageURL });
+                    setTimeout(() => {
+                        this.style.background = 'transparent';
+                    }, 100);
+                },
+            },
+            newTabButton: {
+                element: document.createElement('button'),
+                behavior: function () {
+                    this.style.background = '#6eb9f7cc';
+                    browser.runtime.sendMessage({ action: 'createTab', url: newTabURL });
+                    setTimeout(() => {
+                        this.style.background = 'transparent';
+                    }, 100);
+                },
+            },
+            hideButton: {
+                element: document.createElement('button'),
+                behavior: function () {
+                    this.style.background = '#6eb9f7cc';
+                    setTimeout(() => {
+                        this.style.background = 'transparent';
+                        toolbarIframe.style.display = 'none';
+                        iframeHidden = true;
+                    }, 100);        
+                },
+            },
+            moveToolbarButton: {
+                element: document.createElement('button'),
+                behavior: function () {
+                    this.style.background = '#6eb9f7cc';            
+                    setTimeout(() => {
+                        const imgElement = this.querySelector('img');
+                        if (toolbarIframe.style.bottom === '0px') {
+                            toolbarIframe.style.bottom = 'unset';
+                            toolbarIframe.style.top = '0px';
+                            toolbarDiv.style.bottom = 'unset';
+                            toolbarDiv.style.top = '0';
+                            menuDiv.style.top = 'unset';
+                            menuDiv.style.bottom = '0';
+                            toolbarDiv.style.borderWidth = '0 0 2px';
+                            menuDiv.style.borderWidth = '0 0 2px';
+                            imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/down.svg');
+                        } else {
+                            toolbarIframe.style.top = 'unset';
+                            toolbarIframe.style.bottom = '0px';
+                            toolbarDiv.style.bottom = '0';
+                            toolbarDiv.style.top = 'unset';
+                            menuDiv.style.top = '0';
+                            menuDiv.style.bottom = 'unset';
+                            toolbarDiv.style.borderWidth = '2px 0 0';
+                            menuDiv.style.borderWidth = '2px 0 0';
+                            imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/up.svg');
+                        };
+                        //menuButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/menu.svg');
+                        //menuDiv.style.display = 'none';
+                        //menuDivHidden = true;
+                        //toolbarIframe.style.height = toolbarHeight + 'px';
+                        this.style.background = 'transparent';
+                    }, 100);        
+                },
+            },
+            // Add more buttons if needed
         };
-        moveButtonImg.style = defaultImgStyle;
-        moveButton.addEventListener('click', function() {
-            moveButton.style.background = '#6eb9f7cc';            
-            setTimeout(function() {
-                if (toolbarIframe.style.bottom === '0px') {
-                    toolbarIframe.style.bottom = 'unset';
-                    toolbarIframe.style.top = '0px';
-                    toolbarDiv.style.bottom = 'unset';
-                    toolbarDiv.style.top = '0';
-                    menuDiv.style.top = 'unset';
-                    menuDiv.style.bottom = '0';
-                    toolbarDiv.style.borderWidth = '0 0 2px';
-                    menuDiv.style.borderWidth = '0 0 2px';
-                    moveButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/down.svg');
+        
+        // Customize the buttons
+        Object.keys(buttonElements).forEach(buttonId => {
+            const button = buttonElements[buttonId].element;
+            button.style = defaultButtonStyle;
+            const img = document.createElement('img');
+            
+            switch (buttonId) {
+                case 'duplicateTabButton':
+                img.src = browser.runtime.getURL('icons/' + iconTheme + '/' + buttonId + '.svg');
+                button.style.display = 'flex';
+                button.style.justifyContent = 'center';
+                button.style.alignItems = 'center';
+                button.href = currentUrl;
+                break;
+                // Add other cases for different buttons if needed
+                case 'moveToolbarButton':
+                if (defaultPosition === 'bottom') {
+                    img.src = browser.runtime.getURL('icons/' + iconTheme + '/up.svg');
                 } else {
-                    toolbarIframe.style.top = 'unset';
-                    toolbarIframe.style.bottom = '0px';
-                    toolbarDiv.style.bottom = '0';
-                    toolbarDiv.style.top = 'unset';
-                    menuDiv.style.top = '0';
-                    menuDiv.style.bottom = 'unset';
-                    toolbarDiv.style.borderWidth = '2px 0 0';
-                    menuDiv.style.borderWidth = '2px 0 0';
-                    moveButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/up.svg');
-                };
-                menuButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/menu.svg');
-                menuDiv.style.display = 'none';
-                menuDivHidden = true;
-                toolbarIframe.style.height = toolbarHeight + 'px';
-                moveButton.style.background = 'transparent';
-            }, 100);
-        });
-        
-        
-        const hideToolbarButton = document.createElement('button');
-        const hideToolbarButtonImg = document.createElement('img');
-        hideToolbarButton.appendChild(hideToolbarButtonImg);
-        hideToolbarButton.style = defaultButtonStyle;
-        hideToolbarButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/eyeOff.svg');
-        hideToolbarButtonImg.style = defaultImgStyle;
-        hideToolbarButton.addEventListener('click', function() {
-            hideToolbarButton.style.background = '#6eb9f7cc';
-            setTimeout(function() {
-                hideToolbarButton.style.background = 'transparent';
-                toolbarIframe.style.display = 'none';
-                iframeHidden = true;
-            }, 100);
-        });
-        
-        
-        const closeTabButton = document.createElement('button');
-        const closeTabButtonImg = document.createElement('img');
-        closeTabButton.appendChild(closeTabButtonImg);
-        closeTabButton.style = defaultButtonStyle;
-        closeTabButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/close.svg');
-        closeTabButtonImg.style = defaultImgStyle;
-        closeTabButton.addEventListener('click', function() {
-            closeTabButton.style.background = '#6eb9f7cc';
-            browser.runtime.sendMessage({ action: 'closeTab', url: homepageURL });
-            setTimeout(function() {
-                closeTabButton.style.background = 'transparent';
-            }, 100);
-        });
-        
-        
-        const newTabButton = document.createElement('button');
-        const newTabButtonImg = document.createElement('img');
-        newTabButton.appendChild(newTabButtonImg);
-        newTabButton.style = defaultButtonStyle;
-        newTabButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/plus.svg');
-        newTabButtonImg.style = defaultImgStyle;
-        newTabButton.addEventListener('click', function() {
-            newTabButton.style.background = '#6eb9f7cc';
-            browser.runtime.sendMessage({ action: 'createTab', url: newTabURL });
-            setTimeout(function() {
-                newTabButton.style.background = 'transparent';
-            }, 100);
-        });
-        
-        
-        const menuButton = document.createElement('button');
-        const menuButtonImg = document.createElement('img');
-        menuButton.appendChild(menuButtonImg);
-        menuButton.style = defaultButtonStyle;
-        menuButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/menu.svg');
-        menuButtonImg.style = defaultImgStyle;
-        menuButton.addEventListener('click', function() {
-            menuButton.style.background = '#6eb9f7cc';
-            if (menuDivHidden) {
-                menuButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/x.svg');
-                menuDiv.style.display = 'flex';
-                menuDivHidden = false;
-                toolbarIframe.style.height = toolbarHeight * 2 + 'px';
-            } else {
-                menuButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/menu.svg');
-                menuDiv.style.display = 'none';
-                menuDivHidden = true;
-                toolbarIframe.style.height = toolbarHeight + 'px';
+                    img.src = browser.runtime.getURL('icons/' + iconTheme + '/down.svg');                        
+                }
+                break;
+                default:
+                // Default styling for other buttons
+                img.src = browser.runtime.getURL('icons/' + iconTheme + '/' + buttonId + '.svg');
+                break;
             }
-            setTimeout(function() {
-                menuButton.style.background = 'transparent';
-            }, 100);
+            
+            img.style = defaultImgStyle;
+            button.appendChild(img);
+            button.addEventListener('click', buttonElements[buttonId].behavior);
         });
-
-
-        const duplicateTabButton = document.createElement('a');
-        const duplicateTabButtonImg = document.createElement('img');
-        duplicateTabButton.href = currentUrl;
-        duplicateTabButton.appendChild(duplicateTabButtonImg);
-        duplicateTabButton.style = defaultButtonStyle;
-        duplicateTabButton.style.display = 'flex';
-        duplicateTabButton.style.justifyContent = 'center';
-        duplicateTabButton.style.alignItems = 'center';
-        duplicateTabButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/external-link.svg');
-        duplicateTabButtonImg.style = defaultImgStyle;
-        duplicateTabButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            duplicateTabButton.style.background = '#6eb9f7cc';
-            browser.runtime.sendMessage({ action: 'duplicateTab', url: currentUrl });
-            setTimeout(function() {
-                duplicateTabButton.style.background = 'transparent';
-            }, 100);
+        
+        buttonOrder.forEach(buttonId => {
+            if (buttonElements[buttonId]) {
+                const button = buttonElements[buttonId].element;
+                // Check if the buttonId is in checkboxStates and is checked
+                if (checkboxStates[buttonId]) {
+                    toolbarDiv.appendChild(button);
+                }
+            }
         });
-
-
-        // Appending the buttons.
-        toolbarDiv.appendChild(homeButton);
-        toolbarDiv.appendChild(duplicateTabButton);
-        toolbarDiv.appendChild(menuButton);
-        toolbarDiv.appendChild(closeTabButton);
-        toolbarDiv.appendChild(newTabButton);
         
         
-        menuDiv.appendChild(hideToolbarButton);
-        menuDiv.appendChild(moveButton);
-
-
         // Hide the iframe when scrolling. By default ignores changes in the scrolling smaller than 5.
         let isThrottled;
         if (hideMethod === 'scroll') {
