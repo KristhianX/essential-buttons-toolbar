@@ -1,4 +1,4 @@
-# A real home button.
+# Essential Buttons Toolbar.
 *An extension that adds homepage, new tab, and close tab buttons to Android Firefox.*
 
 **Note:**

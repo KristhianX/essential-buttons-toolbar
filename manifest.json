@@ -1,13 +1,13 @@
 {
   "manifest_version": 2,
-  "name": "A real home button",
-  "version": "1.3",
+  "name": "Essential Buttons Toolbar",
+  "version": "1.3.1",
   "permissions": [
     "activeTab", 
     "tabs", 
     "storage"
   ],
-  "description": "Adds homepage, new tab and close tab buttons to android Firefox.",
+  "description": "Adds a toolbar with essential buttons: Homepage, Duplicate Tab, New tab, Close tab and more.",
   "icons": {
     "48": "icons/home.svg"
   },
