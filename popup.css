@@ -1,6 +1,6 @@
 /* popup.css */
 body {
-    background-color: #1e1e1e;
+    background: #1e1e1e;
     color: #fff;
     font-family: Arial, sans-serif;
     padding: 10px;
@@ -41,7 +41,7 @@ label {
     position: relative;
     width: 300px;
     margin-top: 10px;
-    background-color: #333;
+    background: #333;
     border: 1px solid #444;
     border-radius: 4px;
     padding: 8px;
@@ -62,7 +62,7 @@ input[type="text"] {
     padding: 8px;
     font-size: 14px;
     margin-top: 4px;
-    background-color: #333;
+    background: #333;
     border: 1px solid #444;
     border-radius: 4px;
     color: #fff;
@@ -74,7 +74,7 @@ input[type="range"] {
     min-width: 266px;
     margin: 10px 0;
     height: 10px; 
-    background-color: #333;
+    background: #333;
     border: 1px solid #444;
     border-radius: 4px;
     outline: none;
@@ -119,15 +119,11 @@ button {
     display: block;
     margin: 10px auto 40px;
     padding: 8px 16px;
-    background-color: #007acc;
+    background: #007acc;
     color: #fff;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-}
-
-button:hover {
-    background-color: #005b9f;
 }
 
 ul {
@@ -157,15 +153,11 @@ li span {
 
 li button {
     display: block;
-    background-color: #cc0000;
+    background: #cc0000;
     color: #fff;
     border: none;
     cursor: pointer;
     margin: 0;
-}
-
-li button:hover {
-    background-color: #aa0000;
 }
 
 .move-up-button, .move-down-button {
@@ -198,6 +190,36 @@ li label {
 }
 
 #statusMessage {
-    margin: 10px 0;
+    margin: 0;
+    position: fixed;
+    bottom: 0;
+    background: #1e1e1e;
+    padding: 4px;
+    border-width: 1px 1px 0 0;
+    border-style: solid;
+    border-color: #444;
+    border-radius: 0 8px 0 0;
     font-size: 14px;
+}
+
+#settingsTabs {
+    display: flex;
+    justify-content: center;
+    border: 1px solid #444;
+    border-radius: 4px;
+}
+
+#settingsTabs div {
+    text-align: center;
+    width: -moz-available;
+    border: 1px solid #444;
+    padding: 8px 0;
+}
+
+#generalTab {
+    background: #444;
+}
+
+#buttonsSettings, #excludeSettings {
+    display: none;
 }

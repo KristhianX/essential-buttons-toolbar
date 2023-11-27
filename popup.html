@@ -7,70 +7,78 @@
 </head>
 <body>
   <h1>Settings</h1>
-  <label for="homepageURL">Homepage URL:<span class="question-mark" id="homepageURLQuestionMark">?</span></label>
-  <div class="message-box" id="homepageURLInfo">
-    <span class="close-button" id="homepageURLCloseButton">X</span>
-    <p>Fully-qualified URLs must include a scheme (for example, 'https://www.google.com' not 'www.google.com').
-      <br><br>
-      For security reasons, in Firefox, this may not be a privileged URL. So passing any of the following URLs will fail:
-      <br><br>
-      chrome: URLs<br>
-      javascript: URLs<br>
-      data: URLs<br>
-      file: URLs (i.e., files on the filesystem.)<br>
-      privileged about: URLs (for example, about:config, about:addons, about:debugging). Non-privileged URLs (e.g., about:blank) are allowed.
-    </p>
+  <div id="settingsTabs"></div>
+  <div id="generalSettings">  
+    <label for="homepageURL">Homepage URL:<span class="question-mark" id="homepageURLQuestionMark">?</span></label>
+    <div class="message-box" id="homepageURLInfo">
+      <span class="close-button" id="homepageURLCloseButton">X</span>
+      <p>Fully-qualified URLs must include a scheme (for example, 'https://www.google.com' not 'www.google.com').
+        <br><br>
+        For security reasons, in Firefox, this may not be a privileged URL. So passing any of the following URLs will fail:
+        <br><br>
+        chrome: URLs<br>
+        javascript: URLs<br>
+        data: URLs<br>
+        file: URLs (i.e., files on the filesystem.)<br>
+        privileged about: URLs (for example, about:config, about:addons, about:debugging). Non-privileged URLs (e.g., about:blank) are allowed.
+      </p>
+    </div>
+    <input type="text" id="homepageURL">
+    <br>
+    <label for="newTabURL">New tab URL:</label>
+    <input type="text" id="newTabURL">
+    <br>
+    <label for="toolbarHeight">Toolbar height:</label>
+    <span id="currentValue"></span>
+    <br>
+    <input type="range" id="toolbarHeight" min="10" max="100" step="2">  
+    <br>
+    <label for="defaultPosition">Toolbar position:</label>
+    <select id="defaultPosition">
+      <option value="top">Top</option>
+      <option value="bottom">Bottom</option>
+    </select>
+    <label for="iconTheme">Icon theme:</label>
+    <select id="iconTheme">
+      <option value="featherIcons">Feather</option>
+      <option value="heroIcons">Heroicons</option>
+    </select>
+    <label for="hideMethod">Hide on scroll method:<span class="question-mark" id="hideMethodQuestionMark">?</span></label>
+    <div class="message-box" id="hideMethodInfo">
+      <span class="close-button" id="hideMethodCloseButton">X</span>
+      <p>'Scroll': This was the previously used method. It does not work on some websites.
+        <br><br>
+        'Touchmove': This method uses touch events to hide the toolbar and works on every page, as it is not dependent on scrolling. Note that touches are not detected while the page is scrolling.
+        <br><br>
+        'Disable': Disable the hide toolbar on scroll feature.
+      </p>
+    </div>
+    <select id="hideMethod">
+      <option value="scroll">Scroll</option>
+      <option value="touch">Touchmove</option>
+      <option value="disable">Disable</option>
+    </select>
+    <button id="generalSaveButton">Save</button>
   </div>
-  <input type="text" id="homepageURL">
-  <br>
-  <label for="newTabURL">New tab URL:</label>
-  <input type="text" id="newTabURL">
-  <br>
-  <label for="toolbarHeight">Toolbar height:</label>
-  <span id="currentValue"></span>
-  <br>
-  <input type="range" id="toolbarHeight" min="10" max="100" step="2">  
-  <br>
-  <label for="defaultPosition">Toolbar position:</label>
-  <select id="defaultPosition">
-    <option value="top">Top</option>
-    <option value="bottom">Bottom</option>
-  </select>
-  <label for="iconTheme">Icon theme:</label>
-  <select id="iconTheme">
-    <option value="featherIcons">Feather</option>
-    <option value="heroIcons">Heroicons</option>
-  </select>
-  <label for="hideMethod">Hide on scroll method:<span class="question-mark" id="hideMethodQuestionMark">?</span></label>
-  <div class="message-box" id="hideMethodInfo">
-    <span class="close-button" id="hideMethodCloseButton">X</span>
-    <p>'Scroll': This was the previously used method. It does not work on some websites.
-      <br><br>
-      'Touchmove': This method uses touch events to hide the toolbar and works on every page, as it is not dependent on scrolling. Note that touches are not detected while the page is scrolling.
-      <br><br>
-      'Disable': Disable the hide toolbar on scroll feature.
-    </p>
+  <div id="buttonsSettings">
+    <label>Toolbar buttons:</label>
+    <ul id="button-list"></ul>
+    <button id="buttonsSaveButton">Save</button>
   </div>
-  <select id="hideMethod">
-    <option value="scroll">Scroll</option>
-    <option value="touch">Touchmove</option>
-    <option value="disable">Disable</option>
-  </select>
-  <label>Toolbar buttons:</label>
-  <ul id="button-list"></ul>
   <p id="statusMessage"></p>
-  <button id="saveButton">Save</button>
-  <h2>Exclude settings</h2>
-  <label for="customUrl">URL:<span class="question-mark" id="customUrlQuestionMark">?</span></label>
-  <div class="message-box" id="customUrlInfo">
-    <span class="close-button" id="customUrlCloseButton">X</span>
-    <p>URL to exclude. Wildcards are supported: *.example.com/*</p>
+  <div id="excludeSettings">
+    <h2>Exclude settings</h2>
+    <label for="customUrl">URL:<span class="question-mark" id="customUrlQuestionMark">?</span></label>
+    <div class="message-box" id="customUrlInfo">
+      <span class="close-button" id="customUrlCloseButton">X</span>
+      <p>URL to exclude. Wildcards are supported: *.example.com/*</p>
+    </div>
+    <input type="text" id="customUrl">
+    <br>
+    <button id="addUrlButton">Exclude URL</button>
+    <h2>Excluded URLs:</h2>
+    <ul id="excludedUrls"></ul>
   </div>
-  <input type="text" id="customUrl">
-  <br>
-  <button id="addUrlButton">Exclude URL</button>
-  <h2>Excluded URLs:</h2>
-  <ul id="excludedUrls"></ul>
   <script src="popup.js"></script>
 </body>
 </html>
