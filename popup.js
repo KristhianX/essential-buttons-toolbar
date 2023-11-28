@@ -54,6 +54,7 @@ customUrlCloseButton.addEventListener('click', () => {
 
 
 function showTab(tabId) {
+    statusMessage.style.display = 'none';
     // Hide all content sections
     document.getElementById('generalSettings').style.display = tabId === 'generalTab' ? 'block' : 'none';
     document.getElementById('buttonsSettings').style.display = tabId === 'buttonsTab' ? 'block' : 'none';
@@ -258,7 +259,7 @@ generalSaveButton.addEventListener('click', () => {
         'iconTheme': iconTheme,
         'hideMethod': hideMethod,
     }).then(() => {
-        statusMessage.textContent = 'Settings saved!';
+        statusMessage.style.display = 'block';
         statusMessage.style.color = '#007acc';
         setTimeout(function () {
             statusMessage.style.color = '#fff';
@@ -274,7 +275,7 @@ buttonsSaveButton.addEventListener('click', () => {
         'buttonOrder': buttonOrder,
         'checkboxStates': getCheckboxStates(),
     }).then(() => {
-        statusMessage.textContent = 'Settings saved!';
+        statusMessage.style.display = 'block';
         statusMessage.style.color = '#007acc';
         setTimeout(function () {
             statusMessage.style.color = '#fff';

@@ -1,5 +1,5 @@
 # Essential Buttons Toolbar.
-*An extension that adds homepage, new tab, and close tab buttons to Android Firefox.*
+*Adds a toolbar to Android Firefox with essential buttons: Homepage, Duplicate Tab, New tab, Close tab and more.*
 
 **Note:**
 This initially began as a userscript, which I later developed into an extension to access additional features.  
@@ -10,33 +10,45 @@ https://github.com/KristhianX/a-real-home-button
 <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231025-173119.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231025-173231.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-203438.png?raw=true" width="200px"/>
 
 ## Why?  
-The purpose of this add-on is to assist users like me who find it challenging to adapt to the behavior of the home button in Android Firefox.  
-Unfortunately, some users become discouraged by issues like this and switch back to other browsers.  
+This add-on aims to fill basic missing functionality in Android Firefox. The main reason is to provide a normal home button.  
 The home button should not behave as the new tab button. This behavior is not intuitive and differs from the standard behavior found in most other browsers, including the desktop version of Firefox, which follows the universal approach to the home button.  
 You can check other user opinions here:  
-https://connect.mozilla.org/t5/ideas/on-firefox-mobile-make-home-page-links-open-in-current-tab/idi-p/15672
-
-**Ok, but what about the other buttons?**  
-Though opening a new tab and closing tabs is not difficult, why not make them even more accessible?
+https://connect.mozilla.org/t5/ideas/on-firefox-mobile-make-home-page-links-open-in-current-tab/idi-p/15672  
+Other buttons are being added to offer easier access or missing functionality.  
 
 ## Features.  
-**Buttons in the toolbar:**  
-- **Home button:** Opens the default homepage URL. Can be changed in options.  
-- **Hide button:** Hides the toolbar. Refresh the page to display it again.  
-- **Move button:** Moves the toolbar to the top of the page or to the bottom if it is at the top.  
-- **Close button:** Closes the current tab. If the current tab is the only open tab, it opens the homepage URL instead.  
-- **New tab button:** Opens the default new tab page URL. Can be changed in options.
+**The toolbar buttons are:**  
+- **Homepage:** Opens the default homepage URL. Can be changed in options.  
+- **Duplicate Tab:** Opens current URL in new tab. Long press it to get default link options.  
+- **Hide toolbar:** Hides the toolbar. Refresh the page to display it again.  
+- **Move toolbar:** Moves the toolbar to the top of the page or to the bottom if it is at the top.  
+- **Close tab:** Closes the current tab. If the current tab is the only open tab, it opens the homepage URL instead.  
+- **New tab:** Opens the default new tab page URL. Can be changed in options.  
 
-**Other features:**  
-- **Hide on scroll method.** Option to change the used method or to disable it.  
-- **Toolbar height:** The number of pixels. The default value is set to 42.  
-- **Exclude URLs:** Specify which web addresses to exclude.
+**Other options include:**  
+- **Toolbar height:** The number of pixels. The default value is set to 42px.  
+- **Toolbar default position:** Top or bottom.  
+- **Icon theme:** Feather Icons and Heroicons available.  
+- **Hide on scroll method:** Option to change the used method or to disable it.  
+- **Toolbar buttons:** Enable/disable buttons and change the order.  
+- **Exclude URLs:** Specify which web addresses to exclude.  
+
+This extension does not access, log, or share your data. It is also ad-free and will always remain so.  
+
+The icons used in this extension are from the elegant Feather Icons collection:  
+https://github.com/feathericons/feather  
+The beautiful Heroicons theme is also available:  
+https://github.com/tailwindlabs/heroicons  
+
+Permissions:
+**Access browser tabs:** Allows the extension to check the number of open tabs, allowing the close button to open the home page if only one tab is open.  
+**Access your data for all websites:** Allows the extension to insert the toolbar on permitted websites.
 
 ## Installation instructions for Firefox Beta, Fennec F-Droid and Mull.
 *You will need a version of firefox that support Custom Add-on collections. Such as Firefox Beta, Fennec F-Droid or Mull.*
 
 The add-on is available at:  
-https://addons.mozilla.org/en-US/android/addon/a-real-home-button/
+https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/
 
 You'll need to add a Custom Add-on collection. You can either add the add-on to your own collection or use my collection if you don't have a Mozilla account or don't want to create a collection.
 
@@ -51,16 +63,16 @@ Collection owner (User ID): `12488393`
 Collection name: `Kris-selection`
 
 The browser will restart to apply the changes.
-Now, you can go to **Menu** -> **Settings** -> **Add-ons.** Scroll the list until you find **A real home button** add-on.
+Now, you can go to **Menu** -> **Settings** -> **Add-ons.** Scroll the list until you find **Essential Buttons Toolbar** add-on.
 
 ## Installation instructions for Firefox Nightly.
 It's very easy. Just go to the add-on link and tap **Add to Firefox.**  
-https://addons.mozilla.org/en-US/android/addon/a-real-home-button/
+https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/
 
 ## Updates.
 If you're not using the Nightly version, you may have to remove and reinstall the add-on to get the latest version.  
 You can see the changelog here.  
-https://addons.mozilla.org/en-US/android/addon/a-real-home-button/versions/
+https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/versions/
 
 ## Tips and tricks.
 There is no way to set the Firefox homepage to the one opened by this add-on.  

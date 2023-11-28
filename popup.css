@@ -190,6 +190,7 @@ li label {
 }
 
 #statusMessage {
+    display: none;
     margin: 0;
     position: fixed;
     bottom: 0;
