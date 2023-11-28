@@ -7,7 +7,7 @@ You can still find the original user script here, but I'm unlikely to make furth
 https://github.com/KristhianX/a-real-home-button
 
 ## Some screenshots.
-<img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231025-173119.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231025-173231.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231027-203438.png?raw=true" width="200px"/>
+<img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231125-221820.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231125-221632.png?raw=true" width="200px"/>
 
 ## Why?  
 This add-on aims to fill basic missing functionality in Android Firefox. The main reason is to provide a normal home button.  
