@@ -7,7 +7,7 @@ You can still find the original user script here, but I'm unlikely to make furth
 https://github.com/KristhianX/a-real-home-button
 
 ## Some screenshots.
-<img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231025-173119.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231025-173231.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-203438.png?raw=true" width="200px"/>
+<img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231025-173119.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231025-173231.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231027-203438.png?raw=true" width="200px"/>
 
 ## Why?  
 This add-on aims to fill basic missing functionality in Android Firefox. The main reason is to provide a normal home button.  
@@ -40,7 +40,7 @@ https://github.com/feathericons/feather
 The beautiful Heroicons theme is also available:  
 https://github.com/tailwindlabs/heroicons  
 
-Permissions:
+**Permissions:**  
 **Access browser tabs:** Allows the extension to check the number of open tabs, allowing the close button to open the home page if only one tab is open.  
 **Access your data for all websites:** Allows the extension to insert the toolbar on permitted websites.
 
@@ -52,7 +52,7 @@ https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/
 
 You'll need to add a Custom Add-on collection. You can either add the add-on to your own collection or use my collection if you don't have a Mozilla account or don't want to create a collection.
 
-<img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-202606.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-202706.png?raw=true" width="200px"/>
+<img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231027-202606.png?raw=true" width="200px"/>
 
 Follow these steps: Open the **Menu** -> Tap on **Settings** ->
 If the Custom Add-on collection is not available, tap on **About Firefox** -> Tap the Firefox logo several times to activate debug options.
@@ -78,11 +78,11 @@ https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/version
 There is no way to set the Firefox homepage to the one opened by this add-on.  
 While some users use the Firefox home button as a new tab button, I suggest that you ignore that button and disable all the settings by going to **Menu** -> **Settings** -> **Homepage**, and under Opening screen, select **Last tab.**
 
-<img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-202422.png?raw=true" width="200px"/>
+<img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231027-202422.png?raw=true" width="200px"/>
 
 It is also very useful to change the settings in **Delete browsing data on quit.** You can uncheck all the options except for **Cached images and files.** Enabling this option will display a **Quit** option at the bottom of the Firefox menu. Closing the browser in this way is ideal, as the next time you open the browser, it will load the pages you had opened.
 
-<img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-202443.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-212100.png?raw=true" width="200px"/>
+<img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231027-202443.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231027-212100.png?raw=true" width="200px"/>
 
 ## Default homepage.
 The default homepage URL used in this add-on is the beautiful and awesome Tabliss.  
@@ -100,7 +100,7 @@ Here is a list of the pros and cons of this web homepage:
 - Option for persistent storage, making it available offline.
 - Responsive design that adapts very well to phone screens.
 
-<img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231021-210418.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231021-210327.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231021-210343.png?raw=true" width="200px"/>  
+<img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231021-210418.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231021-210327.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231021-210343.png?raw=true" width="200px"/>  
 
 **Cons:**  
 - Last updated two years ago.
@@ -113,6 +113,6 @@ https://booky.io/
 ## Known issues:
 Some websites are not well optimized for mobile. Some will have a little zoom that will make the toolbar be displayed outside of the viewport or display only a part of it. You can find the toolbar by zooming out, as shown in the following screenshots:
 
-<img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-202946.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/extension-a-real-home-button/blob/main/images/Screenshot_20231027-203000.png?raw=true" width="200px"/>
+<img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231027-202946.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231027-203000.png?raw=true" width="200px"/>
 
 
