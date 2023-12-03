@@ -1,27 +1,22 @@
+// Set a flag to check if onActivated event is triggered.
+let updatedEventTriggered = false;      
+function onActivatedListener() {
+    updatedEventTriggered = true;
+}
+browser.tabs.onActivated.addListener(onActivatedListener);
+
+
 // Listener to close or create tabs.
 browser.runtime.onMessage.addListener((message, sender) => {
     if (message.action === 'closeTab') {
-        // Promisify the browser.tabs.query function
-        const queryTabs = (url) => new Promise((resolve) => {
-            browser.tabs.query({ url }, (tabs) => {
-                resolve(tabs);
-            });
-        });
-        // Use Promise.all to query both sets of tabs in parallel
-        Promise.all([queryTabs('*://*/*'), queryTabs('moz-extension://*/*')])
-        .then(([webTabs, extensionTabs]) => {
-            const tabsNumber = webTabs.length + extensionTabs.length;   
-            if (tabsNumber > 1) {
-                // Close the current tab.
-                browser.tabs.remove(sender.tab.id);
-            } else {
-                // Open a new tab with the specified URL.
-                browser.tabs.update(sender.tab.id, { url: message.url });
-            }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+        browser.tabs.remove(sender.tab.id);
+        setTimeout(function() {
+            if (!updatedEventTriggered) {
+                // Run if onActivated event was not triggered.
+                browser.tabs.create({ url: message.url });
+            };
+        }, 500);
+        updatedEventTriggered = false;
     } else if (message.action === 'updateTab') {
         browser.tabs.update(sender.tab.id, { url: message.url });
     } else if (message.action === 'createTab') {
