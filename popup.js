@@ -102,11 +102,11 @@ toolbarHeightRangeInput.addEventListener('input', function() {
 const buttonsData = [
     { id: 'homeButton', label: ' Home', defaultChecked: true },
     { id: 'duplicateTabButton', label: ' Duplicate tab', defaultChecked: true },
-    //{ id: 'menuButton', label: ' Menu', defaultChecked: true },
+    { id: 'menuButton', label: ' Menu', defaultChecked: true },
     { id: 'closeTabButton', label: ' Close tab', defaultChecked: true },
     { id: 'newTabButton', label: ' New tab', defaultChecked: true },
     { id: 'hideButton', label: ' Hide toolbar', defaultChecked: true },
-    { id: 'moveToolbarButton', label: ' Move toolbar', defaultChecked: true },
+    { id: 'moveToolbarButton', label: ' Move toolbar', defaultChecked: false },
 ];
 
 function moveUp(item) {
@@ -148,7 +148,7 @@ function createButtonElement(buttonData, isChecked) {
     
     const moveUpButton = document.createElement('button');
     const moveUpButtonImg = document.createElement('img');
-    moveUpButtonImg.src = browser.runtime.getURL('icons/featherIcons/up.svg');
+    moveUpButtonImg.src = browser.runtime.getURL('icons/featherIcons/chevronUp.svg');
     moveUpButton.appendChild(moveUpButtonImg);
     moveUpButton.classList.add('move-up-button');
     moveUpButton.onclick = function () {
@@ -158,7 +158,7 @@ function createButtonElement(buttonData, isChecked) {
     
     const moveDownButton = document.createElement('button');
     const moveDownButtonImg = document.createElement('img');
-    moveDownButtonImg.src = browser.runtime.getURL('icons/featherIcons/down.svg');
+    moveDownButtonImg.src = browser.runtime.getURL('icons/featherIcons/chevronDown.svg');
     moveDownButton.appendChild(moveDownButtonImg);
     moveDownButton.classList.add('move-down-button');
     moveDownButton.onclick = function () {
@@ -268,6 +268,17 @@ generalSaveButton.addEventListener('click', () => {
 });
 
 
+// Function to get the states of the checkboxes
+function getCheckboxStates() {
+    const checkboxes = document.querySelectorAll('label input[type="checkbox"]');
+    const checkboxStates = {};
+    checkboxes.forEach(checkbox => {
+        checkboxStates[checkbox.id] = checkbox.checked;
+    });
+    return checkboxStates;
+}
+
+
 buttonsSaveButton.addEventListener('click', () => {
     const checkboxes = document.querySelectorAll('label input[type="checkbox"]');
     const buttonOrder = Array.from(checkboxes).map(checkbox => checkbox.id);
@@ -282,14 +293,3 @@ buttonsSaveButton.addEventListener('click', () => {
         }, 1000);
     });
 });
-
-
-// Function to get the states of the checkboxes
-function getCheckboxStates() {
-    const checkboxes = document.querySelectorAll('label input[type="checkbox"]');
-    const checkboxStates = {};
-    checkboxes.forEach(checkbox => {
-        checkboxStates[checkbox.id] = checkbox.checked;
-    });
-    return checkboxStates;
-}

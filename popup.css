@@ -3,29 +3,23 @@ body {
     background: #1e1e1e;
     color: #fff;
     font-family: Arial, sans-serif;
+    font-size: 14px;
     padding: 10px;
     margin: 0 auto;
     width: 340px;
 }
 
-h1 {
-    font-size: 24px;
-}
-
-h2 {
-    font-size: 18px;
-}
-
 label {
     display: block;
-    margin-top: 20px;
-    font-size: 16px;
+    margin-top: 10px;
+    font-size: 14px;
     font-weight: bold;
 }
 
 #currentValue {
     font-size: 14px;
     margin-top: 4px;
+    display: inline-block;
 }
 
 .question-mark {
@@ -59,7 +53,7 @@ label {
 input[type="text"] {
     width: 300px;
     min-width: 250px;
-    padding: 8px;
+    padding: 4px 8px;
     font-size: 14px;
     margin-top: 4px;
     background: #333;
@@ -70,19 +64,20 @@ input[type="text"] {
 
 input[type="range"] {
     appearance: none;
-    width: 316px;
-    min-width: 266px;
-    margin: 10px 0;
-    height: 10px; 
+    width: 280px;
+    min-width: 250px;
+    margin: 9px 22px 0 0;
+    height: 4px; 
     background: #333;
     border: 1px solid #444;
     border-radius: 4px;
     outline: none;
+    float: right;
 }
 
 input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     background: #007acc;
     border: 2px solid #ffffff;
     border-radius: 50%;
@@ -95,7 +90,7 @@ input[type="range"]:focus::-moz-range-thumb {
 
 select {
     width: 120px;
-    padding: 8px;
+    padding: 4px 8px;
     font-size: 14px;
     margin-top: 4px;
     background: #333;
@@ -118,7 +113,7 @@ select:focus {
 button {
     display: block;
     margin: 10px auto 40px;
-    padding: 8px 16px;
+    padding: 6px 16px;
     background: #007acc;
     color: #fff;
     border: none;
@@ -134,11 +129,10 @@ ul {
 }
 
 li {
-    font-size: 14px;
     width: 300px;
     border: 1px solid #444;
     border-radius: 4px;
-    margin: 0 0 10px;
+    margin: 0 0 6px;
     padding: 0 8px;
     overflow: auto;
     white-space: nowrap;
@@ -162,31 +156,31 @@ li button {
 
 .move-up-button, .move-down-button {
     display: inline-flex;
+    padding: 4px;
     align-items: center;
     justify-content: center;
     background: none;
     position: absolute;
-    height: 40px;
-    width: 40px;
 }
 
 .move-down-button {
-    right: 32px;
+    left: 285px;
 }
 
 .move-up-button {
-    right: 78px;
+    left: 240px;
 }
 
 img {
-    height: 90%;
+    height: 100%;
     aspect-ratio: 1;
 }
 
 li label {
     display: inline-block;
     margin : 0;
-    padding : 10px;
+    padding : 6px;
+    font-weight: normal;
 }
 
 #statusMessage {

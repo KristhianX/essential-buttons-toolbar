@@ -9,13 +9,13 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
     const checkboxStates = result.checkboxStates || {
         'homeButton': true,
         'duplicateTabButton': true,
-        //'menuButton': true,
+        'menuButton': true,
         'closeTabButton': true,
         'newTabButton': true,
         'hideButton': true,
-        'moveToolbarButton': true,
+        'moveToolbarButton': false,
     };
-    const buttonOrder = result.buttonOrder || ['homeButton', 'duplicateTabButton', 'hideButton', 'moveToolbarButton', 'closeTabButton', 'newTabButton'];
+    const buttonOrder = result.buttonOrder || ['homeButton', 'duplicateTabButton', 'hideButton', 'closeTabButton', 'newTabButton', 'menuButton', 'moveToolbarButton'];
     const excludedUrls = result.excludedUrls || [];
     const currentUrl = window.location.href;
     let iframeHidden = false;
@@ -46,7 +46,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
         
         // Creating the toolbar.
         const toolbarDiv = document.createElement('div');
-        toolbarDiv.style = 'height: ' + toolbarHeight + 'px; padding: 0 4%; box-sizing: border-box; display: flex; justify-content: space-between; width: 100%; position: absolute; background-color: #2b2a33cc; border-style: solid; border-color: #38373f';
+        toolbarDiv.style = 'height: ' + toolbarHeight + 'px; padding: 0 4%; box-sizing: border-box; display: flex; justify-content: space-between; width: 100%; position: absolute; background-color: rgba(43, 42, 51, 0.8); border-style: solid; border-color: #38373f';
         
         
         // Creating the menu.
@@ -97,27 +97,27 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                     }, 100);
                 },
             },
-            // menuButton: {
-            //     element: document.createElement('button'),
-            //     behavior: function () {
-            //         this.style.background = '#6eb9f7cc';
-            //         const imgElement = this.querySelector('img');
-            //         if (menuDivHidden) {
-            //             imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/x.svg');
-            //             menuDiv.style.display = 'flex';
-            //             menuDivHidden = false;
-            //             toolbarIframe.style.height = toolbarHeight * 2 + 'px';
-            //         } else {
-            //             imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/menuButton.svg');
-            //             menuDiv.style.display = 'none';
-            //             menuDivHidden = true;
-            //             toolbarIframe.style.height = toolbarHeight + 'px';
-            //         }
-            //         setTimeout(() => {
-            //             this.style.background = 'transparent';
-            //         }, 100);
-            //     },
-            // },
+            menuButton: {
+                element: document.createElement('button'),
+                behavior: function () {
+                    this.style.background = '#6eb9f7cc';
+                    //const imgElement = this.querySelector('img');
+                    if (menuDivHidden) {
+                        //imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/x.svg');
+                        menuDiv.style.display = 'flex';
+                        menuDivHidden = false;
+                        toolbarIframe.style.height = toolbarHeight * 2 + 'px';
+                    } else {
+                        //imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/menuButton.svg');
+                        menuDiv.style.display = 'none';
+                        menuDivHidden = true;
+                        toolbarIframe.style.height = toolbarHeight + 'px';
+                    }
+                    setTimeout(() => {
+                        this.style.background = 'transparent';
+                    }, 100);
+                },
+            },
             closeTabButton: {
                 element: document.createElement('button'),
                 behavior: function () {
@@ -164,7 +164,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                             menuDiv.style.bottom = '0';
                             toolbarDiv.style.borderWidth = '0 0 2px';
                             menuDiv.style.borderWidth = '0 0 2px';
-                            imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/down.svg');
+                            imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronDown.svg');
                         } else {
                             toolbarIframe.style.top = 'unset';
                             toolbarIframe.style.bottom = '0px';
@@ -174,7 +174,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                             menuDiv.style.bottom = 'unset';
                             toolbarDiv.style.borderWidth = '2px 0 0';
                             menuDiv.style.borderWidth = '2px 0 0';
-                            imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/up.svg');
+                            imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronUp.svg');
                         };
                         //menuButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/menu.svg');
                         //menuDiv.style.display = 'none';
@@ -192,7 +192,6 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
             const button = buttonElements[buttonId].element;
             button.style = defaultButtonStyle;
             const img = document.createElement('img');
-            
             switch (buttonId) {
                 case 'duplicateTabButton':
                 img.src = browser.runtime.getURL('icons/' + iconTheme + '/' + buttonId + '.svg');
@@ -204,9 +203,9 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                 // Add other cases for different buttons if needed
                 case 'moveToolbarButton':
                 if (defaultPosition === 'bottom') {
-                    img.src = browser.runtime.getURL('icons/' + iconTheme + '/up.svg');
+                    img.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronUp.svg');
                 } else {
-                    img.src = browser.runtime.getURL('icons/' + iconTheme + '/down.svg');                        
+                    img.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronDown.svg');                        
                 }
                 break;
                 default:
@@ -214,7 +213,6 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                 img.src = browser.runtime.getURL('icons/' + iconTheme + '/' + buttonId + '.svg');
                 break;
             }
-            
             img.style = defaultImgStyle;
             button.appendChild(img);
             button.addEventListener('click', buttonElements[buttonId].behavior);

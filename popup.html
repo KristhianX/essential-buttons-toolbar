@@ -6,7 +6,6 @@
   <link rel="stylesheet" type="text/css" href="popup.css">
 </head>
 <body>
-  <h1>Settings</h1>
   <div id="settingsTabs"></div>
   <div id="generalSettings">  
     <label for="homepageURL">Homepage URL:<span class="question-mark" id="homepageURLQuestionMark">?</span></label>
@@ -30,7 +29,6 @@
     <br>
     <label for="toolbarHeight">Toolbar height:</label>
     <span id="currentValue"></span>
-    <br>
     <input type="range" id="toolbarHeight" min="10" max="100" step="2">  
     <br>
     <label for="defaultPosition">Toolbar position:</label>
@@ -67,7 +65,6 @@
   </div>
   <p id="statusMessage">Settings saved!</p>
   <div id="excludeSettings">
-    <h2>Exclude settings</h2>
     <label for="customUrl">URL:<span class="question-mark" id="customUrlQuestionMark">?</span></label>
     <div class="message-box" id="customUrlInfo">
       <span class="close-button" id="customUrlCloseButton">X</span>
@@ -76,7 +73,7 @@
     <input type="text" id="customUrl">
     <br>
     <button id="addUrlButton">Exclude URL</button>
-    <h2>Excluded URLs:</h2>
+    <label>Excluded URLs:</label>
     <ul id="excludedUrls"></ul>
   </div>
   <script src="popup.js"></script>

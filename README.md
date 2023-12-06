@@ -11,7 +11,7 @@ https://github.com/KristhianX/a-real-home-button
 
 ## Why?  
 This add-on aims to fill basic missing functionality in Android Firefox. The main reason is to provide a normal home button.  
-The home button should not behave as the new tab button. This behavior is not intuitive and differs from the standard behavior found in most other browsers, including the desktop version of Firefox, which follows the universal approach to the home button.  
+The home button should not behave as the new tab button. This behavior is not intuitive and differs from the standard behavior found in most browsers, including the desktop version of Firefox, which follows the universal approach to the home button.  
 You can check other user opinions here:  
 https://connect.mozilla.org/t5/ideas/on-firefox-mobile-make-home-page-links-open-in-current-tab/idi-p/15672  
 Other buttons are being added to offer easier access or missing functionality.  

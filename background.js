@@ -35,15 +35,15 @@ const defaultVariables = {
     defaultPosition: 'bottom',
     iconTheme: 'featherIcons',
     hideMethod: 'scroll',
-    buttonOrder: ['homeButton', 'duplicateTabButton', 'hideButton', 'moveToolbarButton', 'closeTabButton', 'newTabButton'],
+    buttonOrder: ['homeButton', 'duplicateTabButton', 'hideButton', 'closeTabButton', 'newTabButton', 'menuButton', 'moveToolbarButton'],
     checkboxStates: {
         'homeButton': true,
         'duplicateTabButton': true,
-        //'menuButton': true,
+        'menuButton': true,
         'closeTabButton': true,
         'newTabButton': true,
         'hideButton': true,
-        'moveToolbarButton': true,
+        'moveToolbarButton': false,
     },
 };
 
