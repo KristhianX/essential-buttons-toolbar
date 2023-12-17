@@ -13,7 +13,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
         'closeTabButton': true,
         'newTabButton': true,
         'hideButton': true,
-        'moveToolbarButton': false,
+        'moveToolbarButton': true,
     };
     const buttonOrder = result.buttonOrder || ['homeButton', 'duplicateTabButton', 'hideButton', 'closeTabButton', 'newTabButton', 'menuButton', 'moveToolbarButton'];
     const excludedUrls = result.excludedUrls || [];
@@ -91,7 +91,8 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                 behavior: function (e) {
                     e.preventDefault();
                     this.style.background = '#6eb9f7cc';
-                    browser.runtime.sendMessage({ action: 'duplicateTab', url: currentUrl });
+                    let updatedUrl = window.location.href;
+                    browser.runtime.sendMessage({ action: 'duplicateTab', url: updatedUrl });
                     setTimeout(() => {
                         this.style.background = 'transparent';
                     }, 100);
@@ -190,6 +191,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
         // Customize the buttons
         Object.keys(buttonElements).forEach(buttonId => {
             const button = buttonElements[buttonId].element;
+            //button.setAttribute("id", buttonId);
             button.style = defaultButtonStyle;
             const img = document.createElement('img');
             switch (buttonId) {
@@ -218,15 +220,31 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
             button.addEventListener('click', buttonElements[buttonId].behavior);
         });
         
+        
+        const buttonsInToolbarDiv = 4; // Set your desired limit
+        let buttonsAppended = 0;
+        
         buttonOrder.forEach(buttonId => {
-            if (buttonElements[buttonId]) {
+            if (buttonsAppended < buttonsInToolbarDiv && buttonElements[buttonId] && checkboxStates[buttonId]) {
                 const button = buttonElements[buttonId].element;
-                // Check if the buttonId is in checkboxStates and is checked
-                if (checkboxStates[buttonId]) {
-                    toolbarDiv.appendChild(button);
-                }
+                toolbarDiv.appendChild(button);
+                buttonsAppended++;
+            } else if (buttonElements[buttonId] && checkboxStates[buttonId]) {
+                // If the limit is reached, append to a second div
+                const button = buttonElements[buttonId].element;
+                menuDiv.appendChild(button);
             }
         });
+        
+        // buttonOrder.forEach(buttonId => {
+        //     if (buttonElements[buttonId]) {
+        //         const button = buttonElements[buttonId].element;
+        //         // Check if the buttonId is in checkboxStates and is checked
+        //         if (checkboxStates[buttonId]) {
+        //             toolbarDiv.appendChild(button);
+        //         }
+        //     }
+        // });
         
         
         // Hide the iframe when scrolling. By default ignores changes in the scrolling smaller than 5.

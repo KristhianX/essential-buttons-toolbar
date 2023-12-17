@@ -106,7 +106,7 @@ const buttonsData = [
     { id: 'closeTabButton', label: ' Close tab', defaultChecked: true },
     { id: 'newTabButton', label: ' New tab', defaultChecked: true },
     { id: 'hideButton', label: ' Hide toolbar', defaultChecked: true },
-    { id: 'moveToolbarButton', label: ' Move toolbar', defaultChecked: false },
+    { id: 'moveToolbarButton', label: ' Move toolbar', defaultChecked: true },
 ];
 
 function moveUp(item) {
@@ -136,7 +136,6 @@ function updateButtonOrder() {
 
 function createButtonElement(buttonData, isChecked) {
     const li = document.createElement('li');
-    
     const checkboxLabel = document.createElement('label');
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
@@ -145,7 +144,6 @@ function createButtonElement(buttonData, isChecked) {
     checkboxLabel.appendChild(checkbox);
     checkboxLabel.appendChild(document.createTextNode(` ${buttonData.label}`));
     li.appendChild(checkboxLabel);
-    
     const moveUpButton = document.createElement('button');
     const moveUpButtonImg = document.createElement('img');
     moveUpButtonImg.src = browser.runtime.getURL('icons/featherIcons/chevronUp.svg');
@@ -155,7 +153,6 @@ function createButtonElement(buttonData, isChecked) {
         moveUp(li);
     };
     li.appendChild(moveUpButton);
-    
     const moveDownButton = document.createElement('button');
     const moveDownButtonImg = document.createElement('img');
     moveDownButtonImg.src = browser.runtime.getURL('icons/featherIcons/chevronDown.svg');
@@ -165,7 +162,6 @@ function createButtonElement(buttonData, isChecked) {
         moveDown(li);
     };
     li.appendChild(moveDownButton);
-    
     return li;
 }
 

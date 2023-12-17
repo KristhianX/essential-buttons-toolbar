@@ -43,7 +43,7 @@ const defaultVariables = {
         'closeTabButton': true,
         'newTabButton': true,
         'hideButton': true,
-        'moveToolbarButton': false,
+        'moveToolbarButton': true,
     },
 };
 

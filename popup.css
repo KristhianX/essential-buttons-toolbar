@@ -218,3 +218,7 @@ li label {
 #buttonsSettings, #excludeSettings {
     display: none;
 }
+
+input[type="checkbox"]:checked {
+    accent-color: #007acc;
+}
