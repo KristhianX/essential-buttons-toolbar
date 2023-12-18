@@ -15,7 +15,7 @@ browser.runtime.onMessage.addListener((message, sender) => {
                 // Run if onActivated event was not triggered.
                 browser.tabs.create({ url: message.url });
             };
-        }, 500);
+        }, 300);
         updatedEventTriggered = false;
     } else if (message.action === 'updateTab') {
         browser.tabs.update(sender.tab.id, { url: message.url });
@@ -35,7 +35,8 @@ const defaultVariables = {
     defaultPosition: 'bottom',
     iconTheme: 'featherIcons',
     hideMethod: 'scroll',
-    buttonOrder: ['homeButton', 'duplicateTabButton', 'hideButton', 'closeTabButton', 'newTabButton', 'menuButton', 'moveToolbarButton'],
+    buttonsInToolbarDiv: 6,
+    buttonOrder: ['homeButton', 'duplicateTabButton', 'closeTabButton', 'newTabButton', 'menuButton' ,'hideButton', 'moveToolbarButton', 'devToolsButton'],
     checkboxStates: {
         'homeButton': true,
         'duplicateTabButton': true,
@@ -44,10 +45,11 @@ const defaultVariables = {
         'newTabButton': true,
         'hideButton': true,
         'moveToolbarButton': true,
+        'devToolsButton': true,
     },
 };
 
-browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'buttonOrder', 'checkboxStates']).then((result) => {
+browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'buttonOrder', 'checkboxStates', 'buttonsInToolbarDiv']).then((result) => {
     if (!result.homepageURL) {
         browser.storage.sync.set({ homepageURL: defaultVariables.homepageURL });
     }
@@ -66,14 +68,25 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
     if (!result.hideMethod) {
         browser.storage.sync.set({ hideMethod: defaultVariables.hideMethod });
     }
-    // Check if button order is not set or is empty, then set the default
-    if (!result.buttonOrder || result.buttonOrder.length === 0) {
-        browser.storage.sync.set({ buttonOrder: defaultVariables.buttonOrder });
+    if (!result.buttonsInToolbarDiv) {
+        browser.storage.sync.set({ buttonsInToolbarDiv: defaultVariables.buttonsInToolbarDiv });
     }
-    // Check if checkbox states are not set or are empty, then set the default
-    if (!result.checkboxStates || Object.keys(result.checkboxStates).length === 0) {
-        browser.storage.sync.set({ checkboxStates: defaultVariables.checkboxStates });
+    // Check and append missing elements to the buttonOrder array
+    if (!result.buttonOrder || result.buttonOrder.length !== defaultVariables.buttonOrder.length) {
+        const updatedButtonOrder = defaultVariables.buttonOrder.filter(item => !result.buttonOrder.includes(item));
+        browser.storage.sync.set({ buttonOrder: result.buttonOrder.concat(updatedButtonOrder) });
     }
+    // Check and append missing elements to the checkboxStates array
+    if (!result.checkboxStates || Object.keys(result.checkboxStates).length !== Object.keys(defaultVariables.checkboxStates).length) {
+        const updatedCheckboxStates = { ...defaultVariables.checkboxStates, ...result.checkboxStates };
+        browser.storage.sync.set({ checkboxStates: updatedCheckboxStates });
+    }
+    // if (!result.buttonOrder || result.buttonOrder.length === 0) {
+    //     browser.storage.sync.set({ buttonOrder: defaultVariables.buttonOrder });
+    // }
+    // if (!result.checkboxStates || Object.keys(result.checkboxStates).length === 0) {
+    //     browser.storage.sync.set({ checkboxStates: defaultVariables.checkboxStates });
+    // }
 });
 
 

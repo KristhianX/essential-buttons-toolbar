@@ -44,7 +44,7 @@
     <label for="hideMethod">Hide on scroll method:<span class="question-mark" id="hideMethodQuestionMark">?</span></label>
     <div class="message-box" id="hideMethodInfo">
       <span class="close-button" id="hideMethodCloseButton">X</span>
-      <p>'Scroll': This was the previously used method. It does not work on some websites.
+      <p>'Scroll': It does not work on some websites.
         <br><br>
         'Touchmove': This method uses touch events to hide the toolbar and works on every page, as it is not dependent on scrolling. Note that touches are not detected while the page is scrolling.
         <br><br>
@@ -59,7 +59,15 @@
     <button id="generalSaveButton">Save</button>
   </div>
   <div id="buttonsSettings">
-    <label>Toolbar buttons:</label>
+    <label for="buttonsInToolbarDiv">Toolbar buttons:<span class="question-mark" id="buttonsInToolbarDivQuestionMark">?</span></label>
+    <div class="message-box" id="buttonsInToolbarDivInfo">
+      <span class="close-button" id="buttonsInToolbarDivCloseButton">X</span>
+      <p>The number of buttons in the toolbar.<br>
+        Checked buttons after this number will be appended to the menu.<br>
+      The menu button needs to be in the toolbar for the menu to be accesible.</p>
+    </div>
+    <select id="buttonsInToolbarDiv">
+    </select>
     <ul id="button-list"></ul>
     <button id="buttonsSaveButton">Save</button>
   </div>

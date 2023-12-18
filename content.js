@@ -1,5 +1,5 @@
 // Retrieve the settings from storage.
-browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls', 'checkboxStates', 'buttonOrder']).then((result) => {
+browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls', 'checkboxStates', 'buttonOrder', 'buttonsInToolbarDiv']).then((result) => {
     const homepageURL = result.homepageURL || 'https://web.tabliss.io';
     const newTabURL = result.newTabURL || 'https://web.tabliss.io';
     const toolbarHeight = result.toolbarHeight || '42';
@@ -14,8 +14,10 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
         'newTabButton': true,
         'hideButton': true,
         'moveToolbarButton': true,
+        'devToolsButton': true,
     };
-    const buttonOrder = result.buttonOrder || ['homeButton', 'duplicateTabButton', 'hideButton', 'closeTabButton', 'newTabButton', 'menuButton', 'moveToolbarButton'];
+    const buttonOrder = result.buttonOrder || ['homeButton', 'duplicateTabButton', 'closeTabButton', 'newTabButton', 'menuButton', 'hideButton', 'moveToolbarButton', 'devToolsButton'];
+    const buttonsInToolbarDiv = result.buttonsInToolbarDiv || 6;
     const excludedUrls = result.excludedUrls || [];
     const currentUrl = window.location.href;
     let iframeHidden = false;
@@ -78,11 +80,12 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
         const buttonElements = {
             homeButton: {
                 element: document.createElement('button'),
-                behavior: function (button) {
+                behavior: function () {
                     this.style.background = '#6eb9f7cc';
                     browser.runtime.sendMessage({ action: 'updateTab', url: homepageURL });
                     setTimeout(() => {
                         this.style.background = 'transparent';
+                        closeMenu();
                     }, 100);
                 },
             },
@@ -95,6 +98,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                     browser.runtime.sendMessage({ action: 'duplicateTab', url: updatedUrl });
                     setTimeout(() => {
                         this.style.background = 'transparent';
+                        closeMenu();
                     }, 100);
                 },
             },
@@ -126,6 +130,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                     browser.runtime.sendMessage({ action: 'closeTab', url: homepageURL });
                     setTimeout(() => {
                         this.style.background = 'transparent';
+                        closeMenu();
                     }, 100);
                 },
             },
@@ -136,6 +141,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                     browser.runtime.sendMessage({ action: 'createTab', url: newTabURL });
                     setTimeout(() => {
                         this.style.background = 'transparent';
+                        closeMenu();
                     }, 100);
                 },
             },
@@ -178,14 +184,36 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                             imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronUp.svg');
                         };
                         //menuButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/menu.svg');
-                        //menuDiv.style.display = 'none';
-                        //menuDivHidden = true;
-                        //toolbarIframe.style.height = toolbarHeight + 'px';
                         this.style.background = 'transparent';
+                        closeMenu();
                     }, 100);        
                 },
             },
+            devToolsButton: {
+                element: document.createElement('button'),
+                behavior: function () {
+                    this.style.background = '#6eb9f7cc';
+                    const bookmarkletCode = "(function () { var script = document.createElement('script'); script.src='https://cdn.jsdelivr.net/npm/eruda'; document.body.append(script); script.onload = function () { eruda.init(); } })();";
+                    const bookmarkletAnchor = document.createElement('a');
+                    bookmarkletAnchor.href = 'javascript:' + bookmarkletCode;
+                    document.body.appendChild(bookmarkletAnchor);
+                    bookmarkletAnchor.click();
+                    document.body.removeChild(bookmarkletAnchor);
+                    setTimeout(() => {
+                        this.style.background = 'transparent';
+                        closeMenu();
+                    }, 100);
+                },
+            },
             // Add more buttons if needed
+        };
+        
+        function closeMenu() {
+            if (!menuDivHidden) {
+                menuDiv.style.display = 'none';
+                menuDivHidden = true;
+                toolbarIframe.style.height = toolbarHeight + 'px';
+            }
         };
         
         // Customize the buttons
@@ -220,8 +248,6 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
             button.addEventListener('click', buttonElements[buttonId].behavior);
         });
         
-        
-        const buttonsInToolbarDiv = 4; // Set your desired limit
         let buttonsAppended = 0;
         
         buttonOrder.forEach(buttonId => {
