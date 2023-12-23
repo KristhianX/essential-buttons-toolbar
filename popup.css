@@ -1,5 +1,17 @@
-/* popup.css */
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    height: 100%;
+    background: #222;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+}
+
 body {
+    height: 100%;
     background: #1e1e1e;
     color: #fff;
     font-family: Arial, sans-serif;
@@ -64,9 +76,9 @@ input[type="text"] {
 
 input[type="range"] {
     appearance: none;
-    width: 280px;
+    width: 270px;
     min-width: 250px;
-    margin: 9px 22px 0 0;
+    margin: 11px 20px 0 0;
     height: 4px; 
     background: #333;
     border: 1px solid #444;
@@ -140,7 +152,7 @@ li {
 
 li span {
     display: block;
-    width: 300px;
+    width: 282px;
     overflow: auto;
     padding: 8px 0;
 }
@@ -154,29 +166,7 @@ li button {
     margin: 0;
 }
 
-.move-up-button, .move-down-button {
-    display: inline-flex;
-    padding: 4px;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    position: absolute;
-}
-
-.move-down-button {
-    left: 285px;
-}
-
-.move-up-button {
-    left: 240px;
-}
-
-img {
-    height: 100%;
-    aspect-ratio: 1;
-}
-
-li label {
+.list__item label {
     display: inline-block;
     margin : 0;
     padding : 6px;
@@ -222,3 +212,57 @@ li label {
 input[type="checkbox"]:checked {
     accent-color: #007acc;
 }
+
+.list {
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+    width: 300px;
+    margin-top: 8px;
+    gap: 10px 0;
+}
+
+.list__item {
+    background: #333;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    position: relative;
+    border-radius: 4px;
+    will-change: transform;
+}
+
+.drag-handle {
+    position: absolute;
+    right: 0;
+    width: 44px;
+    height: 32px;
+    padding-bottom: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.drag-handle::after {
+    content: ':::';
+    font-size: 20px;
+    color: #fff;
+}
+
+.list__item.is-idle .drag-handle {
+    cursor: grab;
+}
+
+.list__item.is-idle {
+    transition: 0.25s ease transform;
+}
+
+.list__item.is-draggable,
+.list__item.is-draggable .drag-handle {
+    cursor: grabbing;
+}
+
+.list__item.is-draggable {
+    z-index: 10;
+}
+

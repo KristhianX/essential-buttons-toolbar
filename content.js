@@ -15,8 +15,11 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
         'hideButton': true,
         'moveToolbarButton': true,
         'devToolsButton': true,
+        'goBackButton': false,
+        'goForwardButton': false,
+        'reloadButton': false,
     };
-    const buttonOrder = result.buttonOrder || ['homeButton', 'duplicateTabButton', 'closeTabButton', 'newTabButton', 'menuButton', 'hideButton', 'moveToolbarButton', 'devToolsButton'];
+    const buttonOrder = result.buttonOrder || ['homeButton', 'duplicateTabButton', 'closeTabButton', 'newTabButton', 'hideButton', 'menuButton', 'moveToolbarButton', 'devToolsButton', 'goBackButton', 'goForwardButton', 'reloadButton'];
     const buttonsInToolbarDiv = result.buttonsInToolbarDiv || 6;
     const excludedUrls = result.excludedUrls || [];
     const currentUrl = window.location.href;
@@ -82,9 +85,9 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                 element: document.createElement('button'),
                 behavior: function () {
                     this.style.background = '#6eb9f7cc';
-                    browser.runtime.sendMessage({ action: 'updateTab', url: homepageURL });
                     setTimeout(() => {
                         this.style.background = 'transparent';
+                        browser.runtime.sendMessage({ action: 'updateTab', url: homepageURL });
                         closeMenu();
                     }, 100);
                 },
@@ -95,9 +98,9 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                     e.preventDefault();
                     this.style.background = '#6eb9f7cc';
                     let updatedUrl = window.location.href;
-                    browser.runtime.sendMessage({ action: 'duplicateTab', url: updatedUrl });
                     setTimeout(() => {
                         this.style.background = 'transparent';
+                        browser.runtime.sendMessage({ action: 'duplicateTab', url: updatedUrl });
                         closeMenu();
                     }, 100);
                 },
@@ -127,9 +130,9 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                 element: document.createElement('button'),
                 behavior: function () {
                     this.style.background = '#6eb9f7cc';
-                    browser.runtime.sendMessage({ action: 'closeTab', url: homepageURL });
                     setTimeout(() => {
                         this.style.background = 'transparent';
+                        browser.runtime.sendMessage({ action: 'closeTab', url: homepageURL });
                         closeMenu();
                     }, 100);
                 },
@@ -138,9 +141,9 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                 element: document.createElement('button'),
                 behavior: function () {
                     this.style.background = '#6eb9f7cc';
-                    browser.runtime.sendMessage({ action: 'createTab', url: newTabURL });
                     setTimeout(() => {
                         this.style.background = 'transparent';
+                        browser.runtime.sendMessage({ action: 'createTab', url: newTabURL });
                         closeMenu();
                     }, 100);
                 },
@@ -205,7 +208,40 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                     }, 100);
                 },
             },
-            // Add more buttons if needed
+            goBackButton: {
+                element: document.createElement('button'),
+                behavior: function () {
+                    this.style.background = '#6eb9f7cc';
+                    setTimeout(() => {
+                        this.style.background = 'transparent';
+                        browser.runtime.sendMessage({ action: 'goBack' });
+                        closeMenu();
+                    }, 100);
+                },
+            },
+            goForwardButton: {
+                element: document.createElement('button'),
+                behavior: function () {
+                    this.style.background = '#6eb9f7cc';
+                    setTimeout(() => {
+                        this.style.background = 'transparent';
+                        browser.runtime.sendMessage({ action: 'goForward' });
+                        closeMenu();
+                    }, 100);
+                },
+            },
+            reloadButton: {
+                element: document.createElement('button'),
+                behavior: function () {
+                    this.style.background = '#6eb9f7cc';
+                    setTimeout(() => {
+                        this.style.background = 'transparent';
+                        browser.runtime.sendMessage({ action: 'reload' });
+                        closeMenu();
+                    }, 100);
+                },
+            },
+            // Add more buttons.
         };
         
         function closeMenu() {
