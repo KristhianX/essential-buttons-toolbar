@@ -4,28 +4,38 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
     const newTabURL = result.newTabURL || 'https://web.tabliss.io';
     const toolbarHeight = result.toolbarHeight || '42';
     const defaultPosition = result.defaultPosition || 'bottom';
-    const iconTheme = result.iconTheme || 'featherIcons';
+    const iconTheme = result.iconTheme || 'heroIcons';
     const hideMethod = result.hideMethod || 'scroll';
     const checkboxStates = result.checkboxStates || {
         'homeButton': true,
         'duplicateTabButton': true,
-        'menuButton': true,
+        //'menuButton': true,
         'closeTabButton': true,
         'newTabButton': true,
         'hideButton': true,
         'moveToolbarButton': true,
-        'devToolsButton': true,
+        //'devToolsButton': true,
         'goBackButton': false,
         'goForwardButton': false,
         'reloadButton': false,
     };
-    const buttonOrder = result.buttonOrder || ['homeButton', 'duplicateTabButton', 'closeTabButton', 'newTabButton', 'hideButton', 'menuButton', 'moveToolbarButton', 'devToolsButton', 'goBackButton', 'goForwardButton', 'reloadButton'];
-    const buttonsInToolbarDiv = result.buttonsInToolbarDiv || 6;
+    const buttonOrder = result.buttonOrder || [
+        'homeButton',
+        'duplicateTabButton',
+        'hideButton',
+        'moveToolbarButton',
+        'closeTabButton',
+        'newTabButton',
+        'goBackButton',
+        'goForwardButton',
+        'reloadButton'
+    ];
+    //const buttonsInToolbarDiv = result.buttonsInToolbarDiv || 6;
     const excludedUrls = result.excludedUrls || [];
     const currentUrl = window.location.href;
     let iframeHidden = false;
     let iframeVisible = true;
-    let menuDivHidden = true;
+    //let menuDivHidden = true;
     
     
     // Check if the current page's URL should be excluded.
@@ -49,6 +59,24 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
         document.body.insertAdjacentElement('afterend', toolbarIframe);
         
         
+        // document.documentElement.style.position = 'fixed';
+        // document.documentElement.style.top = '0';
+        // document.documentElement.style.left = '0';
+        // document.documentElement.style.margin = '0';
+        // document.documentElement.style.height = '100vh';
+        // document.documentElement.style.width = '100vw';
+        // document.documentElement.style.overflow = 'auto';
+        // document.documentElement.style.boxSizing = 'border-box';
+        // document.body.style.position = 'absolute';
+        // document.body.style.top = '0';
+        // document.body.style.left = '0';
+        // document.body.style.margin = '0';
+        // document.body.style.height = "100vh";
+        // document.body.style.width = "100vw";
+        // document.body.style.overflow = 'auto';
+        // document.body.style.boxSizing = 'border-box';
+        
+
         // Creating the toolbar.
         const toolbarDiv = document.createElement('div');
         toolbarDiv.style = 'height: ' + toolbarHeight + 'px; padding: 0 4%; box-sizing: border-box; display: flex; justify-content: space-between; width: 100%; position: absolute; background-color: rgba(43, 42, 51, 0.8); border-style: solid; border-color: #38373f';
@@ -73,7 +101,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
         
         
         toolbarIframe.addEventListener('load', function() {
-            toolbarIframe.contentWindow.document.body.appendChild(menuDiv);
+            //toolbarIframe.contentWindow.document.body.appendChild(menuDiv);
             toolbarIframe.contentWindow.document.body.appendChild(toolbarDiv);
             toolbarIframe.contentWindow.document.body.style = 'margin: 0; height: 100%';
         });
@@ -88,7 +116,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                     setTimeout(() => {
                         this.style.background = 'transparent';
                         browser.runtime.sendMessage({ action: 'updateTab', url: homepageURL });
-                        closeMenu();
+                        //closeMenu();
                     }, 100);
                 },
             },
@@ -101,31 +129,31 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                     setTimeout(() => {
                         this.style.background = 'transparent';
                         browser.runtime.sendMessage({ action: 'duplicateTab', url: updatedUrl });
-                        closeMenu();
+                        //closeMenu();
                     }, 100);
                 },
             },
-            menuButton: {
-                element: document.createElement('button'),
-                behavior: function () {
-                    this.style.background = '#6eb9f7cc';
-                    //const imgElement = this.querySelector('img');
-                    if (menuDivHidden) {
-                        //imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/x.svg');
-                        menuDiv.style.display = 'flex';
-                        menuDivHidden = false;
-                        toolbarIframe.style.height = toolbarHeight * 2 + 'px';
-                    } else {
-                        //imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/menuButton.svg');
-                        menuDiv.style.display = 'none';
-                        menuDivHidden = true;
-                        toolbarIframe.style.height = toolbarHeight + 'px';
-                    }
-                    setTimeout(() => {
-                        this.style.background = 'transparent';
-                    }, 100);
-                },
-            },
+            // menuButton: {
+            //     element: document.createElement('button'),
+            //     behavior: function () {
+            //         this.style.background = '#6eb9f7cc';
+            //         //const imgElement = this.querySelector('img');
+            //         if (menuDivHidden) {
+            //             //imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/x.svg');
+            //             menuDiv.style.display = 'flex';
+            //             menuDivHidden = false;
+            //             toolbarIframe.style.height = toolbarHeight * 2 + 'px';
+            //         } else {
+            //             //imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/menuButton.svg');
+            //             menuDiv.style.display = 'none';
+            //             menuDivHidden = true;
+            //             toolbarIframe.style.height = toolbarHeight + 'px';
+            //         }
+            //         setTimeout(() => {
+            //             this.style.background = 'transparent';
+            //         }, 100);
+            //     },
+            // },
             closeTabButton: {
                 element: document.createElement('button'),
                 behavior: function () {
@@ -133,7 +161,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                     setTimeout(() => {
                         this.style.background = 'transparent';
                         browser.runtime.sendMessage({ action: 'closeTab', url: homepageURL });
-                        closeMenu();
+                        //closeMenu();
                     }, 100);
                 },
             },
@@ -144,7 +172,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                     setTimeout(() => {
                         this.style.background = 'transparent';
                         browser.runtime.sendMessage({ action: 'createTab', url: newTabURL });
-                        closeMenu();
+                        //closeMenu();
                     }, 100);
                 },
             },
@@ -188,26 +216,26 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                         };
                         //menuButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/menu.svg');
                         this.style.background = 'transparent';
-                        closeMenu();
+                        //closeMenu();
                     }, 100);        
                 },
             },
-            devToolsButton: {
-                element: document.createElement('button'),
-                behavior: function () {
-                    this.style.background = '#6eb9f7cc';
-                    const bookmarkletCode = "(function () { var script = document.createElement('script'); script.src='https://cdn.jsdelivr.net/npm/eruda'; document.body.append(script); script.onload = function () { eruda.init(); } })();";
-                    const bookmarkletAnchor = document.createElement('a');
-                    bookmarkletAnchor.href = 'javascript:' + bookmarkletCode;
-                    document.body.appendChild(bookmarkletAnchor);
-                    bookmarkletAnchor.click();
-                    document.body.removeChild(bookmarkletAnchor);
-                    setTimeout(() => {
-                        this.style.background = 'transparent';
-                        closeMenu();
-                    }, 100);
-                },
-            },
+            // devToolsButton: {
+            //     element: document.createElement('button'),
+            //     behavior: function () {
+            //         this.style.background = '#6eb9f7cc';
+            //         const bookmarkletCode = "(function () { var script = document.createElement('script'); script.src='https://cdn.jsdelivr.net/npm/eruda'; document.body.append(script); script.onload = function () { eruda.init(); } })();";
+            //         const bookmarkletAnchor = document.createElement('a');
+            //         bookmarkletAnchor.href = 'javascript:' + bookmarkletCode;
+            //         document.body.appendChild(bookmarkletAnchor);
+            //         bookmarkletAnchor.click();
+            //         document.body.removeChild(bookmarkletAnchor);
+            //         setTimeout(() => {
+            //             this.style.background = 'transparent';
+            //             //closeMenu();
+            //         }, 100);
+            //     },
+            // },
             goBackButton: {
                 element: document.createElement('button'),
                 behavior: function () {
@@ -215,7 +243,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                     setTimeout(() => {
                         this.style.background = 'transparent';
                         browser.runtime.sendMessage({ action: 'goBack' });
-                        closeMenu();
+                        //closeMenu();
                     }, 100);
                 },
             },
@@ -226,7 +254,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                     setTimeout(() => {
                         this.style.background = 'transparent';
                         browser.runtime.sendMessage({ action: 'goForward' });
-                        closeMenu();
+                        //closeMenu();
                     }, 100);
                 },
             },
@@ -237,20 +265,20 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
                     setTimeout(() => {
                         this.style.background = 'transparent';
                         browser.runtime.sendMessage({ action: 'reload' });
-                        closeMenu();
+                        //closeMenu();
                     }, 100);
                 },
             },
             // Add more buttons.
         };
         
-        function closeMenu() {
-            if (!menuDivHidden) {
-                menuDiv.style.display = 'none';
-                menuDivHidden = true;
-                toolbarIframe.style.height = toolbarHeight + 'px';
-            }
-        };
+        // function closeMenu() {
+        //     if (!menuDivHidden) {
+        //         menuDiv.style.display = 'none';
+        //         menuDivHidden = true;
+        //         toolbarIframe.style.height = toolbarHeight + 'px';
+        //     }
+        // };
         
         // Customize the buttons
         Object.keys(buttonElements).forEach(buttonId => {
@@ -284,29 +312,29 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
             button.addEventListener('click', buttonElements[buttonId].behavior);
         });
         
-        let buttonsAppended = 0;
-        
-        buttonOrder.forEach(buttonId => {
-            if (buttonsAppended < buttonsInToolbarDiv && buttonElements[buttonId] && checkboxStates[buttonId]) {
-                const button = buttonElements[buttonId].element;
-                toolbarDiv.appendChild(button);
-                buttonsAppended++;
-            } else if (buttonElements[buttonId] && checkboxStates[buttonId]) {
-                // If the limit is reached, append to a second div
-                const button = buttonElements[buttonId].element;
-                menuDiv.appendChild(button);
-            }
-        });
+        //let buttonsAppended = 0;
         
         // buttonOrder.forEach(buttonId => {
-        //     if (buttonElements[buttonId]) {
+        //     if (buttonsAppended < buttonsInToolbarDiv && buttonElements[buttonId] && checkboxStates[buttonId]) {
         //         const button = buttonElements[buttonId].element;
-        //         // Check if the buttonId is in checkboxStates and is checked
-        //         if (checkboxStates[buttonId]) {
-        //             toolbarDiv.appendChild(button);
-        //         }
+        //         toolbarDiv.appendChild(button);
+        //         buttonsAppended++;
+        //     } else if (buttonElements[buttonId] && checkboxStates[buttonId]) {
+        //         // If the limit is reached, append to a second div
+        //         const button = buttonElements[buttonId].element;
+        //         menuDiv.appendChild(button);
         //     }
         // });
+        
+        buttonOrder.forEach(buttonId => {
+            if (buttonElements[buttonId]) {
+                const button = buttonElements[buttonId].element;
+                // Check if the buttonId is in checkboxStates and is checked
+                if (checkboxStates[buttonId]) {
+                    toolbarDiv.appendChild(button);
+                }
+            }
+        });
         
         
         // Hide the iframe when scrolling. By default ignores changes in the scrolling smaller than 5.

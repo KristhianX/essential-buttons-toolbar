@@ -18,10 +18,10 @@ const homepageURLCloseButton = document.getElementById('homepageURLCloseButton')
 const hideMethodQuestionMark = document.getElementById('hideMethodQuestionMark');
 const hideMethodInfo = document.getElementById('hideMethodInfo');
 const hideMethodCloseButton = document.getElementById('hideMethodCloseButton');
-const buttonsInToolbarDivQuestionMark = document.getElementById('buttonsInToolbarDivQuestionMark');
-const buttonsInToolbarDivInfo = document.getElementById('buttonsInToolbarDivInfo');
-const buttonsInToolbarDivCloseButton = document.getElementById('buttonsInToolbarDivCloseButton');
-const buttonsInToolbarDivSelect = document.getElementById('buttonsInToolbarDiv');
+// const buttonsInToolbarDivQuestionMark = document.getElementById('buttonsInToolbarDivQuestionMark');
+// const buttonsInToolbarDivInfo = document.getElementById('buttonsInToolbarDivInfo');
+// const buttonsInToolbarDivCloseButton = document.getElementById('buttonsInToolbarDivCloseButton');
+// const buttonsInToolbarDivSelect = document.getElementById('buttonsInToolbarDiv');
 const buttonList = document.getElementById('button-list');
 const customUrlQuestionMark = document.getElementById('customUrlQuestionMark');
 const customUrlInfo = document.getElementById('customUrlInfo');
@@ -55,15 +55,15 @@ customUrlCloseButton.addEventListener('click', () => {
     customUrlInfo.style.display = 'none';
     customUrlQuestionMark.style.display = 'inline-block';
 });
-buttonsInToolbarDivQuestionMark.addEventListener('click', (e) => {
-    e.preventDefault();
-    buttonsInToolbarDivInfo.style.display = 'block';
-    buttonsInToolbarDivQuestionMark.style.display = 'none';
-});
-buttonsInToolbarDivCloseButton.addEventListener('click', () => {
-    buttonsInToolbarDivInfo.style.display = 'none';
-    buttonsInToolbarDivQuestionMark.style.display = 'inline-block';
-})
+// buttonsInToolbarDivQuestionMark.addEventListener('click', (e) => {
+//     e.preventDefault();
+//     buttonsInToolbarDivInfo.style.display = 'block';
+//     buttonsInToolbarDivQuestionMark.style.display = 'none';
+// });
+// buttonsInToolbarDivCloseButton.addEventListener('click', () => {
+//     buttonsInToolbarDivInfo.style.display = 'none';
+//     buttonsInToolbarDivQuestionMark.style.display = 'inline-block';
+// })
 
 
 function showTab(tabId) {
@@ -115,23 +115,23 @@ toolbarHeightRangeInput.addEventListener('input', function() {
 const buttonsData = [
     { id: 'homeButton', label: ' Home', defaultChecked: true },
     { id: 'duplicateTabButton', label: ' Duplicate tab', defaultChecked: true },
-    { id: 'menuButton', label: ' Menu', defaultChecked: true },
+    //{ id: 'menuButton', label: ' Menu', defaultChecked: true },
     { id: 'closeTabButton', label: ' Close tab', defaultChecked: true },
     { id: 'newTabButton', label: ' New tab', defaultChecked: true },
     { id: 'hideButton', label: ' Hide toolbar', defaultChecked: true },
     { id: 'moveToolbarButton', label: ' Move toolbar', defaultChecked: true },
-    { id: 'devToolsButton', label: ' Dev tools (Eruda)', defaultChecked: true },
+    //{ id: 'devToolsButton', label: ' Dev tools (Eruda)', defaultChecked: true },
     { id: 'goBackButton', label: ' Go back', defaultChecked: false },
     { id: 'goForwardButton', label: ' Go forward', defaultChecked: false },
     { id: 'reloadButton', label: ' Reload page', defaultChecked: false },
 ];
 
-for (let i = 1; i <= buttonsData.length; i++) {
-    const option = document.createElement('option');
-    option.value = i;
-    option.textContent = i;
-    buttonsInToolbarDivSelect.appendChild(option);
-}
+// for (let i = 1; i <= buttonsData.length; i++) {
+//     const option = document.createElement('option');
+//     option.value = i;
+//     option.textContent = i;
+//     buttonsInToolbarDivSelect.appendChild(option);
+// }
 
 function updateButtonOrder() {
     const buttonList = document.getElementById('button-list');
@@ -166,7 +166,7 @@ function createButtonElement(buttonData, isChecked) {
 
 
 // Load the values from storage.
-browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls', 'buttonOrder', 'checkboxStates', 'buttonsInToolbarDiv']).then((result) => {
+browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls', 'buttonOrder', 'checkboxStates']).then((result) => {
     homepageURLInput.value = result.homepageURL;
     newTabURLInput.value = result.newTabURL;
     toolbarHeightRangeInput.value = result.toolbarHeight;
@@ -174,7 +174,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
     defaultPositionSelect.value = result.defaultPosition;
     iconThemeSelect.value = result.iconTheme;
     hideMethodSelect.value = result.hideMethod;
-    buttonsInToolbarDivSelect.value = result.buttonsInToolbarDiv;
+    //buttonsInToolbarDivSelect.value = result.buttonsInToolbarDiv;
     if (result.buttonOrder && result.checkboxStates) {
         // Create and append the button elements based on the order
         result.buttonOrder.forEach(buttonId => {
@@ -276,11 +276,11 @@ function getCheckboxStates() {
 
 
 buttonsSaveButton.addEventListener('click', () => {
-    const buttonsInToolbarDiv = buttonsInToolbarDivSelect.value;
+    //const buttonsInToolbarDiv = buttonsInToolbarDivSelect.value;
     const checkboxes = document.querySelectorAll('label input[type="checkbox"]');
     const buttonOrder = Array.from(checkboxes).map(checkbox => checkbox.id);
     browser.storage.sync.set({
-        'buttonsInToolbarDiv': buttonsInToolbarDiv,
+        //'buttonsInToolbarDiv': buttonsInToolbarDiv,
         'buttonOrder': buttonOrder,
         'checkboxStates': getCheckboxStates(),
     }).then(() => {

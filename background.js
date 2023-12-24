@@ -39,26 +39,36 @@ const defaultVariables = {
     newTabURL: 'https://web.tabliss.io',
     toolbarHeight: '42',
     defaultPosition: 'bottom',
-    iconTheme: 'featherIcons',
+    iconTheme: 'heroIcons',
     hideMethod: 'scroll',
-    buttonsInToolbarDiv: 6,
-    buttonOrder: ['homeButton', 'duplicateTabButton', 'closeTabButton', 'newTabButton', 'hideButton' ,'menuButton', 'moveToolbarButton', 'devToolsButton', 'goBackButton', 'goForwardButton', 'reloadButton'],
+    //buttonsInToolbarDiv: 6,
+    buttonOrder: [
+        'homeButton',
+        'duplicateTabButton',
+        'hideButton',
+        'moveToolbarButton',
+        'closeTabButton',
+        'newTabButton',
+        'goBackButton',
+        'goForwardButton',
+        'reloadButton'
+    ],
     checkboxStates: {
         'homeButton': true,
         'duplicateTabButton': true,
-        'menuButton': true,
+        //'menuButton': true,
         'closeTabButton': true,
         'newTabButton': true,
         'hideButton': true,
         'moveToolbarButton': true,
-        'devToolsButton': true,
+        //'devToolsButton': true,
         'goBackButton': false,
         'goForwardButton': false,
         'reloadButton': false,
     },
 };
 
-browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'buttonOrder', 'checkboxStates', 'buttonsInToolbarDiv']).then((result) => {
+browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'buttonOrder', 'checkboxStates']).then((result) => {
     if (!result.homepageURL) {
         browser.storage.sync.set({ homepageURL: defaultVariables.homepageURL });
     }
@@ -77,9 +87,9 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
     if (!result.hideMethod) {
         browser.storage.sync.set({ hideMethod: defaultVariables.hideMethod });
     }
-    if (!result.buttonsInToolbarDiv) {
-        browser.storage.sync.set({ buttonsInToolbarDiv: defaultVariables.buttonsInToolbarDiv });
-    }
+    // if (!result.buttonsInToolbarDiv) {
+    //     browser.storage.sync.set({ buttonsInToolbarDiv: defaultVariables.buttonsInToolbarDiv });
+    // }
     if (!result.buttonOrder || result.buttonOrder.length === 0) {
         browser.storage.sync.set({ buttonOrder: defaultVariables.buttonOrder });
     }
