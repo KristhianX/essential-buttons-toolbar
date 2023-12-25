@@ -1,10 +1,5 @@
 # Essential Buttons Toolbar.
-*Adds a toolbar to Android Firefox with essential buttons: Homepage, Duplicate Tab, New tab, Close tab and more.*
-
-**Note:**
-This initially began as a userscript, which I later developed into an extension to access additional features.  
-You can still find the original user script here, but I'm unlikely to make further updates to it:  
-https://github.com/KristhianX/a-real-home-button
+*Adds a toolbar to Android Firefox with essential buttons: Homepage, Duplicate Tab, New tab, Close tab and more.*  
 
 ## Some screenshots.
 <img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231125-221820.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231125-221632.png?raw=true" width="200px"/>
@@ -17,13 +12,16 @@ https://connect.mozilla.org/t5/ideas/on-firefox-mobile-make-home-page-links-open
 Other buttons are being added to offer easier access or missing functionality.  
 
 ## Features.  
-**The toolbar buttons are:**  
+**Available buttons are:**  
 - **Homepage:** Opens the default homepage URL. Can be changed in options.  
 - **Duplicate Tab:** Opens current URL in new tab. Long press it to get default link options.  
 - **Hide toolbar:** Hides the toolbar. Refresh the page to display it again.  
 - **Move toolbar:** Moves the toolbar to the top of the page or to the bottom if it is at the top.  
 - **Close tab:** Closes the current tab. If the current tab is the only open tab, it opens the homepage URL instead.  
 - **New tab:** Opens the default new tab page URL. Can be changed in options.  
+- **Go back:** Navigate back in history.  
+- **Go forward:** Navigate forward in history.  
+- **Reload:** Reloads the current page.
 
 **Other options include:**  
 - **Toolbar height:** The number of pixels. The default value is set to 42px.  
@@ -44,35 +42,21 @@ https://github.com/tailwindlabs/heroicons
 **Access browser tabs:** Allows the extension to check the number of open tabs, allowing the close button to open the home page if only one tab is open.  
 **Access your data for all websites:** Allows the extension to insert the toolbar on permitted websites.
 
-## Installation instructions for Firefox Beta, Fennec F-Droid and Mull.
-*You will need a version of firefox that support Custom Add-on collections. Such as Firefox Beta, Fennec F-Droid or Mull.*
-
+## Installation instructions.
 The add-on is available at:  
-https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/
-
-You'll need to add a Custom Add-on collection. You can either add the add-on to your own collection or use my collection if you don't have a Mozilla account or don't want to create a collection.
-
-<img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231027-202606.png?raw=true" width="200px"/>
-
-Follow these steps: Open the **Menu** -> Tap on **Settings** ->
-If the Custom Add-on collection is not available, tap on **About Firefox** -> Tap the Firefox logo several times to activate debug options.
-Now, go back and tap **Custom Add-on collection.**
-Fill the prompt with these values to use my collection. Don't worry; you can go back to the default collection after installing the add-on by removing these values and tapping **OK.**
-
-Collection owner (User ID): `12488393`  
-Collection name: `Kris-selection`
-
-The browser will restart to apply the changes.
-Now, you can go to **Menu** -> **Settings** -> **Add-ons.** Scroll the list until you find **Essential Buttons Toolbar** add-on.
-
-## Installation instructions for Firefox Nightly.
-It's very easy. Just go to the add-on link and tap **Add to Firefox.**  
 https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/
 
 ## Updates.
 If you're not using the Nightly version, you may have to remove and reinstall the add-on to get the latest version.  
 You can see the changelog here.  
 https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/versions/
+
+## Support me.
+Love this add-on? Help me keep it awesome! Consider donating to support future updates:  
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/V7V7QI34Z)  
+
+Thanks for your support! 🚀  
 
 ## Tips and tricks.
 There is no way to set the Firefox homepage to the one opened by this add-on.  
@@ -97,6 +81,7 @@ Here is a list of the pros and cons of this web homepage:
 
 **Pros:**  
 - Beautiful and customizable.
+- Open-source.
 - Option for persistent storage, making it available offline.
 - Responsive design that adapts very well to phone screens.
 
@@ -115,4 +100,7 @@ Some websites are not well optimized for mobile. Some will have a little zoom th
 
 <img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231027-202946.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231027-203000.png?raw=true" width="200px"/>
 
-
+## Note:
+This initially began as a userscript, which I later developed into an extension to access additional features.  
+You can still find the original user script here, but I'm unlikely to make further updates to it:  
+https://github.com/KristhianX/a-real-home-button
