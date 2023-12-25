@@ -43,12 +43,15 @@ https://github.com/tailwindlabs/heroicons
 **Access your data for all websites:** Allows the extension to insert the toolbar on permitted websites.
 
 ## Installation instructions.
-The add-on is available at:  
-https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/
+The add-on is available on AMO (Mozilla Add-ons):  
+
+<a href="https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/">
+  <img src="https://raw.githubusercontent.com/KristhianX/essential-buttons-toolbar/main/images/get-the-addon-fx-apr-2020.svg" width="180" alt="store">
+</a>
 
 ## Updates.
 If you're not using the Nightly version, you may have to remove and reinstall the add-on to get the latest version.  
-You can see the changelog here.  
+You can see the changelog here:  
 https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/versions/
 
 ## Support me.
