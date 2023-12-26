@@ -6,6 +6,11 @@
   <link rel="stylesheet" type="text/css" href="popup.css">
 </head>
 <body>
+  <div id="header">
+    <h2>Essential Buttons Toolbar</h2>
+    <h3 id="versionHeader"></h3>
+    <div id="headerInfo"></div>
+  </div>
   <div id="settingsTabs"></div>
   <div id="generalSettings">  
     <label for="homepageURL">Homepage URL:<span class="question-mark" id="homepageURLQuestionMark">?</span></label>
@@ -57,6 +62,7 @@
       <option value="disable">Disable</option>
     </select>
     <button id="generalSaveButton">Save</button>
+    <button id="generalResetButton">Reset</button>
   </div>
   <div id="buttonsSettings">
     <!-- <label for="buttonsInToolbarDiv">Toolbar buttons:<span class="question-mark" id="buttonsInToolbarDivQuestionMark">?</span></label>
@@ -84,6 +90,7 @@
     <label>Excluded URLs:</label>
     <ul id="excludedUrls"></ul>
   </div>
+  <script src="content.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

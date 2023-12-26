@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Essential Buttons Toolbar",
-  "version": "1.4",
+  "version": "1.4.1",
   "permissions": [
     "activeTab", 
     "tabs", 
@@ -15,7 +15,8 @@
     "default_popup": "popup.html"
   },
   "options_ui": {
-    "page": "popup.html"
+    "page": "popup.html",
+    "open_in_tab": true
   },
   "content_scripts": [
     {

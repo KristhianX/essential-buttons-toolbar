@@ -5,7 +5,6 @@ function onActivatedListener() {
 }
 browser.tabs.onActivated.addListener(onActivatedListener);
 
-
 // Listener to close or create tabs.
 browser.runtime.onMessage.addListener((message, sender) => {
     if (message.action === 'closeTab') {
@@ -29,9 +28,12 @@ browser.runtime.onMessage.addListener((message, sender) => {
         browser.tabs.goForward(sender.tab.id);
     } else if (message.action === 'reload') {
         browser.tabs.reload(sender.tab.id, { bypassCache: true });
+    } else if (message.action === 'openSettings') {
+        browser.runtime.openOptionsPage();
+    } else if (message.action === 'resetSettings') {
+        resetSettingsToDefault();
     };
 });
-
 
 // Define the default values.
 const defaultVariables = {
@@ -51,7 +53,8 @@ const defaultVariables = {
         'newTabButton',
         'goBackButton',
         'goForwardButton',
-        'reloadButton'
+        'reloadButton',
+        'settingsButton'
     ],
     checkboxStates: {
         'homeButton': true,
@@ -65,8 +68,13 @@ const defaultVariables = {
         'goBackButton': false,
         'goForwardButton': false,
         'reloadButton': false,
+        'settingsButton': false,
     },
 };
+
+function resetSettingsToDefault() {
+    browser.storage.sync.set(defaultVariables);
+}
 
 browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'buttonOrder', 'checkboxStates']).then((result) => {
     if (!result.homepageURL) {
