@@ -40,7 +40,7 @@ label {
     font-weight: bold;
 }
 
-#currentValue {
+.currentValue {
     font-size: 14px;
     margin-top: 4px;
     display: inline-block;

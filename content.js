@@ -2,6 +2,7 @@
 let homepageURL
 let newTabURL
 let toolbarHeight
+let toolbarTransparency
 let defaultPosition
 let iconTheme
 let hideMethod
@@ -9,7 +10,7 @@ let checkboxStates
 let buttonOrder
 //let buttonsInToolbarDiv
 let excludedUrls
-const currentUrl = window.location.href;
+let currentUrl = window.location.href;
 let isCurrentPageExcluded
 let iframeHidden = false;
 let iframeVisible = true;
@@ -23,10 +24,11 @@ let menuDiv
 //getSettingsValues();
 function getSettingsValues() {
     return new Promise((resolve) => {
-        browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls', 'checkboxStates', 'buttonOrder', 'buttonsInToolbarDiv']).then((result) => {
+        browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls', 'checkboxStates', 'buttonOrder', 'buttonsInToolbarDiv', 'toolbarTransparency']).then((result) => {
             homepageURL = result.homepageURL || 'https://web.tabliss.io';
             newTabURL = result.newTabURL || 'https://web.tabliss.io';
             toolbarHeight = result.toolbarHeight || '42';
+            toolbarTransparency = result.toolbarTransparency || '0.8'
             defaultPosition = result.defaultPosition || 'bottom';
             iconTheme = result.iconTheme || 'heroIcons';
             hideMethod = result.hideMethod || 'scroll';
@@ -79,27 +81,10 @@ function createToolbar() {
     toolbarIframe = document.createElement('iframe');
     toolbarIframe.style = 'height: ' + toolbarHeight + 'px; ' + defaultPosition + ': 0px; left: 0px; width: 100vw; display: block; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light';
     document.body.insertAdjacentElement('afterend', toolbarIframe);
-    
-    // document.documentElement.style.position = 'fixed';
-    // document.documentElement.style.top = '0';
-    // document.documentElement.style.left = '0';
-    // document.documentElement.style.margin = '0';
-    // document.documentElement.style.height = '100vh';
-    // document.documentElement.style.width = '100vw';
-    // document.documentElement.style.overflow = 'auto';
-    // document.documentElement.style.boxSizing = 'border-box';
-    // document.body.style.position = 'absolute';
-    // document.body.style.top = '0';
-    // document.body.style.left = '0';
-    // document.body.style.margin = '0';
-    // document.body.style.height = "100vh";
-    // document.body.style.width = "100vw";
-    // document.body.style.overflow = 'auto';
-    // document.body.style.boxSizing = 'border-box';
-    
+
     // Creating the toolbar.
     toolbarDiv = document.createElement('div');
-    toolbarDiv.style = 'height: ' + toolbarHeight + 'px; padding: 0 4%; box-sizing: border-box; display: flex; justify-content: space-between; width: 100%; position: absolute; background-color: rgba(43, 42, 51, 0.8); border-style: solid; border-color: #38373f';
+    toolbarDiv.style = 'height: ' + toolbarHeight + 'px; padding: 0 4%; box-sizing: border-box; display: flex; justify-content: space-between; width: 100%; position: absolute; background-color: rgba(43, 42, 51, ' + toolbarTransparency + '); border-style: solid; border-color: #38373f';
     
     // Creating the menu.
     menuDiv = document.createElement('div');
@@ -141,8 +126,8 @@ const buttonElements = {
         element: document.createElement('a'),
         behavior: function (e) {
             e.preventDefault();
-            this.style.background = '#6eb9f7cc';
             let updatedUrl = window.location.href;
+            this.style.background = '#6eb9f7cc';
             setTimeout(() => {
                 this.style.background = 'transparent';
                 browser.runtime.sendMessage({ action: 'duplicateTab', url: updatedUrl });
@@ -322,8 +307,13 @@ function createButtons() {
             button.style.justifyContent = 'center';
             button.style.alignItems = 'center';
             button.href = currentUrl;
+            button.addEventListener('touchstart', function () {
+                if (currentUrl !== window.location.href) {
+                    currentUrl = window.location.href
+                    button.href = currentUrl
+                }
+            })
             break;
-            // Add other cases for different buttons if needed
             case 'moveToolbarButton':
             if (defaultPosition === 'bottom') {
                 img.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronUp.svg');
@@ -332,7 +322,6 @@ function createButtons() {
             }
             break;
             default:
-            // Default styling for other buttons
             img.src = browser.runtime.getURL('icons/' + iconTheme + '/' + buttonId + '.svg');
             break;
         }

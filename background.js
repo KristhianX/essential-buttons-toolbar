@@ -5,6 +5,12 @@ function onActivatedListener() {
 }
 browser.tabs.onActivated.addListener(onActivatedListener);
 
+browser.browserAction.onClicked.addListener((tab) => {
+    browser.storage.local.set({ senderURL: tab.url }).then( () => {
+        browser.runtime.openOptionsPage();
+    });
+});
+
 // Listener to close or create tabs.
 browser.runtime.onMessage.addListener((message, sender) => {
     if (message.action === 'closeTab') {
@@ -29,7 +35,9 @@ browser.runtime.onMessage.addListener((message, sender) => {
     } else if (message.action === 'reload') {
         browser.tabs.reload(sender.tab.id, { bypassCache: true });
     } else if (message.action === 'openSettings') {
-        browser.runtime.openOptionsPage();
+        browser.storage.local.set({ senderURL: sender.tab.url }).then( () => {
+            browser.runtime.openOptionsPage();
+        });
     } else if (message.action === 'resetSettings') {
         resetSettingsToDefault();
     };
@@ -40,6 +48,7 @@ const defaultVariables = {
     homepageURL: 'https://web.tabliss.io',
     newTabURL: 'https://web.tabliss.io',
     toolbarHeight: '42',
+    toolbarTransparency: '0.8',
     defaultPosition: 'bottom',
     iconTheme: 'heroIcons',
     hideMethod: 'scroll',
@@ -72,38 +81,25 @@ const defaultVariables = {
     },
 };
 
-function resetSettingsToDefault() {
-    browser.storage.sync.set(defaultVariables);
-}
+const settingsToCheck = [
+    'homepageURL',
+    'newTabURL',
+    'toolbarHeight',
+    'toolbarTransparency',
+    'defaultPosition',
+    'iconTheme',
+    'hideMethod',
+    'buttonOrder',
+    'checkboxStates'
+];
 
-browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'buttonOrder', 'checkboxStates']).then((result) => {
-    if (!result.homepageURL) {
-        browser.storage.sync.set({ homepageURL: defaultVariables.homepageURL });
-    }
-    if (!result.newTabURL) {
-        browser.storage.sync.set({ newTabURL: defaultVariables.newTabURL });
-    }
-    if (!result.toolbarHeight) {
-        browser.storage.sync.set({ toolbarHeight: defaultVariables.toolbarHeight });
-    }
-    if (!result.defaultPosition) {
-        browser.storage.sync.set({ defaultPosition: defaultVariables.defaultPosition });
-    }
-    if (!result.iconTheme) {
-        browser.storage.sync.set({ iconTheme: defaultVariables.iconTheme });
-    }
-    if (!result.hideMethod) {
-        browser.storage.sync.set({ hideMethod: defaultVariables.hideMethod });
-    }
-    // if (!result.buttonsInToolbarDiv) {
-    //     browser.storage.sync.set({ buttonsInToolbarDiv: defaultVariables.buttonsInToolbarDiv });
-    // }
-    if (!result.buttonOrder || result.buttonOrder.length === 0) {
-        browser.storage.sync.set({ buttonOrder: defaultVariables.buttonOrder });
-    }
-    if (!result.checkboxStates || Object.keys(result.checkboxStates).length === 0) {
-        browser.storage.sync.set({ checkboxStates: defaultVariables.checkboxStates });
-    }
+browser.storage.sync.get(settingsToCheck).then((result) => {
+    settingsToCheck.forEach((setting) => {
+        if (!result[setting]) {
+            const defaultValue = defaultVariables[setting];
+            browser.storage.sync.set({ [setting]: defaultValue });
+        }
+    });
     // Check and append missing elements to the buttonOrder array
     if (result.buttonOrder && result.buttonOrder.length !== defaultVariables.buttonOrder.length) {
         const updatedButtonOrder = defaultVariables.buttonOrder.filter(item => !result.buttonOrder.includes(item));
@@ -116,4 +112,7 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
     }
 });
 
+function resetSettingsToDefault() {
+    browser.storage.sync.set(defaultVariables);
+}
 

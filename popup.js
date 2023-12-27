@@ -2,7 +2,9 @@
 const homepageURLInput = document.getElementById('homepageURL');
 const newTabURLInput = document.getElementById('newTabURL');
 const toolbarHeightRangeInput = document.getElementById('toolbarHeight');
-const currentValueDisplay = document.getElementById('currentValue');
+const toolbarTransparencyRangeInput =document.getElementById('toolbarTransparency')
+const currentValueHeight = document.getElementById('currentValueHeight');
+const currentValueTransparency = document.getElementById('currentValueTransparency');
 const defaultPositionSelect = document.getElementById('defaultPosition');
 const iconThemeSelect = document.getElementById('iconTheme');
 const hideMethodSelect = document.getElementById('hideMethod');
@@ -101,17 +103,25 @@ createTab('buttonsTab', 'Buttons');
 createTab('excludeTab', 'Exclude');
 
 // Get the current page's URL and set it as the initial value for 'customUrl' input.
-browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-	if (tabs[0] && tabs[0].url) {
-		customUrlInput.value = tabs[0].url;
-	};
-});
+browser.storage.local.get('senderURL').then((result) => {
+	if (result.senderURL) {
+		customUrlInput.value = result.senderURL;
+		browser.storage.local.remove('senderURL');
+	} else {
+		customUrlInput.value = window.location.href;
+	}
+})
 
 // Add an event listener to the toolbar height range input.
 toolbarHeightRangeInput.addEventListener('input', function() {
 	const currentValue = toolbarHeightRangeInput.value;
-	currentValueDisplay.textContent = currentValue;
-});  
+	currentValueHeight.textContent = currentValue;
+});
+
+toolbarTransparencyRangeInput.addEventListener('input', function() {
+	const currentValue = toolbarTransparencyRangeInput.value;
+	currentValueTransparency.textContent = currentValue;
+});
 
 // Buttons list creation.
 const buttonsData = [
@@ -190,11 +200,13 @@ function getCheckboxStates() {
 }
 
 // Load the values from storage.
-browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls', 'buttonOrder', 'checkboxStates']).then((result) => {
+browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls', 'buttonOrder', 'checkboxStates', 'toolbarTransparency']).then((result) => {
 	homepageURLInput.value = result.homepageURL;
 	newTabURLInput.value = result.newTabURL;
 	toolbarHeightRangeInput.value = result.toolbarHeight;
-	currentValueDisplay.textContent = result.toolbarHeight;
+	toolbarTransparencyRangeInput.value = result.toolbarTransparency
+	currentValueHeight.textContent = result.toolbarHeight;
+	currentValueTransparency.textContent = result.toolbarTransparency
 	defaultPositionSelect.value = result.defaultPosition;
 	iconThemeSelect.value = result.iconTheme;
 	hideMethodSelect.value = result.hideMethod;
@@ -266,6 +278,7 @@ generalSaveButton.addEventListener('click', () => {
 	const homepageURL = homepageURLInput.value;
 	const newTabURL = newTabURLInput.value;
 	const toolbarHeight = toolbarHeightRangeInput.value;
+	const toolbarTransparency = toolbarTransparencyRangeInput.value
 	const defaultPosition = defaultPositionSelect.value;
 	const iconTheme = iconThemeSelect.value;
 	const hideMethod = hideMethodSelect.value;
@@ -273,6 +286,7 @@ generalSaveButton.addEventListener('click', () => {
 		'homepageURL': homepageURL,
 		'newTabURL': newTabURL,
 		'toolbarHeight': toolbarHeight,
+		'toolbarTransparency': toolbarTransparency,
 		'defaultPosition': defaultPosition,
 		'iconTheme': iconTheme,
 		'hideMethod': hideMethod,
