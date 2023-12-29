@@ -14,7 +14,9 @@ browser.browserAction.onClicked.addListener((tab) => {
 // Listener to close or create tabs.
 browser.runtime.onMessage.addListener((message, sender) => {
     if (message.action === 'closeTab') {
-        browser.tabs.remove(sender.tab.id);
+        browser.storage.local.set({ lastClosedTabURL: sender.tab.url }).then( () => {
+            browser.tabs.remove(sender.tab.id);
+        });
         setTimeout(function() {
             if (!updatedEventTriggered) {
                 // Run if onActivated event was not triggered.
@@ -40,6 +42,13 @@ browser.runtime.onMessage.addListener((message, sender) => {
         });
     } else if (message.action === 'resetSettings') {
         resetSettingsToDefault();
+    } else if (message.action === 'undoCloseTab') {
+        browser.storage.local.get('lastClosedTabURL').then( (result) => {
+            if (result.lastClosedTabURL) {
+                browser.tabs.create({ url: result.lastClosedTabURL });
+                browser.storage.local.remove('lastClosedTabURL');
+            }
+        });
     };
 });
 
@@ -59,6 +68,7 @@ const defaultVariables = {
         'hideButton',
         'moveToolbarButton',
         'closeTabButton',
+        'undoCloseTabButton',
         'newTabButton',
         'goBackButton',
         'goForwardButton',
@@ -70,6 +80,7 @@ const defaultVariables = {
         'duplicateTabButton': true,
         //'menuButton': true,
         'closeTabButton': true,
+        'undoCloseTabButton': false,
         'newTabButton': true,
         'hideButton': true,
         'moveToolbarButton': true,

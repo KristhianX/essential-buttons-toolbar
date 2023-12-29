@@ -37,6 +37,7 @@ function getSettingsValues() {
                 'duplicateTabButton': true,
                 //'menuButton': true,
                 'closeTabButton': true,
+                'undoCloseTabButton': false,
                 'newTabButton': true,
                 'hideButton': true,
                 'moveToolbarButton': true,
@@ -52,6 +53,7 @@ function getSettingsValues() {
                 'hideButton',
                 'moveToolbarButton',
                 'closeTabButton',
+                'undoCloseTabButton',
                 'newTabButton',
                 'goBackButton',
                 'goForwardButton',
@@ -76,7 +78,6 @@ function createToolbar() {
     defaultButtonStyle = 'height: 100%; aspect-ratio: 1; cursor: pointer; border: none; border-radius: 20%; background: transparent';
     defaultImgStyle = 'height: 50%; aspect-ratio: 1';
     
-    // Creating the iframe with the maximum z-index value to ensure it is allways on top.
     // Placing it outside the body to make it be on top of other elements with max z-index in the body.
     toolbarIframe = document.createElement('iframe');
     toolbarIframe.style = 'height: ' + toolbarHeight + 'px; ' + defaultPosition + ': 0px; left: 0px; width: 100vw; display: block; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light';
@@ -280,8 +281,19 @@ const buttonElements = {
                 browser.runtime.sendMessage({ action: 'openSettings' });
                 //closeMenu();
             }, 100);
-        }
-    }
+        },
+    },
+    undoCloseTabButton: {
+        element: document.createElement('button'),
+        behavior: function () {
+            this.style.background = '#6eb9f7cc';
+            setTimeout(() => {
+                this.style.background = 'transparent';
+                browser.runtime.sendMessage({ action: 'undoCloseTab' });
+                //closeMenu();
+            }, 100);
+        },
+    },
     // Add more buttons.
 };
 

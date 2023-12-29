@@ -125,18 +125,19 @@ toolbarTransparencyRangeInput.addEventListener('input', function() {
 
 // Buttons list creation.
 const buttonsData = [
-	{ id: 'homeButton', label: ' Home', defaultChecked: true },
-	{ id: 'duplicateTabButton', label: ' Duplicate tab', defaultChecked: true },
-	//{ id: 'menuButton', label: ' Menu', defaultChecked: true },
-	{ id: 'closeTabButton', label: ' Close tab', defaultChecked: true },
-	{ id: 'newTabButton', label: ' New tab', defaultChecked: true },
-	{ id: 'hideButton', label: ' Hide toolbar', defaultChecked: true },
-	{ id: 'moveToolbarButton', label: ' Move toolbar', defaultChecked: true },
-	//{ id: 'devToolsButton', label: ' Dev tools (Eruda)', defaultChecked: true },
-	{ id: 'goBackButton', label: ' Go back', defaultChecked: false },
-	{ id: 'goForwardButton', label: ' Go forward', defaultChecked: false },
-	{ id: 'reloadButton', label: ' Reload page', defaultChecked: false },
-	{ id: 'settingsButton', label: ' Open add-on settings', defaultChecked: false },
+	{ id: 'homeButton', label: ' Home' },
+	{ id: 'duplicateTabButton', label: ' Duplicate tab' },
+	//{ id: 'menuButton', label: ' Menu' },
+	{ id: 'closeTabButton', label: ' Close tab' },
+	{ id: 'undoCloseTabButton', label: ' Undo close tab' },
+	{ id: 'newTabButton', label: ' New tab' },
+	{ id: 'hideButton', label: ' Hide toolbar' },
+	{ id: 'moveToolbarButton', label: ' Move toolbar' },
+	//{ id: 'devToolsButton', label: ' Dev tools (Eruda)' },
+	{ id: 'goBackButton', label: ' Go back' },
+	{ id: 'goForwardButton', label: ' Go forward' },
+	{ id: 'reloadButton', label: ' Reload page' },
+	{ id: 'settingsButton', label: ' Open add-on settings' },
 ];
 
 // Code to remove.
