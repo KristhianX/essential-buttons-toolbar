@@ -69,16 +69,14 @@
     <button id="generalResetButton">Reset</button>
   </div>
   <div id="buttonsSettings">
-    <!-- <label for="buttonsInToolbarDiv">Toolbar buttons:<span class="question-mark" id="buttonsInToolbarDivQuestionMark">?</span></label>
-    <div class="message-box" id="buttonsInToolbarDivInfo">
-      <span class="close-button" id="buttonsInToolbarDivCloseButton">X</span>
-      <p>The number of buttons in the toolbar.<br>
-        Checked buttons after this number will be appended to the menu.<br>
-      The menu button needs to be in the toolbar for the menu to be accesible.</p>
+    <div class="containers">
+      <label>Toolbar buttons:</label>
+      <div class="drop-target" id="toolbarContainer"></div>
+      <label>Menu buttons:</label>
+      <div class="drop-target" id="menuContainer"></div>
+      <label>Available buttons:</label>
+      <div class="drop-target" id="availableContainer"></div>
     </div>
-    <select id="buttonsInToolbarDiv">
-    </select> -->
-    <div id="button-list" class="list js-list"></div>
     <button id="buttonsSaveButton">Save</button>
   </div>
   <p id="statusMessage">Settings saved!</p>

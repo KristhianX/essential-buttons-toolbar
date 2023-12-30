@@ -182,13 +182,6 @@ li button {
     margin: 0;
 }
 
-.list__item label {
-    display: inline-block;
-    margin : 0 0 0 16px;
-    padding : 6px;
-    font-weight: normal;
-}
-
 #statusMessage {
     display: none;
     margin: 0;
@@ -235,72 +228,58 @@ li button {
     display: none;
 }
 
-input[type="checkbox"]:checked {
-    accent-color: #007acc;
+.containers {
+    width: 320px;
+    margin: 0 auto;
+    padding: 10px 0 0;
 }
 
-.list {
+#toolbarContainer,
+#menuContainer {
+    height: 40px;
+    width: 320px;
+    background: #777;
+    margin: 5px auto 0;
+    padding: 0 10px;
     display: flex;
-    flex-direction: column;
-    max-width: 500px;
-    width: 300px;
-    margin-top: 8px;
-    gap: 10px 0;
-    padding: 10px;
+    justify-content: space-between;
+    border-radius: 4px;
+}
+
+#availableContainer {
+    min-height: 40px;
+    font-size: 0;
+    width: 320px;
     background: #555;
+    margin: 5px auto 0;
+    padding: 0 10px 10px;
     border-radius: 4px;
-    box-shadow: black 2px 2px 1px 0px inset;
 }
 
-
-.list__item {
-    background: #333;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    position: relative;
-    border-radius: 4px;
+.drag-able {
+    display: inline-flex;
+    font-size: 16px;
+    height: 100%;
+    aspect-ratio: 1;
+    background: #444;
+    border-radius: 20%;
+    color: #001d29;
     will-change: transform;
-    box-shadow: black 2px 2px 1px 0px;
 }
 
-.list__item__icon {
-    position: relative;
-    left: 12px;
-    height: 24px;
+#availableContainer .drag-able {
+    height: 40px;
+    margin: 10px 10px 0 0; 
 }
 
-.drag-handle {
-    position: absolute;
-    right: 0;
-    width: 44px;
-    height: 32px;
-    padding-bottom: 2px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.drag-able img {
+    height: 50%;
+    aspect-ratio: 1;
+    margin: auto;
+    pointer-events: none;
 }
 
-.drag-handle::after {
-    content: ':::';
-    font-size: 20px;
-    color: #fff;
-}
-
-.list__item.is-idle .drag-handle {
-    cursor: grab;
-}
-
-.list__item.is-idle {
-    transition: 0.25s ease transform;
-}
-
-.list__item.is-draggable,
-.list__item.is-draggable .drag-handle {
-    cursor: grabbing;
-}
-
-.list__item.is-draggable {
+.is-draggable {
     z-index: 10;
+    background: #6eb9f7cc;
 }
-

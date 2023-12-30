@@ -8,13 +8,13 @@ let iconTheme
 let hideMethod
 let checkboxStates
 let buttonOrder
-//let buttonsInToolbarDiv
+let buttonsInToolbarDiv
 let excludedUrls
 let currentUrl = window.location.href;
 let isCurrentPageExcluded
 let iframeHidden = false;
 let iframeVisible = true;
-//let menuDivHidden = true;
+let menuDivHidden = true;
 let defaultButtonStyle
 let defaultImgStyle
 let toolbarIframe
@@ -25,43 +25,17 @@ let menuDiv
 function getSettingsValues() {
     return new Promise((resolve) => {
         browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls', 'checkboxStates', 'buttonOrder', 'buttonsInToolbarDiv', 'toolbarTransparency']).then((result) => {
-            homepageURL = result.homepageURL || 'https://web.tabliss.io';
-            newTabURL = result.newTabURL || 'https://web.tabliss.io';
-            toolbarHeight = result.toolbarHeight || '42';
-            toolbarTransparency = result.toolbarTransparency || '0.8'
-            defaultPosition = result.defaultPosition || 'bottom';
-            iconTheme = result.iconTheme || 'heroIcons';
-            hideMethod = result.hideMethod || 'scroll';
-            checkboxStates = result.checkboxStates || {
-                'homeButton': true,
-                'duplicateTabButton': true,
-                //'menuButton': true,
-                'closeTabButton': true,
-                'undoCloseTabButton': false,
-                'newTabButton': true,
-                'hideButton': true,
-                'moveToolbarButton': true,
-                //'devToolsButton': true,
-                'goBackButton': false,
-                'goForwardButton': false,
-                'reloadButton': false,
-                'settingsButton': false,
-            };
-            buttonOrder = result.buttonOrder || [
-                'homeButton',
-                'duplicateTabButton',
-                'hideButton',
-                'moveToolbarButton',
-                'closeTabButton',
-                'undoCloseTabButton',
-                'newTabButton',
-                'goBackButton',
-                'goForwardButton',
-                'reloadButton',
-                'settingsButton'
-            ];
-            //buttonsInToolbarDiv = result.buttonsInToolbarDiv || 6;
-            excludedUrls = result.excludedUrls || [];
+            homepageURL = result.homepageURL
+            newTabURL = result.newTabURL
+            toolbarHeight = result.toolbarHeight
+            toolbarTransparency = result.toolbarTransparency
+            defaultPosition = result.defaultPosition
+            iconTheme = result.iconTheme
+            hideMethod = result.hideMethod
+            checkboxStates = result.checkboxStates
+            buttonOrder = result.buttonOrder
+            buttonsInToolbarDiv = result.buttonsInToolbarDiv
+            excludedUrls = result.excludedUrls || []
             // Check if the current page's URL should be excluded.
             isCurrentPageExcluded = excludedUrls.some((excludedUrl) => {
                 const pattern = new RegExp('^' + excludedUrl.replace(/\*/g, '.*') + '$');
@@ -82,7 +56,7 @@ function createToolbar() {
     toolbarIframe = document.createElement('iframe');
     toolbarIframe.style = 'height: ' + toolbarHeight + 'px; ' + defaultPosition + ': 0px; left: 0px; width: 100vw; display: block; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light';
     document.body.insertAdjacentElement('afterend', toolbarIframe);
-
+    
     // Creating the toolbar.
     toolbarDiv = document.createElement('div');
     toolbarDiv.style = 'height: ' + toolbarHeight + 'px; padding: 0 4%; box-sizing: border-box; display: flex; justify-content: space-between; width: 100%; position: absolute; background-color: rgba(43, 42, 51, ' + toolbarTransparency + '); border-style: solid; border-color: #38373f';
@@ -104,7 +78,7 @@ function createToolbar() {
     };
     
     toolbarIframe.addEventListener('load', function() {
-        //toolbarIframe.contentWindow.document.body.appendChild(menuDiv);
+        toolbarIframe.contentWindow.document.body.appendChild(menuDiv);
         toolbarIframe.contentWindow.document.body.appendChild(toolbarDiv);
         toolbarIframe.contentWindow.document.body.style = 'margin: 0; height: 100%';
     });
@@ -119,7 +93,7 @@ const buttonElements = {
             setTimeout(() => {
                 this.style.background = 'transparent';
                 browser.runtime.sendMessage({ action: 'updateTab', url: homepageURL });
-                //closeMenu();
+                closeMenu();
             }, 100);
         },
     },
@@ -132,31 +106,28 @@ const buttonElements = {
             setTimeout(() => {
                 this.style.background = 'transparent';
                 browser.runtime.sendMessage({ action: 'duplicateTab', url: updatedUrl });
-                //closeMenu();
+                closeMenu();
             }, 100);
         },
     },
-    // menuButton: {
-    //     element: document.createElement('button'),
-    //     behavior: function () {
-    //         this.style.background = '#6eb9f7cc';
-    //         //const imgElement = this.querySelector('img');
-    //         if (menuDivHidden) {
-    //             //imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/x.svg');
-    //             menuDiv.style.display = 'flex';
-    //             menuDivHidden = false;
-    //             toolbarIframe.style.height = toolbarHeight * 2 + 'px';
-    //         } else {
-    //             //imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/menuButton.svg');
-    //             menuDiv.style.display = 'none';
-    //             menuDivHidden = true;
-    //             toolbarIframe.style.height = toolbarHeight + 'px';
-    //         }
-    //         setTimeout(() => {
-    //             this.style.background = 'transparent';
-    //         }, 100);
-    //     },
-    // },
+    menuButton: {
+        element: document.createElement('button'),
+        behavior: function () {
+            this.style.background = '#6eb9f7cc';
+            if (menuDivHidden) {
+                menuDiv.style.display = 'flex';
+                menuDivHidden = false;
+                toolbarIframe.style.height = toolbarHeight * 2 + 'px';
+            } else {
+                menuDiv.style.display = 'none';
+                menuDivHidden = true;
+                toolbarIframe.style.height = toolbarHeight + 'px';
+            }
+            setTimeout(() => {
+                this.style.background = 'transparent';
+            }, 100);
+        },
+    },
     closeTabButton: {
         element: document.createElement('button'),
         behavior: function () {
@@ -164,7 +135,6 @@ const buttonElements = {
             setTimeout(() => {
                 this.style.background = 'transparent';
                 browser.runtime.sendMessage({ action: 'closeTab', url: homepageURL });
-                //closeMenu();
             }, 100);
         },
     },
@@ -175,7 +145,7 @@ const buttonElements = {
             setTimeout(() => {
                 this.style.background = 'transparent';
                 browser.runtime.sendMessage({ action: 'createTab', url: newTabURL });
-                //closeMenu();
+                closeMenu();
             }, 100);
         },
     },
@@ -217,9 +187,8 @@ const buttonElements = {
                     menuDiv.style.borderWidth = '2px 0 0';
                     imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronUp.svg');
                 };
-                //menuButtonImg.src = browser.runtime.getURL('icons/' + iconTheme + '/menu.svg');
                 this.style.background = 'transparent';
-                //closeMenu();
+                closeMenu();
             }, 100);        
         },
     },
@@ -246,7 +215,7 @@ const buttonElements = {
             setTimeout(() => {
                 this.style.background = 'transparent';
                 browser.runtime.sendMessage({ action: 'goBack' });
-                //closeMenu();
+                closeMenu();
             }, 100);
         },
     },
@@ -257,7 +226,7 @@ const buttonElements = {
             setTimeout(() => {
                 this.style.background = 'transparent';
                 browser.runtime.sendMessage({ action: 'goForward' });
-                //closeMenu();
+                closeMenu();
             }, 100);
         },
     },
@@ -268,7 +237,7 @@ const buttonElements = {
             setTimeout(() => {
                 this.style.background = 'transparent';
                 browser.runtime.sendMessage({ action: 'reload' });
-                //closeMenu();
+                closeMenu();
             }, 100);
         },
     },
@@ -279,7 +248,7 @@ const buttonElements = {
             setTimeout(() => {
                 this.style.background = 'transparent';
                 browser.runtime.sendMessage({ action: 'openSettings' });
-                //closeMenu();
+                closeMenu();
             }, 100);
         },
     },
@@ -290,20 +259,20 @@ const buttonElements = {
             setTimeout(() => {
                 this.style.background = 'transparent';
                 browser.runtime.sendMessage({ action: 'undoCloseTab' });
-                //closeMenu();
+                closeMenu();
             }, 100);
         },
     },
     // Add more buttons.
 };
 
-// function closeMenu() {
-//     if (!menuDivHidden) {
-//         menuDiv.style.display = 'none';
-//         menuDivHidden = true;
-//         toolbarIframe.style.height = toolbarHeight + 'px';
-//     }
-// };
+function closeMenu() {
+    if (!menuDivHidden) {
+        menuDiv.style.display = 'none';
+        menuDivHidden = true;
+        toolbarIframe.style.height = toolbarHeight + 'px';
+    }
+};
 
 // Create and customize the buttons
 function createButtons() {
@@ -344,29 +313,17 @@ function createButtons() {
 }
 
 function appendButtons() {
-    //let buttonsAppended = 0;
-    
-    // buttonOrder.forEach(buttonId => {
-    //     if (buttonsAppended < buttonsInToolbarDiv && buttonElements[buttonId] && checkboxStates[buttonId]) {
-    //         const button = buttonElements[buttonId].element;
-    //         toolbarDiv.appendChild(button);
-    //         buttonsAppended++;
-    //     } else if (buttonElements[buttonId] && checkboxStates[buttonId]) {
-    //         // If the limit is reached, append to a second div
-    //         const button = buttonElements[buttonId].element;
-    //         menuDiv.appendChild(button);
-    //     }
-    // });
-    
+    let buttonsAppended = 0;
     buttonOrder.forEach(buttonId => {
-        if (buttonElements[buttonId]) {
+        if (buttonsAppended < buttonsInToolbarDiv && buttonElements[buttonId] && checkboxStates[buttonId]) {
             const button = buttonElements[buttonId].element;
-            // Check if the buttonId is in checkboxStates and is checked
-            if (checkboxStates[buttonId]) {
-                toolbarDiv.appendChild(button);
-            }
+            toolbarDiv.appendChild(button);
+            buttonsAppended++;
+        } else if (buttonElements[buttonId] && checkboxStates[buttonId]) {
+            const button = buttonElements[buttonId].element;
+            menuDiv.appendChild(button);
         }
-    });
+    });    
 }
 
 // Hide the iframe when scrolling. By default ignores changes in the scrolling smaller than 5.
@@ -425,7 +382,7 @@ function hideOnScroll() {
 }
 
 async function initializeToolbar() {
-    await getSettingsValues(); // Wait for settings to be retrieved
+    await getSettingsValues();
     if (!isCurrentPageExcluded) {
         createToolbar();
         createButtons();
@@ -436,5 +393,4 @@ async function initializeToolbar() {
     }
 }
 
-// Call the initialization function
 initializeToolbar();

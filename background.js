@@ -61,15 +61,16 @@ const defaultVariables = {
     defaultPosition: 'bottom',
     iconTheme: 'heroIcons',
     hideMethod: 'scroll',
-    //buttonsInToolbarDiv: 6,
+    buttonsInToolbarDiv: 6,
     buttonOrder: [
         'homeButton',
         'duplicateTabButton',
         'hideButton',
-        'moveToolbarButton',
         'closeTabButton',
-        'undoCloseTabButton',
         'newTabButton',
+        'menuButton',
+        'moveToolbarButton',
+        'undoCloseTabButton',
         'goBackButton',
         'goForwardButton',
         'reloadButton',
@@ -78,17 +79,17 @@ const defaultVariables = {
     checkboxStates: {
         'homeButton': true,
         'duplicateTabButton': true,
-        //'menuButton': true,
-        'closeTabButton': true,
-        'undoCloseTabButton': false,
-        'newTabButton': true,
         'hideButton': true,
+        'closeTabButton': true,
+        'newTabButton': true,
+        'menuButton': true,
         'moveToolbarButton': true,
+        'undoCloseTabButton': true,
         //'devToolsButton': true,
+        'settingsButton': true,
         'goBackButton': false,
         'goForwardButton': false,
         'reloadButton': false,
-        'settingsButton': false,
     },
 };
 
@@ -101,14 +102,21 @@ const settingsToCheck = [
     'iconTheme',
     'hideMethod',
     'buttonOrder',
-    'checkboxStates'
+    'checkboxStates',
+    'buttonsInToolbarDiv'
 ];
 
 browser.storage.sync.get(settingsToCheck).then((result) => {
     settingsToCheck.forEach((setting) => {
         if (!result[setting]) {
-            const defaultValue = defaultVariables[setting];
-            browser.storage.sync.set({ [setting]: defaultValue });
+            const defaultValue = defaultVariables[setting];            
+            if (setting === 'buttonsInToolbarDiv') {
+                const trueCheckboxesCount = Object.values(result.checkboxStates || {}).filter(state => state === true).length;
+                const calculatedValue = trueCheckboxesCount || defaultValue;
+                browser.storage.sync.set({ [setting]: calculatedValue });
+            } else {
+                browser.storage.sync.set({ [setting]: defaultValue });
+            }
         }
     });
     // Check and append missing elements to the buttonOrder array

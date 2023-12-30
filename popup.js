@@ -20,17 +20,15 @@ const homepageURLCloseButton = document.getElementById('homepageURLCloseButton')
 const hideMethodQuestionMark = document.getElementById('hideMethodQuestionMark');
 const hideMethodInfo = document.getElementById('hideMethodInfo');
 const hideMethodCloseButton = document.getElementById('hideMethodCloseButton');
-// const buttonsInToolbarDivQuestionMark = document.getElementById('buttonsInToolbarDivQuestionMark');
-// const buttonsInToolbarDivInfo = document.getElementById('buttonsInToolbarDivInfo');
-// const buttonsInToolbarDivCloseButton = document.getElementById('buttonsInToolbarDivCloseButton');
-// const buttonsInToolbarDivSelect = document.getElementById('buttonsInToolbarDiv');
-const buttonList = document.getElementById('button-list');
 const customUrlQuestionMark = document.getElementById('customUrlQuestionMark');
 const customUrlInfo = document.getElementById('customUrlInfo');
 const customUrlCloseButton = document.getElementById('customUrlCloseButton');
 const generalResetButton = document.getElementById('generalResetButton');
 const versionHeader = document.getElementById('versionHeader');
 const version = browser.runtime.getManifest().version
+const toolbarContainer = document.getElementById('toolbarContainer');
+const menuContainer = document.getElementById('menuContainer');
+const availableContainer = document.getElementById('availableContainer');
 
 // Get version number.
 versionHeader.textContent = version;
@@ -127,7 +125,7 @@ toolbarTransparencyRangeInput.addEventListener('input', function() {
 const buttonsData = [
 	{ id: 'homeButton', label: ' Home' },
 	{ id: 'duplicateTabButton', label: ' Duplicate tab' },
-	//{ id: 'menuButton', label: ' Menu' },
+	{ id: 'menuButton', label: ' Menu' },
 	{ id: 'closeTabButton', label: ' Close tab' },
 	{ id: 'undoCloseTabButton', label: ' Undo close tab' },
 	{ id: 'newTabButton', label: ' New tab' },
@@ -140,25 +138,12 @@ const buttonsData = [
 	{ id: 'settingsButton', label: ' Open add-on settings' },
 ];
 
-// Code to remove.
-// for (let i = 1; i <= buttonsData.length; i++) {
-//     const option = document.createElement('option');
-//     option.value = i;
-//     option.textContent = i;
-//     buttonsInToolbarDivSelect.appendChild(option);
-// }
-
-function createButtonElement(buttonData, isChecked, iconTheme, defaultPosition) {
+function createButtonElement(buttonData, iconTheme, defaultPosition) {
 	const div = document.createElement('div');
-	div.classList.add('list__item');
 	div.classList.add('is-idle');
-	div.classList.add('js-item');
-	const dragHandle = document.createElement('div');
-	dragHandle.classList.add('drag-handle');
-	dragHandle.classList.add('js-drag-handle');
-	div.appendChild(dragHandle);
+	div.classList.add('drag-able');
+	div.setAttribute("id", buttonData.id);
 	const divIcon = document.createElement('img');
-	divIcon.classList.add('list__item__icon');
 	if (buttonData.id === 'moveToolbarButton') {
 		if (defaultPosition === 'bottom') {
 			divIcon.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronUp.svg');
@@ -169,39 +154,32 @@ function createButtonElement(buttonData, isChecked, iconTheme, defaultPosition) 
 		divIcon.src = browser.runtime.getURL('icons/' + iconTheme + '/' + buttonData.id + '.svg');
 	}
 	div.appendChild(divIcon);
-	const checkboxLabel = document.createElement('label');
-	const checkbox = document.createElement('input');
-	checkbox.type = 'checkbox';
-	checkbox.id = buttonData.id;
-	checkbox.checked = isChecked;
-	checkboxLabel.appendChild(checkbox);
-	checkboxLabel.appendChild(document.createTextNode(` ${buttonData.label}`));
-	div.appendChild(checkboxLabel);
 	return div;
 }
 
 // Update the checkbox order based on the visual order.
 function updateButtonOrder() {
-	const buttonList = document.getElementById('button-list');
-	const checkboxes = buttonList.querySelectorAll('label input[type="checkbox"]');
-	const buttonOrder = Array.from(checkboxes).map(checkbox => checkbox.id);
-	browser.storage.sync.set({
-		buttonOrder: buttonOrder,
-	});
+	const buttons = Array.from(toolbarContainer.querySelectorAll('.drag-able'))
+	.concat(Array.from(menuContainer.querySelectorAll('.drag-able')))
+	.concat(Array.from(availableContainer.querySelectorAll('.drag-able')));
+	const buttonOrder = buttons.map(button => button.id);
+	return buttonOrder;
 }
 
-// Function to get the states of the checkboxes
+// Function to get the states of the buttons
 function getCheckboxStates() {
-	const checkboxes = document.querySelectorAll('label input[type="checkbox"]');
+	const buttons = Array.from(toolbarContainer.querySelectorAll('.drag-able'))
+	.concat(Array.from(menuContainer.querySelectorAll('.drag-able')))
+	.concat(Array.from(availableContainer.querySelectorAll('.drag-able')));
 	const checkboxStates = {};
-	checkboxes.forEach(checkbox => {
-		checkboxStates[checkbox.id] = checkbox.checked;
+	buttons.forEach(button => {
+		checkboxStates[button.id] = toolbarContainer.contains(button) || menuContainer.contains(button);
 	});
 	return checkboxStates;
 }
 
 // Load the values from storage.
-browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls', 'buttonOrder', 'checkboxStates', 'toolbarTransparency']).then((result) => {
+browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls', 'buttonOrder', 'checkboxStates', 'toolbarTransparency', 'buttonsInToolbarDiv']).then((result) => {
 	homepageURLInput.value = result.homepageURL;
 	newTabURLInput.value = result.newTabURL;
 	toolbarHeightRangeInput.value = result.toolbarHeight;
@@ -211,14 +189,22 @@ browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultP
 	defaultPositionSelect.value = result.defaultPosition;
 	iconThemeSelect.value = result.iconTheme;
 	hideMethodSelect.value = result.hideMethod;
-	//buttonsInToolbarDivSelect.value = result.buttonsInToolbarDiv;
+	// Create and append the button elements based on the order
 	if (result.buttonOrder && result.checkboxStates) {
-		// Create and append the button elements based on the order
+		let buttonsAppended = 0;
 		result.buttonOrder.forEach(buttonId => {
 			const buttonData = buttonsData.find(button => button.id === buttonId);
 			if (buttonData) {
-				const buttonElement = createButtonElement(buttonData, result.checkboxStates[buttonId], result.iconTheme, result.defaultPosition);
-				buttonList.appendChild(buttonElement);
+				const buttonElement = createButtonElement(buttonData, result.iconTheme, result.defaultPosition);
+				// Append buttons based on the buttonsInToolbarDiv value
+				if (result.checkboxStates[buttonId] && buttonsAppended < result.buttonsInToolbarDiv) {
+					toolbarContainer.appendChild(buttonElement);
+					buttonsAppended++;
+				} else if (result.checkboxStates[buttonId]) {
+					menuContainer.appendChild(buttonElement);
+				} else {
+					availableContainer.appendChild(buttonElement);
+				}
 			}
 		});
 	}
@@ -309,12 +295,10 @@ generalResetButton.addEventListener('click', () => {
 });
 
 buttonsSaveButton.addEventListener('click', () => {
-	//const buttonsInToolbarDiv = buttonsInToolbarDivSelect.value;
-	const checkboxes = document.querySelectorAll('label input[type="checkbox"]');
-	const buttonOrder = Array.from(checkboxes).map(checkbox => checkbox.id);
+	const buttonsInToolbarDiv = toolbarContainer.querySelectorAll('.drag-able').length;
 	browser.storage.sync.set({
-		//'buttonsInToolbarDiv': buttonsInToolbarDiv,
-		'buttonOrder': buttonOrder,
+		'buttonsInToolbarDiv': buttonsInToolbarDiv,
+		'buttonOrder': updateButtonOrder(),
 		'checkboxStates': getCheckboxStates(),
 	}).then(() => {
 		statusMessage.style.display = 'block';
@@ -325,17 +309,19 @@ buttonsSaveButton.addEventListener('click', () => {
 	});
 });
 
-// Handle drag and drop. Tutorial: https://tahazsh.com/blog/seamless-ui-with-js-drag-to-reorder-example
-let listContainer
+// Tutorial: https://tahazsh.com/blog/seamless-ui-with-js-drag-to-reorder-example
+let containers
 let draggableItem
 let pointerStartX
 let pointerStartY
-let itemsGap = 0
 let items = []
+let prevRect = {}
+let clientX
+let clientY
 
 function getAllItems() {
 	if (!items?.length) {
-		items = Array.from(listContainer.querySelectorAll('.js-item'))
+		items = Array.from(containers.querySelectorAll('.drag-able'))
 	}
 	return items
 }
@@ -344,62 +330,33 @@ function getIdleItems() {
 	return getAllItems().filter((item) => item.classList.contains('is-idle'))
 }
 
-function isItemAbove(item) {
-	return item.hasAttribute('data-is-above')
-}
-
-function isItemToggled(item) {
-	return item.hasAttribute('data-is-toggled')
-}
-
 function setup() {
-	listContainer = document.querySelector('.js-list')
-	if (!listContainer) return
-	listContainer.addEventListener('mousedown', dragStart)
-	listContainer.addEventListener('touchstart', dragStart)
+	containers = document.querySelector('.containers')
+	if (!containers) return
+	containers.addEventListener('mousedown', dragStart)
+	containers.addEventListener('touchstart', dragStart)
 	document.addEventListener('mouseup', dragEnd)
 	document.addEventListener('touchend', dragEnd)
 }
 
 function dragStart(e) {
-	if (e.target.classList.contains('js-drag-handle')) {
-		draggableItem = e.target.closest('.js-item')
+	if (e.target.classList.contains('drag-able')) {
+		draggableItem = e.target.closest('.drag-able')
 	}
 	if (!draggableItem) return
 	pointerStartX = e.clientX || e.touches[0].clientX
 	pointerStartY = e.clientY || e.touches[0].clientY
-	setItemsGap()
 	disablePageScroll()
 	initDraggableItem()
-	initItemsState()
+	prevRect = draggableItem.getBoundingClientRect()
 	document.addEventListener('mousemove', drag)
 	document.addEventListener('touchmove', drag, { passive: false })
-}
-
-function setItemsGap() {
-	if (getIdleItems().length <= 1) {
-		itemsGap = 0
-		return
-	}	
-	const item1 = getIdleItems()[0]
-	const item2 = getIdleItems()[1]
-	const item1Rect = item1.getBoundingClientRect()
-	const item2Rect = item2.getBoundingClientRect()
-	itemsGap = Math.abs(item1Rect.bottom - item2Rect.top)
 }
 
 function disablePageScroll() {
 	document.body.style.overflow = 'hidden'
 	document.body.style.touchAction = 'none'
 	document.body.style.userSelect = 'none'
-}
-
-function initItemsState() {
-	getIdleItems().forEach((item, i) => {
-		if (getAllItems().indexOf(draggableItem) > i) {
-			item.dataset.isAbove = ''
-		}
-	})
 }
 
 function initDraggableItem() {
@@ -410,101 +367,75 @@ function initDraggableItem() {
 function drag(e) {
 	if (!draggableItem) return
 	e.preventDefault()
-	const clientX = e.clientX || e.touches[0].clientX
-	const clientY = e.clientY || e.touches[0].clientY
+	clientX = e.clientX || e.touches[0].clientX
+	clientY = e.clientY || e.touches[0].clientY
 	const pointerOffsetX = clientX - pointerStartX
 	const pointerOffsetY = clientY - pointerStartY
 	draggableItem.style.transform = `translate(${pointerOffsetX}px, ${pointerOffsetY}px)`
-	updateIdleItemsStateAndPosition()
 }
 
-function updateIdleItemsStateAndPosition() {
-	const draggableItemRect = draggableItem.getBoundingClientRect()
-	const draggableItemY = draggableItemRect.top + draggableItemRect.height / 2
-	// Update state
-	getIdleItems().forEach((item) => {
-		const itemRect = item.getBoundingClientRect()
-		const itemY = itemRect.top + itemRect.height / 2
-		if (isItemAbove(item)) {
-			if (draggableItemY <= itemY) {
-				item.dataset.isToggled = ''
-			} else {
-				delete item.dataset.isToggled
-			}
-		} else {
-			if (draggableItemY >= itemY) {
-				item.dataset.isToggled = ''
-			} else {
-				delete item.dataset.isToggled
-			}
-		}
-	})
-	// Update position
-	getIdleItems().forEach((item) => {
-		if (isItemToggled(item)) {
-			const direction = isItemAbove(item) ? 1 : -1
-			item.style.transform = `translateY(${
-				direction * (draggableItemRect.height + itemsGap)
-			}px)`
-		} else {
-			item.style.transform = ''
-		}
-	})
-}
-
-function dragEnd() {
+function dragEnd(e) {
 	if (!draggableItem) return
+	highlightDragged(draggableItem)
 	applyNewItemsOrder()
 	cleanup()
 }
 
+function highlightDragged(item) {
+	item.style.background = '#6eb9f7';
+	setTimeout(() => {
+		item.style.background = '#444';
+	}, 1000);
+}
+
 function applyNewItemsOrder() {
-	const reorderedItems = []
-	getAllItems().forEach((item, index) => {
-		if (item === draggableItem) {
-			return
+	const dropTarget = getDropTargetContainer();
+	if (dropTarget) {
+		const draggedRect = draggableItem.getBoundingClientRect();
+		const targetItems = dropTarget.querySelectorAll('.is-idle');
+		let insertBeforeItem = null;
+		for (const targetItem of targetItems) {
+			const targetRect = targetItem.getBoundingClientRect();
+			if (dropTarget.id === 'availableContainer') {
+				if (draggedRect.top <= targetRect.bottom && draggedRect.left <= targetRect.left) {
+					insertBeforeItem = targetItem;
+					break;
+				}
+			} else {
+				if (draggedRect.left <= targetRect.left) {
+					insertBeforeItem = targetItem;
+					break;
+				}
+			}
 		}
-		if (!isItemToggled(item)) {
-			reorderedItems[index] = item
-			return
-		}
-		const newIndex = isItemAbove(item) ? index + 1 : index - 1
-		reorderedItems[newIndex] = item
-	})
-	for (let index = 0; index < getAllItems().length; index++) {
-		const item = reorderedItems[index]
-		if (typeof item === 'undefined') {
-			reorderedItems[index] = draggableItem
+		dropTarget.insertBefore(draggableItem, insertBeforeItem);
+	}
+	unsetDraggableItem();
+}
+
+function getDropTargetContainer() {
+	const dropTargets = document.querySelectorAll('.drop-target');
+	for (const target of dropTargets) {
+		const rect = target.getBoundingClientRect();
+		if (clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom) {
+			return target;
 		}
 	}
-	reorderedItems.forEach((item) => {
-		listContainer.appendChild(item)
-	})
+	return null;
 }
 
 function cleanup() {
-	itemsGap = 0
 	items = []
-	unsetDraggableItem()
-	unsetItemState()
 	enablePageScroll()
 	document.removeEventListener('mousemove', drag)
 	document.removeEventListener('touchmove', drag)
 }
 
 function unsetDraggableItem() {
-	draggableItem.style = null
+	draggableItem.style.transform = null
 	draggableItem.classList.remove('is-draggable')
 	draggableItem.classList.add('is-idle')
 	draggableItem = null
-}
-
-function unsetItemState() {
-	getIdleItems().forEach((item, i) => {
-		delete item.dataset.isAbove
-		delete item.dataset.isToggled
-		item.style.transform = ''
-	})
 }
 
 function enablePageScroll() {
