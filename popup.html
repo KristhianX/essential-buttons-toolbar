@@ -12,6 +12,7 @@
     <div id="headerInfo"></div>
   </div>
   <div id="settingsTabs"></div>
+  <p id="statusMessage">Settings saved!</p>
   <div id="generalSettings">  
     <label for="homepageURL">Homepage URL:<span class="question-mark" id="homepageURLQuestionMark">?</span></label>
     <div class="message-box" id="homepageURLInfo">
@@ -70,7 +71,20 @@
   </div>
   <div id="buttonsSettings">
     <div class="containers">
-      <label>Toolbar buttons:</label>
+      <label>Toolbar buttons:<span class="question-mark" id="buttonsSettingsQuestionMark">?</span></label>
+      <div class="message-box" id="buttonsSettingsInfo">
+        <span class="close-button" id="buttonsSettingsCloseButton">X</span>
+        <p>Fully-qualified URLs must include a scheme (for example, 'https://www.google.com' not 'www.google.com').
+          <br><br>
+          For security reasons, in Firefox, this may not be a privileged URL. So passing any of the following URLs will fail:
+          <br><br>
+          chrome: URLs<br>
+          javascript: URLs<br>
+          data: URLs<br>
+          file: URLs (i.e., files on the filesystem.)<br>
+          privileged about: URLs (for example, about:config, about:addons, about:debugging). Non-privileged URLs (e.g., about:blank) are allowed.
+        </p>
+      </div>
       <div class="drop-target" id="toolbarContainer"></div>
       <label>Menu buttons:</label>
       <div class="drop-target" id="menuContainer"></div>
@@ -79,7 +93,6 @@
     </div>
     <button id="buttonsSaveButton">Save</button>
   </div>
-  <p id="statusMessage">Settings saved!</p>
   <div id="excludeSettings">
     <label for="customUrl">URL:<span class="question-mark" id="customUrlQuestionMark">?</span></label>
     <div class="message-box" id="customUrlInfo">

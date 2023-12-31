@@ -126,9 +126,12 @@ browser.storage.sync.get(settingsToCheck).then((result) => {
     }
     // Check and append missing elements to the checkboxStates array
     if (result.checkboxStates && Object.keys(result.checkboxStates).length !== Object.keys(defaultVariables.checkboxStates).length) {
-        const updatedCheckboxStates = { ...defaultVariables.checkboxStates, ...result.checkboxStates };
+        const existingCheckboxStates = result.checkboxStates || {};
+        const addedItems = Object.keys(defaultVariables.checkboxStates).filter(key => !(key in existingCheckboxStates));
+        // Set added items to false
+        const updatedCheckboxStates = { ...existingCheckboxStates, ...Object.fromEntries(addedItems.map(item => [item, false])) };
         browser.storage.sync.set({ checkboxStates: updatedCheckboxStates });
-    }
+    }    
 });
 
 function resetSettingsToDefault() {

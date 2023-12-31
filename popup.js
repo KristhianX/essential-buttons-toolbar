@@ -3,32 +3,12 @@ const homepageURLInput = document.getElementById('homepageURL');
 const newTabURLInput = document.getElementById('newTabURL');
 const toolbarHeightRangeInput = document.getElementById('toolbarHeight');
 const toolbarTransparencyRangeInput =document.getElementById('toolbarTransparency')
-const currentValueHeight = document.getElementById('currentValueHeight');
-const currentValueTransparency = document.getElementById('currentValueTransparency');
 const defaultPositionSelect = document.getElementById('defaultPosition');
 const iconThemeSelect = document.getElementById('iconTheme');
 const hideMethodSelect = document.getElementById('hideMethod');
-const generalSaveButton = document.getElementById('generalSaveButton');
-const buttonsSaveButton = document.getElementById('buttonsSaveButton');
 const customUrlInput = document.getElementById('customUrl');
-const addUrlButton = document.getElementById('addUrlButton');
 const excludedUrlsList = document.getElementById('excludedUrls');
-const statusMessage = document.getElementById('statusMessage');
-const homepageURLQuestionMark = document.getElementById('homepageURLQuestionMark');
-const homepageURLInfo = document.getElementById('homepageURLInfo');
-const homepageURLCloseButton = document.getElementById('homepageURLCloseButton');
-const hideMethodQuestionMark = document.getElementById('hideMethodQuestionMark');
-const hideMethodInfo = document.getElementById('hideMethodInfo');
-const hideMethodCloseButton = document.getElementById('hideMethodCloseButton');
-const customUrlQuestionMark = document.getElementById('customUrlQuestionMark');
-const customUrlInfo = document.getElementById('customUrlInfo');
-const customUrlCloseButton = document.getElementById('customUrlCloseButton');
-const generalResetButton = document.getElementById('generalResetButton');
-const versionHeader = document.getElementById('versionHeader');
 const version = browser.runtime.getManifest().version
-const toolbarContainer = document.getElementById('toolbarContainer');
-const menuContainer = document.getElementById('menuContainer');
-const availableContainer = document.getElementById('availableContainer');
 
 // Get version number.
 versionHeader.textContent = version;
@@ -61,27 +41,27 @@ customUrlCloseButton.addEventListener('click', () => {
 	customUrlInfo.style.display = 'none';
 	customUrlQuestionMark.style.display = 'inline-block';
 });
-// buttonsInToolbarDivQuestionMark.addEventListener('click', (e) => {
-//     e.preventDefault();
-//     buttonsInToolbarDivInfo.style.display = 'block';
-//     buttonsInToolbarDivQuestionMark.style.display = 'none';
-// });
-// buttonsInToolbarDivCloseButton.addEventListener('click', () => {
-//     buttonsInToolbarDivInfo.style.display = 'none';
-//     buttonsInToolbarDivQuestionMark.style.display = 'inline-block';
-// })
+buttonsSettingsQuestionMark.addEventListener('click', (e) => {
+    e.preventDefault();
+    buttonsSettingsInfo.style.display = 'block';
+    buttonsSettingsQuestionMark.style.display = 'none';
+});
+buttonsSettingsCloseButton.addEventListener('click', () => {
+    buttonsSettingsInfo.style.display = 'none';
+    buttonsSettingsQuestionMark.style.display = 'inline-block';
+})
 
 // Handle settings tabs.
 function showTab(tabId) {
 	statusMessage.style.display = 'none';
 	// Display selected tab.
-	document.getElementById('generalSettings').style.display = tabId === 'generalTab' ? 'block' : 'none';
-	document.getElementById('buttonsSettings').style.display = tabId === 'buttonsTab' ? 'block' : 'none';
-	document.getElementById('excludeSettings').style.display = tabId === 'excludeTab' ? 'block' : 'none'; 
+	generalSettings.style.display = tabId === 'generalTab' ? 'block' : 'none';
+	buttonsSettings.style.display = tabId === 'buttonsTab' ? 'block' : 'none';
+	excludeSettings.style.display = tabId === 'excludeTab' ? 'block' : 'none'; 
 	// Change background color of the tabs buttons.
-	document.getElementById('generalTab').style.background = tabId === 'generalTab' ? '#007acc' : 'none';
-	document.getElementById('buttonsTab').style.background = tabId === 'buttonsTab' ? '#007acc' : 'none';
-	document.getElementById('excludeTab').style.background = tabId === 'excludeTab' ? '#007acc' : 'none';
+	generalTab.style.background = tabId === 'generalTab' ? '#007acc' : 'none';
+	buttonsTab.style.background = tabId === 'buttonsTab' ? '#007acc' : 'none';
+	excludeTab.style.background = tabId === 'excludeTab' ? '#007acc' : 'none';
 }
 
 // Function to create tabs buttons dynamically.
@@ -182,10 +162,12 @@ function getCheckboxStates() {
 browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls', 'buttonOrder', 'checkboxStates', 'toolbarTransparency', 'buttonsInToolbarDiv']).then((result) => {
 	homepageURLInput.value = result.homepageURL;
 	newTabURLInput.value = result.newTabURL;
-	toolbarHeightRangeInput.value = result.toolbarHeight;
-	toolbarTransparencyRangeInput.value = result.toolbarTransparency
 	currentValueHeight.textContent = result.toolbarHeight;
+	toolbarHeightRangeInput.value = result.toolbarHeight;
+	toolbarContainer.style.height = (result.toolbarHeight - 2) + 'px'
+	menuContainer.style.height = (result.toolbarHeight - 2) + 'px'
 	currentValueTransparency.textContent = result.toolbarTransparency
+	toolbarTransparencyRangeInput.value = result.toolbarTransparency
 	defaultPositionSelect.value = result.defaultPosition;
 	iconThemeSelect.value = result.iconTheme;
 	hideMethodSelect.value = result.hideMethod;
@@ -309,6 +291,14 @@ buttonsSaveButton.addEventListener('click', () => {
 	});
 });
 
+function displayInfo(e) {
+	if (e.target.classList.contains('drag-able')) {
+		clickedItem = e.target
+	}
+	if (!clickedItem) return
+	console.log('item id: ' + clickedItem.id)
+}
+
 // Tutorial: https://tahazsh.com/blog/seamless-ui-with-js-drag-to-reorder-example
 let containers
 let draggableItem
@@ -335,13 +325,14 @@ function setup() {
 	if (!containers) return
 	containers.addEventListener('mousedown', dragStart)
 	containers.addEventListener('touchstart', dragStart)
+	containers.addEventListener('click', displayInfo)
 	document.addEventListener('mouseup', dragEnd)
 	document.addEventListener('touchend', dragEnd)
 }
 
 function dragStart(e) {
 	if (e.target.classList.contains('drag-able')) {
-		draggableItem = e.target.closest('.drag-able')
+		draggableItem = e.target
 	}
 	if (!draggableItem) return
 	pointerStartX = e.clientX || e.touches[0].clientX

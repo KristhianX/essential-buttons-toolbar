@@ -21,28 +21,45 @@ let toolbarIframe
 let toolbarDiv
 let menuDiv
 
-//getSettingsValues();
+// TODO: 
+//  Display information of the buttons on settings page, create info card using label as title,
+//create all the divs with info hidden, and make the function display it, add a close button.
+//  Scroll to the top and to the bottom buttons
+//  Close all tabs and close other tabs buttons
+//  Improve undo close tab button
+//  Add toggle desktop site button
+//  Add option to display and unhide button when the toolbar is hidden
+//  Make the save buttons send a message to reinitialize the toolbar
+
 function getSettingsValues() {
     return new Promise((resolve) => {
-        browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls', 'checkboxStates', 'buttonOrder', 'buttonsInToolbarDiv', 'toolbarTransparency']).then((result) => {
-            homepageURL = result.homepageURL
-            newTabURL = result.newTabURL
-            toolbarHeight = result.toolbarHeight
-            toolbarTransparency = result.toolbarTransparency
-            defaultPosition = result.defaultPosition
-            iconTheme = result.iconTheme
-            hideMethod = result.hideMethod
-            checkboxStates = result.checkboxStates
-            buttonOrder = result.buttonOrder
-            buttonsInToolbarDiv = result.buttonsInToolbarDiv
-            excludedUrls = result.excludedUrls || []
-            // Check if the current page's URL should be excluded.
-            isCurrentPageExcluded = excludedUrls.some((excludedUrl) => {
-                const pattern = new RegExp('^' + excludedUrl.replace(/\*/g, '.*') + '$');
-                return pattern.test(currentUrl);
+        const checkValues = () => {
+            browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls', 'checkboxStates', 'buttonOrder', 'buttonsInToolbarDiv', 'toolbarTransparency']).then((result) => {
+                homepageURL = result.homepageURL
+                newTabURL = result.newTabURL
+                toolbarHeight = result.toolbarHeight
+                toolbarTransparency = result.toolbarTransparency
+                defaultPosition = result.defaultPosition
+                iconTheme = result.iconTheme
+                hideMethod = result.hideMethod
+                checkboxStates = result.checkboxStates
+                buttonOrder = result.buttonOrder
+                buttonsInToolbarDiv = result.buttonsInToolbarDiv
+                excludedUrls = result.excludedUrls || []
+                // Check if the current page's URL should be excluded.
+                isCurrentPageExcluded = excludedUrls.some((excludedUrl) => {
+                    const pattern = new RegExp('^' + excludedUrl.replace(/\*/g, '.*') + '$');
+                    return pattern.test(currentUrl);
+                });
+                // Check if all values are available, otherwise, recursively call checkValues.
+                if (homepageURL && newTabURL && toolbarHeight && toolbarTransparency && defaultPosition && iconTheme && hideMethod && checkboxStates && buttonOrder && buttonsInToolbarDiv) {
+                    resolve();
+                } else {
+                    setTimeout(checkValues, 100); // Wait for 100 milliseconds before checking again.
+                }
             });
-            resolve();
-        });
+        };
+        checkValues();
     });
 }
 
