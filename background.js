@@ -145,7 +145,7 @@ function handleInstallOrUpdate(details) {
         })
     } else if (details.reason === 'update') {
         browser.storage.local.get('disableUpdatesMsg').then( (result) => {
-            if (result.disableUpdatesMsg === false) {
+            if (result.disableUpdatesMsg === false || !result.disableUpdatesMsg) {
                 browser.storage.local.set({ installedOrUpdated: true }).then( () => {
                     browser.runtime.openOptionsPage();  
                 })

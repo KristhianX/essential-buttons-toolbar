@@ -28,10 +28,11 @@ Other buttons are being added to offer easier access or missing functionality.
 
 **Other options include:**  
 - **Toolbar height:** The number of pixels. The default value is set to 42px.  
+- **Toolbar transparency:** Adjust it to your liking. 
 - **Toolbar default position:** Top or bottom.  
 - **Icon theme:** Feather Icons and Heroicons available.  
 - **Hide on scroll method:** Option to change the used method or to disable it.  
-- **Toolbar buttons:** Enable/disable buttons and change the order.  
+- **Toolbar buttons:** Enable/disable the buttons and change their position.  
 - **Exclude URLs:** Specify which web addresses to exclude.  
 
 This extension does not access, log, or share your data. It is also ad-free and will always remain so.  
@@ -52,8 +53,7 @@ The add-on is available on AMO (Mozilla Add-ons):
   <img src="https://raw.githubusercontent.com/KristhianX/essential-buttons-toolbar/main/images/get-the-addon-fx-apr-2020.svg" width="180" alt="store">
 </a>
 
-## Updates.
-If you're not using the Nightly version, you may have to remove and reinstall the add-on to get the latest version.  
+## Version history.
 You can see the changelog here:  
 https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/versions/
 

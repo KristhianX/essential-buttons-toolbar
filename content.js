@@ -20,6 +20,7 @@ let defaultImgStyle
 let toolbarIframe
 let toolbarDiv
 let menuDiv
+let menuButtonFlag
 
 // TODO: 
 //  Scroll to the top and to the bottom buttons
@@ -73,7 +74,7 @@ function createToolbar() {
     
     // Placing it outside the body to make it be on top of other elements with max z-index in the body.
     toolbarIframe = document.createElement('iframe');
-    toolbarIframe.style = 'height: ' + toolbarHeight + 'px; ' + defaultPosition + ': 0px; left: 0px; width: 100vw; display: block; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light';
+    toolbarIframe.style = 'height: ' + toolbarHeight + 'px; ' + defaultPosition + ': 0px; left: 0px; width: 100%; display: block; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light; border-radius: 0';
     document.body.insertAdjacentElement('afterend', toolbarIframe);
     
     // Creating the toolbar.
@@ -132,19 +133,18 @@ const buttonElements = {
     menuButton: {
         element: document.createElement('button'),
         behavior: function () {
-            this.style.background = '#6eb9f7cc';
             if (menuDivHidden) {
+                this.style.background = '#6eb9f7cc';
                 menuDiv.style.display = 'flex';
                 menuDivHidden = false;
                 toolbarIframe.style.height = toolbarHeight * 2 + 'px';
             } else {
+                this.style.background = 'transparent';
                 menuDiv.style.display = 'none';
                 menuDivHidden = true;
                 toolbarIframe.style.height = toolbarHeight + 'px';
+                menuButtonFlag = this
             }
-            setTimeout(() => {
-                this.style.background = 'transparent';
-            }, 100);
         },
     },
     closeTabButton: {
@@ -290,6 +290,7 @@ function closeMenu() {
         menuDiv.style.display = 'none';
         menuDivHidden = true;
         toolbarIframe.style.height = toolbarHeight + 'px';
+        menuButtonFlag.style.background = 'transparent'
     }
 };
 
