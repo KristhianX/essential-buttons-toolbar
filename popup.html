@@ -18,9 +18,19 @@
     <h2>Upgrade Complete - Welcome Aboard!</h2>
     <div>
       <h3 style="color: #2ecc71;">New in this version</h3>
-      <p>
-        yada yada
+      <p style="text-align: left;">
+        - New button: 'Menu button'. It helps keep the main toolbar clean and organized.
         <br>
+        - New drag-and-drop mode in the settings page! Now it's more intuitive.
+        <br>
+        - The add-on will now notify you when it gets updated, so you can discover the new features!
+        <br>
+        - Changes won't affect your current settings.
+        <br>
+        - Code improvements.
+        <br>
+        - Style fixes for the settings page.
+        <br><br>
         <a href="https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/versions/">View Version History</a>
       </p>
     </div>  
@@ -39,181 +49,182 @@
       <p>Leave a <a href="https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/reviews/">review</a> or consider donating
         <br>
         to support future updates ❤️</p>
-      <a href='https://ko-fi.com/V7V7QI34Z' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi2.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
-    </div>
-    <div style="margin-top: 20px;">
-      <label style="display: flex; align-items: center; justify-content: center;">
-        <input type="checkbox" id="disableUpdatesMsg"> Disable Update Notifications
-      </label>
-    </div>
-  </div>
-  <div id="settingsTabs"></div>
-  <p id="statusMessage">Settings saved!</p>
-  <div id="generalSettings">  
-    <label for="homepageURL">Homepage URL:<span class="question-mark" id="homepageURLQuestionMark">?</span></label>
-    <div class="message-box" id="homepageURLInfo">
-      <span class="close-button" id="homepageURLCloseButton">X</span>
-      <p>Fully-qualified URLs must include a scheme (for example, 'https://www.google.com' not 'www.google.com').
-        <br><br>
-        For security reasons, in Firefox, this may not be a privileged URL. So passing any of the following URLs will fail:
-        <br><br>
-        chrome: URLs<br>
-        javascript: URLs<br>
-        data: URLs<br>
-        file: URLs (i.e., files on the filesystem.)<br>
-        privileged about: URLs (for example, about:config, about:addons, about:debugging). Non-privileged URLs (e.g., about:blank) are allowed.
-      </p>
-    </div>
-    <input type="text" id="homepageURL">
-    <br>
-    <label for="newTabURL">New tab URL:</label>
-    <input type="text" id="newTabURL">
-    <br>
-    <label for="toolbarHeight">Toolbar height:</label>
-    <span class="currentValue" id="currentValueHeight"></span>
-    <input type="range" id="toolbarHeight" min="10" max="100" step="2">
-    <br>
-    <label for="toolbarTransparency">Toolbar transparency:</label>
-    <span class="currentValue" id="currentValueTransparency"></span>
-    <input type="range" id="toolbarTransparency" min="0.5" max="1" step="0.1">
-    <br>
-    <label for="defaultPosition">Toolbar position:</label>
-    <select id="defaultPosition">
-      <option value="top">Top</option>
-      <option value="bottom">Bottom</option>
-    </select>
-    <label for="iconTheme">Icon theme:</label>
-    <select id="iconTheme">
-      <option value="featherIcons">Feather</option>
-      <option value="heroIcons">Heroicons</option>
-    </select>
-    <label for="hideMethod">Hide on scroll method:<span class="question-mark" id="hideMethodQuestionMark">?</span></label>
-    <div class="message-box" id="hideMethodInfo">
-      <span class="close-button" id="hideMethodCloseButton">X</span>
-      <p>
-        <b>Scroll:</b> It does not work on some websites.
-        <br><br>
-        <b>Touchmove:</b> This method uses touch events to hide the toolbar and works on every page, as it is not dependent on scrolling. Note that touches are not detected while the page is scrolling.
-        <br><br>
-        <b>Disable:</b> Disable the hide toolbar on scroll feature.
-      </p>
-    </div>
-    <select id="hideMethod">
-      <option value="scroll">Scroll</option>
-      <option value="touch">Touchmove</option>
-      <option value="disable">Disable</option>
-    </select>
-    <button id="generalSaveButton">Save</button>
-    <button id="generalResetButton">Reset</button>
-  </div>
-  <div id="buttonsSettings">
-    <div class="message-box" id="infoCard">
-      <span class="close-button" id="infoCardCloseButton">X</span>
-      <label id="infoCardTitle"></label>
-      <div id="infoCardDescription">
-        <div id="homeButtonDescription">
-          <p>
-            Opens the default homepage URL.
-            Can be changed in options.
-          </p>
-        </div>
-        <div id="duplicateTabButtonDescription">
-          <p>
-            Opens current URL in new tab.
-            Long press it to get default link options.
-          </p>
-        </div>
-        <div id="hideButtonDescription">
-          <p>
-            Hides the toolbar.
-            Refresh the page to display it again.
-          </p>
-        </div>
-        <div id="closeTabButtonDescription">
-          <p>
-            Closes the current tab.
-            If the current tab is the only open tab, it opens the homepage URL instead.
-          </p>
-        </div>
-        <div id="newTabButtonDescription">
-          <p>
-            Opens the default new tab page URL.
-            Can be changed in options.
-          </p>
-        </div>
-        <div id="menuButtonDescription">
-          <p>
-            Opens an additional bar. 
-            This feature is provided to improve organization.
-            Cannot be placed in the menu buttons section.
-          </p>
-        </div>
-        <div id="moveToolbarButtonDescription">
-          <p>
-            Moves the toolbar to the top of the page or to the bottom if it is at the top.
-          </p>
-        </div>
-        <div id="undoCloseTabButtonDescription">
-          <p>
-            Opens in a new tab the most recently closed tab by this add-on.
-            Please note that, at the moment, it does not keep track of tabs closed by the browser or other add-ons.
-          </p>
-        </div>
-        <div id="goBackButtonDescription">
-          <p>
-            Navigate back in history.
-          </p>
-        </div>
-        <div id="goForwardButtonDescription">
-          <p>
-            Navigate forward in history.
-          </p>
-        </div>
-        <div id="reloadButtonDescription">
-          <p>
-            Reloads the current page.
-          </p>
-        </div>
-        <div id="settingsButtonDescription">
-          <p>
-            Opens the settings page for this add-on in a new tab.
-          </p>
-        </div>
+        <a href='https://ko-fi.com/V7V7QI34Z' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi2.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
       </div>
-    </div>  
-    <div class="containers">
-      <label>Toolbar buttons:<span class="question-mark" id="buttonsSettingsQuestionMark">?</span></label>
-      <div class="message-box" id="buttonsSettingsInfo">
-        <span class="close-button" id="buttonsSettingsCloseButton">X</span>
-        <p>
-          Drag and drop the buttons to your desired position.
+      <div style="margin-top: 20px;">
+        <label style="display: flex; align-items: center; justify-content: center;">
+          <input type="checkbox" id="disableUpdatesMsg"> Disable Update Notifications
+        </label>
+      </div>
+    </div>
+    <div id="settingsTabs"></div>
+    <p id="statusMessage">Settings saved!</p>
+    <div id="generalSettings">  
+      <label for="homepageURL">Homepage URL:<span class="question-mark" id="homepageURLQuestionMark">?</span></label>
+      <div class="message-box" id="homepageURLInfo">
+        <span class="close-button" id="homepageURLCloseButton">X</span>
+        <p>Fully-qualified URLs must include a scheme (for example, 'https://www.google.com' not 'www.google.com').
           <br><br>
-          Click any button to get information about its functionality.
+          For security reasons, in Firefox, this may not be a privileged URL. So passing any of the following URLs will fail:
           <br><br>
-          Note that buttons placed in the menu will only be accessible if the menu button is in the toolbar section.
+          chrome: URLs<br>
+          javascript: URLs<br>
+          data: URLs<br>
+          file: URLs (i.e., files on the filesystem.)<br>
+          privileged about: URLs (for example, about:config, about:addons, about:debugging). Non-privileged URLs (e.g., about:blank) are allowed.
         </p>
       </div>
-      <div class="drop-target" id="toolbarContainer"></div>
-      <label>Menu buttons:</label>
-      <div class="drop-target" id="menuContainer"></div>
-      <label>Available buttons:</label>
-      <div class="drop-target" id="availableContainer"></div>
+      <input type="text" id="homepageURL">
+      <br>
+      <label for="newTabURL">New tab URL:</label>
+      <input type="text" id="newTabURL">
+      <br>
+      <label for="toolbarHeight">Toolbar height:</label>
+      <span class="currentValue" id="currentValueHeight"></span>
+      <input type="range" id="toolbarHeight" min="10" max="100" step="2">
+      <br>
+      <label for="toolbarTransparency">Toolbar transparency:</label>
+      <span class="currentValue" id="currentValueTransparency"></span>
+      <input type="range" id="toolbarTransparency" min="0.5" max="1" step="0.1">
+      <br>
+      <label for="defaultPosition">Toolbar position:</label>
+      <select id="defaultPosition">
+        <option value="top">Top</option>
+        <option value="bottom">Bottom</option>
+      </select>
+      <label for="iconTheme">Icon theme:</label>
+      <select id="iconTheme">
+        <option value="featherIcons">Feather</option>
+        <option value="heroIcons">Heroicons</option>
+      </select>
+      <label for="hideMethod">Hide on scroll method:<span class="question-mark" id="hideMethodQuestionMark">?</span></label>
+      <div class="message-box" id="hideMethodInfo">
+        <span class="close-button" id="hideMethodCloseButton">X</span>
+        <p>
+          <b>Scroll:</b> It does not work on some websites.
+          <br><br>
+          <b>Touchmove:</b> This method uses touch events to hide the toolbar and works on every page, as it is not dependent on scrolling. Note that touches are not detected while the page is scrolling.
+          <br><br>
+          <b>Disable:</b> Disable the hide toolbar on scroll feature.
+        </p>
+      </div>
+      <select id="hideMethod">
+        <option value="scroll">Scroll</option>
+        <option value="touch">Touchmove</option>
+        <option value="disable">Disable</option>
+      </select>
+      <button id="generalSaveButton">Save</button>
+      <button id="generalResetButton">Reset</button>
     </div>
-    <button id="buttonsSaveButton">Save</button>
-  </div>
-  <div id="excludeSettings">
-    <label for="customUrl">URL:<span class="question-mark" id="customUrlQuestionMark">?</span></label>
-    <div class="message-box" id="customUrlInfo">
-      <span class="close-button" id="customUrlCloseButton">X</span>
-      <p>URL to exclude. Wildcards are supported: *.example.com/*</p>
+    <div id="buttonsSettings">
+      <div class="message-box" id="infoCard">
+        <span class="close-button" id="infoCardCloseButton">X</span>
+        <label id="infoCardTitle"></label>
+        <div id="infoCardDescription">
+          <div id="homeButtonDescription">
+            <p>
+              Opens the default homepage URL.
+              Can be changed in options.
+            </p>
+          </div>
+          <div id="duplicateTabButtonDescription">
+            <p>
+              Opens current URL in new tab.
+              Long press it to get default link options.
+            </p>
+          </div>
+          <div id="hideButtonDescription">
+            <p>
+              Hides the toolbar.
+              Refresh the page to display it again.
+            </p>
+          </div>
+          <div id="closeTabButtonDescription">
+            <p>
+              Closes the current tab.
+              If the current tab is the only open tab, it opens the homepage URL instead.
+            </p>
+          </div>
+          <div id="newTabButtonDescription">
+            <p>
+              Opens the default new tab page URL.
+              Can be changed in options.
+            </p>
+          </div>
+          <div id="menuButtonDescription">
+            <p>
+              Opens an additional bar. 
+              This feature is provided to improve organization.
+              Cannot be placed in the menu buttons section.
+            </p>
+          </div>
+          <div id="moveToolbarButtonDescription">
+            <p>
+              Moves the toolbar to the top of the page or to the bottom if it is at the top.
+            </p>
+          </div>
+          <div id="undoCloseTabButtonDescription">
+            <p>
+              Opens in a new tab the most recently closed tab by this add-on.
+              Please note that, at the moment, it does not keep track of tabs closed by the browser or other add-ons.
+            </p>
+          </div>
+          <div id="goBackButtonDescription">
+            <p>
+              Navigate back in history.
+            </p>
+          </div>
+          <div id="goForwardButtonDescription">
+            <p>
+              Navigate forward in history.
+            </p>
+          </div>
+          <div id="reloadButtonDescription">
+            <p>
+              Reloads the current page.
+            </p>
+          </div>
+          <div id="settingsButtonDescription">
+            <p>
+              Opens the settings page for this add-on in a new tab.
+            </p>
+          </div>
+        </div>
+      </div>  
+      <div class="containers">
+        <label>Toolbar buttons:<span class="question-mark" id="buttonsSettingsQuestionMark">?</span></label>
+        <div class="message-box" id="buttonsSettingsInfo">
+          <span class="close-button" id="buttonsSettingsCloseButton">X</span>
+          <p>
+            Drag and drop the buttons to your desired position.
+            <br><br>
+            Click any button to get information about its functionality.
+            <br><br>
+            Note that buttons placed in the menu will only be accessible if the menu button is in the toolbar section.
+          </p>
+        </div>
+        <div class="drop-target" id="toolbarContainer"></div>
+        <label>Menu buttons:</label>
+        <div class="drop-target" id="menuContainer"></div>
+        <label>Available buttons:</label>
+        <div class="drop-target" id="availableContainer"></div>
+      </div>
+      <button id="buttonsSaveButton">Save</button>
     </div>
-    <input type="text" id="customUrl">
-    <br>
-    <button id="addUrlButton">Exclude URL</button>
-    <label>Excluded URLs:</label>
-    <ul id="excludedUrls"></ul>
-  </div>
-  <script src="content.js"></script>
-  <script src="popup.js"></script>
-</body>
-</html>
+    <div id="excludeSettings">
+      <label for="customUrl">URL:<span class="question-mark" id="customUrlQuestionMark">?</span></label>
+      <div class="message-box" id="customUrlInfo">
+        <span class="close-button" id="customUrlCloseButton">X</span>
+        <p>URL to exclude. Wildcards are supported: *.example.com/*</p>
+      </div>
+      <input type="text" id="customUrl">
+      <br>
+      <button id="addUrlButton">Exclude URL</button>
+      <label>Excluded URLs:</label>
+      <ul id="excludedUrls"></ul>
+    </div>
+    <script src="content.js"></script>
+    <script src="popup.js"></script>
+  </body>
+  </html>
+  
