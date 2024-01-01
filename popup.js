@@ -10,9 +10,25 @@ const customUrlInput = document.getElementById('customUrl');
 const excludedUrlsList = document.getElementById('excludedUrls');
 const version = browser.runtime.getManifest().version
 let currentlyDisplayedDescription
+const addonInfoCloseButton = document.getElementById('addonInfoCloseButton')
+const checkbox = document.getElementById('disableUpdatesMsg');
 
 // Get version number.
 versionHeader.textContent = version;
+
+function handleCheckboxChange() {
+	const isChecked = checkbox.checked;
+	browser.storage.local.set({ 'disableUpdatesMsg': isChecked });
+}
+
+// Add event listener to the checkbox
+checkbox.addEventListener('change', handleCheckboxChange);
+
+// Retrieve the flag from browser.local.storage and update the checkbox state
+browser.storage.local.get('disableUpdatesMsg', function(result) {
+	const isChecked = result.disableUpdatesFlag || false;
+	checkbox.checked = isChecked;
+});
 
 // Information messages.
 homepageURLQuestionMark.addEventListener('click', (e) => {
@@ -52,6 +68,14 @@ buttonsSettingsCloseButton.addEventListener('click', () => {
 	buttonsSettingsQuestionMark.style.display = 'inline-block';
 })
 infoCardCloseButton.addEventListener('click', closeButtonInfo)
+addonInfoCloseButton.addEventListener('click', () => {
+	addonInfo.style.display = 'none'
+	headerInfo.style.display = 'inline-flex'
+})
+headerInfo.addEventListener('click', () => {
+	headerInfo.style.display = 'none'
+	addonInfo.style.display = 'block'
+})
 
 // Handle settings tabs.
 function showTab(tabId) {
@@ -83,17 +107,21 @@ createTab('buttonsTab', 'Buttons');
 createTab('excludeTab', 'Exclude');
 
 // Get the current page's URL and set it as the initial value for 'customUrl' input.
-browser.storage.local.get([ 'senderURL', 'installedOrUpdated' ]).then((result) => {
+browser.storage.local.get([ 'senderURL', 'installedOrUpdated', 'disableUpdatesMsg' ]).then((result) => {
 	if (result.senderURL) {
 		customUrlInput.value = result.senderURL;
 		browser.storage.local.remove('senderURL');
 	} else {
 		customUrlInput.value = window.location.href;
 	}
-	console.log(result.installedOrUpdated)
 	if (result.installedOrUpdated === true) {
-		//document.body.style.background = 'red';
+		addonInfo.style.display = 'block'
+		headerInfo.style.display = 'none'
 		browser.storage.local.set({ installedOrUpdated: false })
+	}
+	if (result.disableUpdatesMsg) {
+		const isChecked = result.disableUpdatesMsg
+		checkbox.checked = isChecked;
 	}
 })
 
@@ -415,6 +443,10 @@ function applyNewItemsOrder() {
 	if (Math.abs(pointerOffsetX) >= 5 || Math.abs(pointerOffsetY) >= 5) {
 		const dropTarget = getDropTargetContainer();
 		if (dropTarget) {
+			if (dropTarget.id === 'menuContainer' && draggableItem.id === 'menuButton') {
+				unsetDraggableItem();
+				return
+			}
 			const draggedRect = draggableItem.getBoundingClientRect();
 			const targetItems = dropTarget.querySelectorAll('.is-idle');
 			let insertBeforeItem = null;

@@ -3,15 +3,13 @@
 }
 
 :root {
-    height: 120vh;
     background: #1e1e1e;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
-    -moz-osx-font-smoothing: grayscale;
+    padding-bottom: 100px;
 }
 
 body {
-    height: 120vh;
     background: #1e1e1e;
     color: #fff;
     font-family: Arial, sans-serif;
@@ -23,6 +21,27 @@ body {
 #header {
     margin: 0 auto;
     width: fit-content;
+    display: flex;
+    align-items: center;
+}
+
+#headerInfo {
+    height: 32px;
+    width: 32px;
+    margin-left: 10px;
+    border-radius: 20%;
+    background: lightskyblue;
+    display: inline-flex;
+}
+
+#headerInfo img {
+    width: 24px;
+    height: 24px;
+    margin: auto;
+}
+
+a {
+    color: #3498db;
 }
 
 h2 {
@@ -35,6 +54,7 @@ h3 {
     font-size: 14px;
     font-style: italic;
     display: inline-block;
+    margin: 0;
 }
 
 label {
@@ -77,6 +97,10 @@ label {
     font-size: 18px;
     font-weight: bold;
     color: #007acc;
+}
+
+input[type="checkbox"]:checked {
+    accent-color: #007acc;
 }
 
 input[type="text"] {
@@ -312,4 +336,22 @@ li button {
 
 #infoCardDescription div {
     display: none;
+}
+
+#addonInfo {
+    display: none;
+    max-width: 400px;
+    margin: 0 auto 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    width: 320px;
+}
+
+#addonInfo h2 {
+    font-size: 15px;
+    display: block;
+    padding: 0;
 }

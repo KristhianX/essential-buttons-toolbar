@@ -12,9 +12,9 @@ let buttonsInToolbarDiv
 let excludedUrls
 let currentUrl = window.location.href;
 let isCurrentPageExcluded
-let iframeHidden = false;
-let iframeVisible = true;
-let menuDivHidden = true;
+let iframeHidden = false
+let iframeVisible = true
+let menuDivHidden = true
 let defaultButtonStyle
 let defaultImgStyle
 let toolbarIframe
@@ -22,7 +22,6 @@ let toolbarDiv
 let menuDiv
 
 // TODO: 
-//  Notify on update, info button settings page header
 //  Scroll to the top and to the bottom buttons
 //  Close all tabs and close other tabs buttons
 //  Improve undo close tab button
@@ -31,6 +30,8 @@ let menuDiv
 //  Make the save buttons send a message to reinitialize the toolbar
 //  ? Change the add-on icon
 //  Option to change toolbar theme (TRON)
+//  Import and export settings
+//  Add-on idea: Fix problematic pages
 
 function getSettingsValues() {
     return new Promise((resolve) => {
@@ -56,7 +57,7 @@ function getSettingsValues() {
                 if (homepageURL && newTabURL && toolbarHeight && toolbarTransparency && defaultPosition && iconTheme && hideMethod && checkboxStates && buttonOrder && buttonsInToolbarDiv) {
                     resolve();
                 } else {
-                    setTimeout(checkValues, 100); // Wait for 100 milliseconds before checking again.
+                    setTimeout(checkValues, 100);
                 }
             });
         };

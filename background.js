@@ -65,16 +65,16 @@ const defaultVariables = {
     buttonOrder: [
         'homeButton',
         'duplicateTabButton',
-        'hideButton',
+        'moveToolbarButton',
         'closeTabButton',
         'newTabButton',
         'menuButton',
-        'moveToolbarButton',
+        'hideButton',
         'undoCloseTabButton',
+        'settingsButton',
         'goBackButton',
         'goForwardButton',
-        'reloadButton',
-        'settingsButton'
+        'reloadButton'
     ],
     checkboxStates: {
         'homeButton': true,
@@ -139,9 +139,17 @@ function resetSettingsToDefault() {
 }
 
 function handleInstallOrUpdate(details) {
-    if (details.reason === 'install' || details.reason === 'update') {
-        browser.storage.local.set({ installedOrUpdated: true }).then( () => {
-            browser.runtime.openOptionsPage();  
+    if (details.reason === 'install') {
+        browser.storage.local.set({ disableUpdatesMsg: false, installedOrUpdated: true }).then( () => {
+                browser.runtime.openOptionsPage();  
+        })
+    } else if (details.reason === 'update') {
+        browser.storage.local.get('disableUpdatesMsg').then( (result) => {
+            if (result.disableUpdatesMsg === false) {
+                browser.storage.local.set({ installedOrUpdated: true }).then( () => {
+                    browser.runtime.openOptionsPage();  
+                })
+            }
         })
     }
 }
