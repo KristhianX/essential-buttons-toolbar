@@ -22,14 +22,15 @@ let toolbarDiv
 let menuDiv
 
 // TODO: 
-//  Display information of the buttons on settings page, create info card using label as title,
-//create all the divs with info hidden, and make the function display it, add a close button.
+//  Notify on update, info button settings page header
 //  Scroll to the top and to the bottom buttons
 //  Close all tabs and close other tabs buttons
 //  Improve undo close tab button
 //  Add toggle desktop site button
 //  Add option to display and unhide button when the toolbar is hidden
 //  Make the save buttons send a message to reinitialize the toolbar
+//  ? Change the add-on icon
+//  Option to change toolbar theme (TRON)
 
 function getSettingsValues() {
     return new Promise((resolve) => {

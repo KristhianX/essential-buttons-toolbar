@@ -14,7 +14,7 @@ Other buttons are being added to offer easier access or missing functionality.
 ## Features.  
 **Available buttons are:**  
 - **Homepage:** Opens the default homepage URL. Can be changed in options.  
-- **Duplicate Tab:** Opens current URL in new tab. Long press it to get default link options.  
+- **Duplicate Tab:** Opens current URL in new tab.Long-press it to access the browser's default link options, such as opening in the background, copying the link, etc.  
 - **Hide toolbar:** Hides the toolbar. Refresh the page to display it again.  
 - **Move toolbar:** Moves the toolbar to the top of the page or to the bottom if it is at the top.  
 - **Close tab:** Closes the current tab. If the current tab is the only open tab, it opens the homepage URL instead.  
@@ -22,6 +22,9 @@ Other buttons are being added to offer easier access or missing functionality.
 - **Go back:** Navigate back in history.  
 - **Go forward:** Navigate forward in history.  
 - **Reload:** Reloads the current page.
+- **Menu:** Opens an additional bar. This feature is provided to improve organization. Buttons in the menu can be customized on the settings page.
+- **Undo Close Tab:** Opens in a new tab the most recently closed tab by this add-on. Please note that, at the moment, it does not keep track of tabs closed by the browser or other add-ons.
+- **Settings:** Opens the settings page for this add-on in a new tab.
 
 **Other options include:**  
 - **Toolbar height:** The number of pixels. The default value is set to 42px.  

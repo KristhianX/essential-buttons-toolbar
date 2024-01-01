@@ -138,3 +138,14 @@ function resetSettingsToDefault() {
     browser.storage.sync.set(defaultVariables);
 }
 
+function handleInstallOrUpdate(details) {
+    if (details.reason === 'install' || details.reason === 'update') {
+        browser.storage.local.set({ installedOrUpdated: true }).then( () => {
+            browser.runtime.openOptionsPage();  
+        })
+    }
+}
+
+browser.runtime.onInstalled.addListener(handleInstallOrUpdate);
+
+

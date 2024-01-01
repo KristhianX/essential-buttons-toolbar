@@ -9,6 +9,7 @@ const hideMethodSelect = document.getElementById('hideMethod');
 const customUrlInput = document.getElementById('customUrl');
 const excludedUrlsList = document.getElementById('excludedUrls');
 const version = browser.runtime.getManifest().version
+let currentlyDisplayedDescription
 
 // Get version number.
 versionHeader.textContent = version;
@@ -42,14 +43,15 @@ customUrlCloseButton.addEventListener('click', () => {
 	customUrlQuestionMark.style.display = 'inline-block';
 });
 buttonsSettingsQuestionMark.addEventListener('click', (e) => {
-    e.preventDefault();
-    buttonsSettingsInfo.style.display = 'block';
-    buttonsSettingsQuestionMark.style.display = 'none';
+	e.preventDefault();
+	buttonsSettingsInfo.style.display = 'block';
+	buttonsSettingsQuestionMark.style.display = 'none';
 });
 buttonsSettingsCloseButton.addEventListener('click', () => {
-    buttonsSettingsInfo.style.display = 'none';
-    buttonsSettingsQuestionMark.style.display = 'inline-block';
+	buttonsSettingsInfo.style.display = 'none';
+	buttonsSettingsQuestionMark.style.display = 'inline-block';
 })
+infoCardCloseButton.addEventListener('click', closeButtonInfo)
 
 // Handle settings tabs.
 function showTab(tabId) {
@@ -81,12 +83,17 @@ createTab('buttonsTab', 'Buttons');
 createTab('excludeTab', 'Exclude');
 
 // Get the current page's URL and set it as the initial value for 'customUrl' input.
-browser.storage.local.get('senderURL').then((result) => {
+browser.storage.local.get([ 'senderURL', 'installedOrUpdated' ]).then((result) => {
 	if (result.senderURL) {
 		customUrlInput.value = result.senderURL;
 		browser.storage.local.remove('senderURL');
 	} else {
 		customUrlInput.value = window.location.href;
+	}
+	console.log(result.installedOrUpdated)
+	if (result.installedOrUpdated === true) {
+		//document.body.style.background = 'red';
+		browser.storage.local.set({ installedOrUpdated: false })
 	}
 })
 
@@ -291,12 +298,33 @@ buttonsSaveButton.addEventListener('click', () => {
 	});
 });
 
-function displayInfo(e) {
+function displayButtonInfo(e) {	
 	if (e.target.classList.contains('drag-able')) {
-		clickedItem = e.target
+		setTimeout(function () {
+			if (!isDragging) {
+				closeButtonInfo()
+				clickedItem = e.target;
+				const buttonData = buttonsData.find(button => button.id === clickedItem.id);
+				if (buttonData) {
+					infoCard.style.display = 'block'
+					infoCardTitle.textContent = buttonData.label;
+					const descriptionDiv = document.getElementById('infoCardDescription');
+					const descriptionDivId = `${clickedItem.id}Description`;
+					currentlyDisplayedDescription = descriptionDiv.querySelector(`#${descriptionDivId}`);		
+					if (currentlyDisplayedDescription) {
+						currentlyDisplayedDescription.style.display = 'block';
+					}
+				}
+			}
+		}, 300);
 	}
-	if (!clickedItem) return
-	console.log('item id: ' + clickedItem.id)
+}
+
+function closeButtonInfo() {
+	if (currentlyDisplayedDescription) {
+		currentlyDisplayedDescription.style.display = 'none';
+		infoCard.style.display = 'none';
+	}
 }
 
 // Tutorial: https://tahazsh.com/blog/seamless-ui-with-js-drag-to-reorder-example
@@ -308,6 +336,9 @@ let items = []
 let prevRect = {}
 let clientX
 let clientY
+let isDragging = false
+let pointerOffsetX
+let pointerOffsetY
 
 function getAllItems() {
 	if (!items?.length) {
@@ -325,7 +356,6 @@ function setup() {
 	if (!containers) return
 	containers.addEventListener('mousedown', dragStart)
 	containers.addEventListener('touchstart', dragStart)
-	containers.addEventListener('click', displayInfo)
 	document.addEventListener('mouseup', dragEnd)
 	document.addEventListener('touchend', dragEnd)
 }
@@ -335,6 +365,7 @@ function dragStart(e) {
 		draggableItem = e.target
 	}
 	if (!draggableItem) return
+	displayButtonInfo(e)
 	pointerStartX = e.clientX || e.touches[0].clientX
 	pointerStartY = e.clientY || e.touches[0].clientY
 	disablePageScroll()
@@ -358,10 +389,11 @@ function initDraggableItem() {
 function drag(e) {
 	if (!draggableItem) return
 	e.preventDefault()
+	isDragging = true
 	clientX = e.clientX || e.touches[0].clientX
 	clientY = e.clientY || e.touches[0].clientY
-	const pointerOffsetX = clientX - pointerStartX
-	const pointerOffsetY = clientY - pointerStartY
+	pointerOffsetX = clientX - pointerStartX
+	pointerOffsetY = clientY - pointerStartY
 	draggableItem.style.transform = `translate(${pointerOffsetX}px, ${pointerOffsetY}px)`
 }
 
@@ -380,26 +412,21 @@ function highlightDragged(item) {
 }
 
 function applyNewItemsOrder() {
-	const dropTarget = getDropTargetContainer();
-	if (dropTarget) {
-		const draggedRect = draggableItem.getBoundingClientRect();
-		const targetItems = dropTarget.querySelectorAll('.is-idle');
-		let insertBeforeItem = null;
-		for (const targetItem of targetItems) {
-			const targetRect = targetItem.getBoundingClientRect();
-			if (dropTarget.id === 'availableContainer') {
+	if (Math.abs(pointerOffsetX) >= 5 || Math.abs(pointerOffsetY) >= 5) {
+		const dropTarget = getDropTargetContainer();
+		if (dropTarget) {
+			const draggedRect = draggableItem.getBoundingClientRect();
+			const targetItems = dropTarget.querySelectorAll('.is-idle');
+			let insertBeforeItem = null;
+			for (const targetItem of targetItems) {
+				const targetRect = targetItem.getBoundingClientRect();
 				if (draggedRect.top <= targetRect.bottom && draggedRect.left <= targetRect.left) {
 					insertBeforeItem = targetItem;
 					break;
 				}
-			} else {
-				if (draggedRect.left <= targetRect.left) {
-					insertBeforeItem = targetItem;
-					break;
-				}
 			}
+			dropTarget.insertBefore(draggableItem, insertBeforeItem);
 		}
-		dropTarget.insertBefore(draggableItem, insertBeforeItem);
 	}
 	unsetDraggableItem();
 }
@@ -417,6 +444,7 @@ function getDropTargetContainer() {
 
 function cleanup() {
 	items = []
+	isDragging = false
 	enablePageScroll()
 	document.removeEventListener('mousemove', drag)
 	document.removeEventListener('touchmove', drag)
