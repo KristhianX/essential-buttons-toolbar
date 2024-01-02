@@ -2,7 +2,10 @@
 *Adds a toolbar to Android Firefox with essential buttons: Homepage, Duplicate Tab, New tab, Close tab and more.*  
 
 ## Some screenshots.
-<img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231125-221820.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231125-221632.png?raw=true" width="200px"/>
+<img src="images/Screenshot_20240101-163148.png" width="200px"/>
+<img src="images/Screenshot_20240101-163355.png" width="200px"/>
+<img src="images/Screenshot_20240101-163308.png" width="200px"/>
+<img src="images/Screenshot_20240101-163042.png" width="200px"/>
 
 ## Why?  
 This add-on aims to fill basic missing functionality in Android Firefox. The main reason is to provide a normal home button.  
