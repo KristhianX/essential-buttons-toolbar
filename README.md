@@ -4,8 +4,6 @@
 ## Some screenshots.
 <img src="images/Screenshot_20240101-163148.png" width="200px"/> <img src="images/Screenshot_20240101-163355.png" width="200px"/> <img src="images/Screenshot_20240101-163308.png" width="200px"/> <img src="images/Screenshot_20240101-163042.png" width="200px"/>  
 
-<img src="images/Screenshot_20240101-161624.png" width="200px"/> <img src="images/Screenshot_20240101-162313.png" width="200px"/> <img src="images/Screenshot_20240101-161749.png" width="200px"/> <img src="images/Screenshot_20240101-162251.png" width="200px"/>
-
 ## Why?  
 This add-on aims to fill basic missing functionality in Android Firefox. The main reason is to provide a normal home button.  
 The home button should not behave as the new tab button. This behavior is not intuitive and differs from the standard behavior found in most browsers, including the desktop version of Firefox, which follows the universal approach to the home button.  
