@@ -12,7 +12,7 @@ browser.browserAction.onClicked.addListener((tab) => {
 });
 
 // Listener to close or create tabs.
-browser.runtime.onMessage.addListener((message, sender) => {
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'closeTab') {
         browser.storage.local.set({ lastClosedTabURL: sender.tab.url }).then( () => {
             browser.tabs.remove(sender.tab.id);
@@ -41,7 +41,10 @@ browser.runtime.onMessage.addListener((message, sender) => {
             browser.runtime.openOptionsPage();
         });
     } else if (message.action === 'resetSettings') {
-        resetSettingsToDefault();
+        resetSettingsToDefault().then(() => {
+            sendResponse({ success: true });
+        });
+        return true;
     } else if (message.action === 'undoCloseTab') {
         browser.storage.local.get('lastClosedTabURL').then( (result) => {
             if (result.lastClosedTabURL) {
@@ -74,7 +77,9 @@ const defaultVariables = {
         'settingsButton',
         'goBackButton',
         'goForwardButton',
-        'reloadButton'
+        'reloadButton',
+        'scrollTopButton',
+        'scrollBottomButton'
     ],
     checkboxStates: {
         'homeButton': true,
@@ -90,6 +95,8 @@ const defaultVariables = {
         'goBackButton': false,
         'goForwardButton': false,
         'reloadButton': false,
+        'scrollTopButton': false,
+        'scrollBottomButton': false,
     },
 };
 
@@ -135,7 +142,7 @@ browser.storage.sync.get(settingsToCheck).then((result) => {
 });
 
 function resetSettingsToDefault() {
-    browser.storage.sync.set(defaultVariables);
+    return browser.storage.sync.set(defaultVariables);
 }
 
 function handleInstallOrUpdate(details) {

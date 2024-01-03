@@ -26,8 +26,8 @@ body {
 }
 
 #headerInfo {
-    height: 32px;
-    width: 32px;
+    height: 30px;
+    width: 30px;
     margin-left: 10px;
     border-radius: 20%;
     background: lavender;
@@ -227,7 +227,8 @@ li button {
     justify-content: center;
     border-radius: 4px;
     border: 1px solid #444;
-    margin: 0 10px 10px;
+    margin: 0 auto 10px;
+    max-width: 340px;
 }
 
 #settingsTabs div {
@@ -256,7 +257,8 @@ li button {
 }
 
 #generalSettings, #excludeSettings {
-    margin-left: 10px;
+    margin: 0 auto;
+    max-width: 340px;
 }
 
 .containers {
@@ -265,11 +267,13 @@ li button {
 }
 
 #buttonsSettings .message-box {
-    margin-left: 10px;
+    margin: 0 auto;
 }
 
 .containers label {
-    margin: 10px 0 0 10px;
+    margin: 10px auto;
+    width: 300px;
+    text-align: center;
 }
 
 #toolbarContainer,
@@ -340,7 +344,7 @@ li button {
 
 #addonInfo {
     display: none;
-    max-width: 400px;
+    max-width: 320px;
     margin: 0 auto 20px;
     padding: 10px;
     border: 1px solid #ccc;

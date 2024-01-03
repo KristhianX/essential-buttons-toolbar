@@ -138,19 +138,21 @@ toolbarTransparencyRangeInput.addEventListener('input', function() {
 
 // Buttons list creation.
 const buttonsData = [
-	{ id: 'homeButton', label: ' Home' },
-	{ id: 'duplicateTabButton', label: ' Duplicate tab' },
-	{ id: 'menuButton', label: ' Menu' },
-	{ id: 'closeTabButton', label: ' Close tab' },
-	{ id: 'undoCloseTabButton', label: ' Undo close tab' },
-	{ id: 'newTabButton', label: ' New tab' },
-	{ id: 'hideButton', label: ' Hide toolbar' },
-	{ id: 'moveToolbarButton', label: ' Move toolbar' },
-	//{ id: 'devToolsButton', label: ' Dev tools (Eruda)' },
-	{ id: 'goBackButton', label: ' Go back' },
-	{ id: 'goForwardButton', label: ' Go forward' },
-	{ id: 'reloadButton', label: ' Reload page' },
-	{ id: 'settingsButton', label: ' Open add-on settings' },
+	{ id: 'homeButton', label: 'Home' },
+	{ id: 'duplicateTabButton', label: 'Duplicate tab' },
+	{ id: 'menuButton', label: 'Menu' },
+	{ id: 'closeTabButton', label: 'Close tab' },
+	{ id: 'undoCloseTabButton', label: 'Undo close tab' },
+	{ id: 'newTabButton', label: 'New tab' },
+	{ id: 'hideButton', label: 'Hide toolbar' },
+	{ id: 'moveToolbarButton', label: 'Move toolbar' },
+	//{ id: 'devToolsButton', label: 'Dev tools (Eruda)' },
+	{ id: 'goBackButton', label: 'Go back' },
+	{ id: 'goForwardButton', label: 'Go forward' },
+	{ id: 'reloadButton', label: 'Reload page' },
+	{ id: 'settingsButton', label: 'Open add-on settings' },
+	{ id: 'scrollTopButton', label: 'Scroll page to the top' },
+	{ id: 'scrollBottomButton', label: 'Scroll page to the bottom' },
 ];
 
 function createButtonElement(buttonData, iconTheme, defaultPosition) {
@@ -194,57 +196,70 @@ function getCheckboxStates() {
 }
 
 // Load the values from storage.
-browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls', 'buttonOrder', 'checkboxStates', 'toolbarTransparency', 'buttonsInToolbarDiv']).then((result) => {
-	homepageURLInput.value = result.homepageURL;
-	newTabURLInput.value = result.newTabURL;
-	currentValueHeight.textContent = result.toolbarHeight;
-	toolbarHeightRangeInput.value = result.toolbarHeight;
-	toolbarContainer.style.height = (result.toolbarHeight - 2) + 'px'
-	menuContainer.style.height = (result.toolbarHeight - 2) + 'px'
-	currentValueTransparency.textContent = result.toolbarTransparency
-	toolbarTransparencyRangeInput.value = result.toolbarTransparency
-	defaultPositionSelect.value = result.defaultPosition;
-	iconThemeSelect.value = result.iconTheme;
-	hideMethodSelect.value = result.hideMethod;
-	// Create and append the button elements based on the order
-	if (result.buttonOrder && result.checkboxStates) {
-		let buttonsAppended = 0;
-		result.buttonOrder.forEach(buttonId => {
-			const buttonData = buttonsData.find(button => button.id === buttonId);
-			if (buttonData) {
-				const buttonElement = createButtonElement(buttonData, result.iconTheme, result.defaultPosition);
-				// Append buttons based on the buttonsInToolbarDiv value
-				if (result.checkboxStates[buttonId] && buttonsAppended < result.buttonsInToolbarDiv) {
-					toolbarContainer.appendChild(buttonElement);
-					buttonsAppended++;
-				} else if (result.checkboxStates[buttonId]) {
-					menuContainer.appendChild(buttonElement);
-				} else {
-					availableContainer.appendChild(buttonElement);
+function loadValues() {
+	// Remove existing .drag-able and li elements
+	const dragableElements = document.querySelectorAll('.drag-able');
+	dragableElements.forEach(element => {
+		element.remove();
+	});
+	const liElements = excludedUrlsList.querySelectorAll('li');
+	liElements.forEach(li => {
+		li.remove();
+	});
+	browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls', 'buttonOrder', 'checkboxStates', 'toolbarTransparency', 'buttonsInToolbarDiv']).then((result) => {
+		homepageURLInput.value = result.homepageURL;
+		newTabURLInput.value = result.newTabURL;
+		currentValueHeight.textContent = result.toolbarHeight;
+		toolbarHeightRangeInput.value = result.toolbarHeight;
+		toolbarContainer.style.height = (result.toolbarHeight - 2) + 'px'
+		menuContainer.style.height = (result.toolbarHeight - 2) + 'px'
+		currentValueTransparency.textContent = result.toolbarTransparency
+		toolbarTransparencyRangeInput.value = result.toolbarTransparency
+		defaultPositionSelect.value = result.defaultPosition;
+		iconThemeSelect.value = result.iconTheme;
+		hideMethodSelect.value = result.hideMethod;
+		// Create and append the button elements based on the order
+		if (result.buttonOrder && result.checkboxStates) {
+			let buttonsAppended = 0;
+			result.buttonOrder.forEach(buttonId => {
+				const buttonData = buttonsData.find(button => button.id === buttonId);
+				if (buttonData) {
+					const buttonElement = createButtonElement(buttonData, result.iconTheme, result.defaultPosition);
+					// Append buttons based on the buttonsInToolbarDiv value
+					if (result.checkboxStates[buttonId] && buttonsAppended < result.buttonsInToolbarDiv) {
+						toolbarContainer.appendChild(buttonElement);
+						buttonsAppended++;
+					} else if (result.checkboxStates[buttonId]) {
+						menuContainer.appendChild(buttonElement);
+					} else {
+						availableContainer.appendChild(buttonElement);
+					}
 				}
-			}
-		});
-	}
-	if (result.excludedUrls) {
-		result.excludedUrls.forEach((url) => {
-			const li = document.createElement('li');
-			const liSpan = document.createElement('span');
-			li.appendChild(liSpan);
-			liSpan.textContent = url;
-			const removeButton = document.createElement('button');
-			removeButton.textContent = 'Remove';
-			removeButton.addEventListener('click', () => {
-				// Remove the URL from the list.
-				const updatedUrls = result.excludedUrls.filter((u) => u !== url);
-				browser.storage.sync.set({ 'excludedUrls': updatedUrls }).then(() => {
-					li.remove();
-				});
 			});
-			li.appendChild(removeButton);
-			excludedUrlsList.appendChild(li);
-		});
-	};
-});
+		}
+		if (result.excludedUrls) {
+			result.excludedUrls.forEach((url) => {
+				const li = document.createElement('li');
+				const liSpan = document.createElement('span');
+				li.appendChild(liSpan);
+				liSpan.textContent = url;
+				const removeButton = document.createElement('button');
+				removeButton.textContent = 'Remove';
+				removeButton.addEventListener('click', () => {
+					// Remove the URL from the list.
+					const updatedUrls = result.excludedUrls.filter((u) => u !== url);
+					browser.storage.sync.set({ 'excludedUrls': updatedUrls }).then(() => {
+						li.remove();
+						sendMessageToTabs()
+						initializeToolbar()
+					});
+				});
+				li.appendChild(removeButton);
+				excludedUrlsList.appendChild(li);
+			});
+		};
+	});
+}
 
 // Add a URL to the excluded URLs list.
 addUrlButton.addEventListener('click', () => {
@@ -255,6 +270,8 @@ addUrlButton.addEventListener('click', () => {
 			const excludedUrls = result.excludedUrls || [];
 			excludedUrls.push(urlToAdd);
 			browser.storage.sync.set({ 'excludedUrls': excludedUrls }).then(() => {
+				sendMessageToTabs()
+				initializeToolbar()
 				// Add the URL to the displayed list.
 				const li = document.createElement('li');
 				const liSpan = document.createElement('span');
@@ -267,6 +284,8 @@ addUrlButton.addEventListener('click', () => {
 					const updatedUrls = excludedUrls.filter((u) => u !== urlToAdd);
 					browser.storage.sync.set({ 'excludedUrls': updatedUrls }).then(() => {
 						li.remove();
+						sendMessageToTabs()
+						initializeToolbar()
 					});
 				});
 				li.appendChild(removeButton);
@@ -297,6 +316,8 @@ generalSaveButton.addEventListener('click', () => {
 	}).then(() => {
 		statusMessage.style.display = 'block';
 		statusMessage.style.color = '#007acc';
+		sendMessageToTabs()
+		initializeToolbar()
 		setTimeout(function () {
 			statusMessage.style.color = '#fff';
 		}, 1000);
@@ -304,10 +325,15 @@ generalSaveButton.addEventListener('click', () => {
 });
 
 generalResetButton.addEventListener('click', () => {
-	const confirmed = window.confirm("Are you sure you want to reset settings to default? This will reload the page.");
+	const confirmed = window.confirm("Are you sure you want to reset settings to default?");
 	if (confirmed) {
-		browser.runtime.sendMessage({ action: 'resetSettings' });
-		window.location.reload();
+		browser.runtime.sendMessage({ action: 'resetSettings' }, response => {
+			if (response.success) {
+				loadValues();
+				sendMessageToTabs()
+				initializeToolbar()
+			}
+		});
 	}
 });
 
@@ -320,6 +346,8 @@ buttonsSaveButton.addEventListener('click', () => {
 	}).then(() => {
 		statusMessage.style.display = 'block';
 		statusMessage.style.color = '#007acc';
+		sendMessageToTabs()
+		initializeToolbar()
 		setTimeout(function () {
 			statusMessage.style.color = '#fff';
 		}, 1000);
@@ -353,6 +381,14 @@ function closeButtonInfo() {
 		currentlyDisplayedDescription.style.display = 'none';
 		infoCard.style.display = 'none';
 	}
+}
+
+function sendMessageToTabs() {
+	browser.tabs.query({ url: '*://*/*' }, function(tabs) {
+	for (const tab of tabs) {
+		browser.tabs.sendMessage(tab.id, { action: 'reloadToolbar' });
+	}
+});
 }
 
 // Tutorial: https://tahazsh.com/blog/seamless-ui-with-js-drag-to-reorder-example
@@ -495,4 +531,5 @@ function enablePageScroll() {
 	document.body.style.userSelect = ''
 }
 
+loadValues()
 setup()
