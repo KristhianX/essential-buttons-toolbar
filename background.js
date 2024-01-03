@@ -46,11 +46,37 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
         return true;
     } else if (message.action === 'undoCloseTab') {
-        browser.storage.local.get('lastClosedTabURL').then( (result) => {
-            if (result.lastClosedTabURL) {
-                browser.tabs.create({ url: result.lastClosedTabURL });
+        browser.storage.local.get('lastClosedTabURL').then((result) => {
+            if (result.lastClosedTabURL && result.lastClosedTabURL.length > 0) {
+                result.lastClosedTabURL.forEach(url => {
+                    browser.tabs.create({ url: url });
+                });
                 browser.storage.local.remove('lastClosedTabURL');
             }
+        });
+    } else if (message.action === 'closeAllTabs') {
+        browser.tabs.query({}, function(tabs) {
+            const closedTabURLs = tabs.map(tab => tab.url);
+            browser.storage.local.set({ lastClosedTabURL: closedTabURLs }).then(() => {
+                const tabIds = tabs.map(tab => tab.id);
+                browser.tabs.remove(tabIds);
+            });
+        });
+        setTimeout(function() {
+            if (!updatedEventTriggered) {
+                // Run if onActivated event was not triggered.
+                browser.tabs.create({ url: message.url });
+            };
+        }, 1000);
+        updatedEventTriggered = false;
+    } else if (message.action === 'closeOtherTabs') {
+        browser.tabs.query({}, function(tabs) {
+            const tabsToClose = tabs.filter(tab => tab.id !== sender.tab.id);
+            const closedTabURLs = tabsToClose.map(tab => tab.url);        
+            browser.storage.local.set({ lastClosedTabURL: closedTabURLs }).then(() => {
+                const tabIds = tabsToClose.map(tab => tab.id);
+                browser.tabs.remove(tabIds);
+            });
         });
     };
 });
@@ -74,12 +100,14 @@ const defaultVariables = {
         'menuButton',
         'hideButton',
         'undoCloseTabButton',
+        'closeOtherTabsButton',
         'settingsButton',
         'goBackButton',
         'goForwardButton',
         'reloadButton',
         'scrollTopButton',
-        'scrollBottomButton'
+        'scrollBottomButton',
+        'closeAllTabsButton',
     ],
     checkboxStates: {
         'homeButton': true,
@@ -91,12 +119,14 @@ const defaultVariables = {
         'moveToolbarButton': true,
         'undoCloseTabButton': true,
         //'devToolsButton': true,
+        'closeOtherTabsButton': true,
         'settingsButton': true,
         'goBackButton': false,
         'goForwardButton': false,
         'reloadButton': false,
         'scrollTopButton': false,
         'scrollBottomButton': false,
+        'closeAllTabsButton': false
     },
 };
 
@@ -148,7 +178,7 @@ function resetSettingsToDefault() {
 function handleInstallOrUpdate(details) {
     if (details.reason === 'install') {
         browser.storage.local.set({ disableUpdatesMsg: false, installedOrUpdated: true }).then( () => {
-                browser.runtime.openOptionsPage();  
+            browser.runtime.openOptionsPage();  
         })
     } else if (details.reason === 'update') {
         browser.storage.local.get('disableUpdatesMsg').then( (result) => {

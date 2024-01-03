@@ -142,7 +142,7 @@ const buttonsData = [
 	{ id: 'duplicateTabButton', label: 'Duplicate tab' },
 	{ id: 'menuButton', label: 'Menu' },
 	{ id: 'closeTabButton', label: 'Close tab' },
-	{ id: 'undoCloseTabButton', label: 'Undo close tab' },
+	{ id: 'undoCloseTabButton', label: 'Undo close tab(s)' },
 	{ id: 'newTabButton', label: 'New tab' },
 	{ id: 'hideButton', label: 'Hide toolbar' },
 	{ id: 'moveToolbarButton', label: 'Move toolbar' },
@@ -153,6 +153,8 @@ const buttonsData = [
 	{ id: 'settingsButton', label: 'Open add-on settings' },
 	{ id: 'scrollTopButton', label: 'Scroll page to the top' },
 	{ id: 'scrollBottomButton', label: 'Scroll page to the bottom' },
+	{ id: 'closeAllTabsButton', label: 'Close all tabs' },
+	{ id: 'closeOtherTabsButton', label: 'Close other tabs' },
 ];
 
 function createButtonElement(buttonData, iconTheme, defaultPosition) {

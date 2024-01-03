@@ -19,17 +19,17 @@
     <div>
       <h3 style="color: #2ecc71;">New in this version</h3>
       <p style="text-align: left;">
-        - New button: 'Menu button'. It helps keep the main toolbar clean and organized.
+        - New buttons: Scroll to the top, scroll to the bottom, close all tabs, and close other tabs. Please read their descriptions on the button settings page.
+        <br><br>
+        - Live reload of settings changes!
         <br>
-        - New drag-and-drop mode in the settings page! Now it's more intuitive.
-        <br>
-        - The add-on will now notify you when it gets updated, so you can discover the new features!
-        <br>
-        - Changes won't affect your current settings.
-        <br>
-        - Code improvements.
-        <br>
-        - Style fixes for the settings page.
+        No more need to refresh the pages to apply the new settings or the exclude rules.
+        <br><br>
+        - The toolbar will load sooner.
+        <br><br>
+        - Settings page layout fixes for tablet users.
+        <br><br>
+        Thank you all for your support and suggestions! 🦊 🌟        
         <br><br>
         <a href="https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/versions/">View Version History</a>
       </p>
@@ -124,37 +124,44 @@
           <div id="homeButtonDescription">
             <p>
               Opens the default homepage URL.
+              <br>
               Can be changed in options.
             </p>
           </div>
           <div id="duplicateTabButtonDescription">
             <p>
               Opens current URL in new tab.
+              <br>
               Long-press it to access the browser's default link options, such as opening in the background, copying the link, etc.
             </p>
           </div>
           <div id="hideButtonDescription">
             <p>
               Hides the toolbar.
+              <br>
               Refresh the page to display it again.
             </p>
           </div>
           <div id="closeTabButtonDescription">
             <p>
               Closes the current tab.
+              <br>
               If the current tab is the only open tab, it opens the homepage URL instead.
             </p>
           </div>
           <div id="newTabButtonDescription">
             <p>
               Opens the default new tab page URL.
+              <br>
               Can be changed in options.
             </p>
           </div>
           <div id="menuButtonDescription">
             <p>
-              Opens an additional bar. 
+              Opens an additional bar.
+              <br>
               This feature is provided to improve organization.
+              <br>
               Cannot be placed in the menu buttons section.
             </p>
           </div>
@@ -165,7 +172,8 @@
           </div>
           <div id="undoCloseTabButtonDescription">
             <p>
-              Opens in a new tab the most recently closed tab by this add-on.
+              Opens in a new tab the most recently closed tab(s) by this add-on.
+              <br>
               Please note that, at the moment, it does not keep track of tabs closed by the browser or other add-ons.
             </p>
           </div>
@@ -190,8 +198,30 @@
             </p>
           </div>
           <div id="scrollTopButtonDescription">
+            <p>
+              🐾
+            </p>
           </div>
           <div id="scrollBottomButtonDescription">
+            <p>
+              🐾
+            </p>
+          </div>
+          <div id="closeAllTabsButtonDescription">
+            <p>
+              Due to the current behavior of the tabs API on Android Firefox, it cannot close unloaded tabs.
+              <br>
+              As the close tab button, it opens your homepage URL when the last tab is closed.
+              <br>
+              Closed tabs can be restored with the undo close tab button.
+            </p>
+          </div>
+          <div id="closeOtherTabsButtonDescription">
+            <p>
+              Due to the current behavior of the tabs API on Android Firefox, it cannot close unloaded tabs.
+              <br>
+              Closed tabs can be restored with the undo close tab button.
+            </p>
           </div>
         </div>
       </div>  

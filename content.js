@@ -107,7 +107,6 @@ function createToolbar() {
 // Map button IDs to their corresponding button elements and their behaviors
 const buttonElements = {
     homeButton: {
-        //element: document.createElement('button'),
         behavior: function () {
             this.style.background = '#6eb9f7cc';
             setTimeout(() => {
@@ -118,7 +117,6 @@ const buttonElements = {
         },
     },
     duplicateTabButton: {
-        //element: document.createElement('a'),
         behavior: function (e) {
             e.preventDefault();
             let updatedUrl = window.location.href;
@@ -131,7 +129,6 @@ const buttonElements = {
         },
     },
     menuButton: {
-        //element: document.createElement('button'),
         behavior: function () {
             if (menuDivHidden) {
                 this.style.background = '#6eb9f7cc';
@@ -148,7 +145,6 @@ const buttonElements = {
         },
     },
     closeTabButton: {
-        //element: document.createElement('button'),
         behavior: function () {
             this.style.background = '#6eb9f7cc';
             setTimeout(() => {
@@ -158,7 +154,6 @@ const buttonElements = {
         },
     },
     newTabButton: {
-        //element: document.createElement('button'),
         behavior: function () {
             this.style.background = '#6eb9f7cc';
             setTimeout(() => {
@@ -169,7 +164,6 @@ const buttonElements = {
         },
     },
     hideButton: {
-        //element: document.createElement('button'),
         behavior: function () {
             this.style.background = '#6eb9f7cc';
             setTimeout(() => {
@@ -180,7 +174,6 @@ const buttonElements = {
         },
     },
     moveToolbarButton: {
-        //element: document.createElement('button'),
         behavior: function () {
             this.style.background = '#6eb9f7cc';            
             setTimeout(() => {
@@ -212,7 +205,6 @@ const buttonElements = {
         },
     },
     // devToolsButton: {
-    //     //element: document.createElement('button'),
     //     behavior: function () {
     //         this.style.background = '#6eb9f7cc';
     //         const bookmarkletCode = "(function () { var script = document.createElement('script'); script.src='https://cdn.jsdelivr.net/npm/eruda'; document.body.append(script); script.onload = function () { eruda.init(); } })();";
@@ -228,7 +220,6 @@ const buttonElements = {
     //     },
     // },
     goBackButton: {
-        //element: document.createElement('button'),
         behavior: function () {
             this.style.background = '#6eb9f7cc';
             setTimeout(() => {
@@ -239,7 +230,6 @@ const buttonElements = {
         },
     },
     goForwardButton: {
-        //element: document.createElement('button'),
         behavior: function () {
             this.style.background = '#6eb9f7cc';
             setTimeout(() => {
@@ -250,7 +240,6 @@ const buttonElements = {
         },
     },
     reloadButton: {
-        //element: document.createElement('button'),
         behavior: function () {
             this.style.background = '#6eb9f7cc';
             setTimeout(() => {
@@ -261,7 +250,6 @@ const buttonElements = {
         },
     },
     settingsButton: {
-        //element: document.createElement('button'),
         behavior: function () {
             this.style.background = '#6eb9f7cc';
             setTimeout(() => {
@@ -272,7 +260,6 @@ const buttonElements = {
         },
     },
     undoCloseTabButton: {
-        //element: document.createElement('button'),
         behavior: function () {
             this.style.background = '#6eb9f7cc';
             setTimeout(() => {
@@ -283,7 +270,6 @@ const buttonElements = {
         },
     },
     scrollTopButton: {
-        //element: document.createElement('button'),
         behavior: function () {
             this.style.background = '#6eb9f7cc';
             setTimeout(() => {
@@ -294,13 +280,32 @@ const buttonElements = {
         },
     },
     scrollBottomButton: {
-        //element: document.createElement('button'),
         behavior: function () {
             this.style.background = '#6eb9f7cc';
             setTimeout(() => {
                 this.style.background = 'transparent';
                 closeMenu();
                 document.documentElement.scrollTop = document.documentElement.scrollHeight;
+            }, 100);
+        },
+    },
+    closeAllTabsButton: {
+        behavior: function () {
+            this.style.background = '#6eb9f7cc';
+            setTimeout(() => {
+                this.style.background = 'transparent';
+                closeMenu();
+                browser.runtime.sendMessage({ action: 'closeAllTabs', url: homepageURL });
+            }, 100);
+        },
+    },
+    closeOtherTabsButton: {
+        behavior: function () {
+            this.style.background = '#6eb9f7cc';
+            setTimeout(() => {
+                this.style.background = 'transparent';
+                closeMenu();
+                browser.runtime.sendMessage({ action: 'closeOtherTabs' });
             }, 100);
         },
     },
