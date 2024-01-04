@@ -36,6 +36,7 @@ let prevScrollPos
 //  Import and export settings
 //  Add-on idea: Fix problematic pages
 //  about:newtab altenernative
+//  Archive; daily; mail
 //
 
 //

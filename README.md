@@ -13,18 +13,23 @@ Other buttons are being added to offer easier access or missing functionality.
 
 ## Features.  
 **Available buttons are:**  
-- **Homepage:** Opens the default homepage URL. Can be changed in options.  
-- **Duplicate Tab:** Opens current URL in new tab.Long-press it to access the browser's default link options, such as opening in the background, copying the link, etc.  
-- **Hide toolbar:** Hides the toolbar. Refresh the page to display it again.  
-- **Move toolbar:** Moves the toolbar to the top of the page or to the bottom if it is at the top.  
-- **Close tab:** Closes the current tab. If the current tab is the only open tab, it opens the homepage URL instead.  
-- **New tab:** Opens the default new tab page URL. Can be changed in options.  
-- **Go back:** Navigate back in history.  
-- **Go forward:** Navigate forward in history.  
+- **Homepage:** Opens the default homepage URL. Can be changed in options.
+- **Duplicate Tab:** Opens current URL in new tab.Long-press it to access the browser's default link options, such as opening in the background, copying the link, etc.
+- **Close tab:** Closes the current tab. If the current tab is the only open tab, it opens the homepage URL instead.
+- **Close other tabs:** Due to the current behavior of the tabs API on Android Firefox, it cannot close unloaded tabs. Closed tabs can be restored with the undo close tab(s) button.
+- **Close all tabs:** Due to the current behavior of the tabs API on Android Firefox, it cannot close unloaded tabs. As the close tab button, it opens your homepage URL when the last tab is closed. Closed tabs can be restored with the undo close tab(s) button.
+- **Undo Close Tab(s):** Opens in a new tab the most recently closed tab(s) by this add-on. Please note that, at the moment, it does not keep track of tabs closed by the browser or other add-ons.
+- **New tab:** Opens the default new tab page URL. Can be changed in options.
+- **Go back:** Navigate back in history.
+- **Go forward:** Navigate forward in history.
 - **Reload:** Reloads the current page.
+- **Scroll to the top.**
+- **Scroll to the bottom.**
+- **Move toolbar:** Moves the toolbar to the top of the page or to the bottom if it is at the top.
+- **Hide toolbar:** Hides the toolbar. Refresh the page to display it again.
 - **Menu:** Opens an additional bar. This feature is provided to improve organization. Buttons in the menu can be customized on the settings page.
-- **Undo Close Tab:** Opens in a new tab the most recently closed tab by this add-on. Please note that, at the moment, it does not keep track of tabs closed by the browser or other add-ons.
 - **Settings:** Opens the settings page for this add-on in a new tab.
+
 
 **Other options include:**  
 - **Toolbar height:** The number of pixels. The default value is set to 42px.  
@@ -34,6 +39,7 @@ Other buttons are being added to offer easier access or missing functionality.
 - **Hide on scroll method:** Option to change the used method or to disable it.  
 - **Toolbar buttons:** Enable/disable the buttons and change their position.  
 - **Exclude URLs:** Specify which web addresses to exclude.  
+- **Live reload of settings changes:** No more need to refresh the pages to apply the new settings or the exclude rules.
 
 This extension does not access, log, or share your data. It is also ad-free and will always remain so.  
 
