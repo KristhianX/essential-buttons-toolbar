@@ -1,4 +1,6 @@
-// Variables.
+//
+// Variables
+//
 let homepageURL
 let newTabURL
 let toolbarHeight
@@ -25,15 +27,20 @@ let hideMethodInUse
 let isThrottled
 let prevScrollPos
 
+//
 // TODO: 
-//  Close all tabs and close other tabs buttons
 //  Improve undo close tab button
 //  Add toggle desktop site button
-//  Add option to display and unhide button when the toolbar is hidden
+//  Add option to display an unhide button when the toolbar is hidden
 //  Option to change toolbar theme (TRON)
 //  Import and export settings
 //  Add-on idea: Fix problematic pages
+//  about:newtab altenernative
+//
 
+//
+// Get settings from storage
+//
 function getSettingsValues() {
     return new Promise((resolve) => {
         const checkValues = () => {
@@ -66,25 +73,22 @@ function getSettingsValues() {
     });
 }
 
+//
+// Toolbar
+//
 function createToolbar() {
     // Icons from https://github.com/feathericons/feather and https://github.com/tailwindlabs/heroicons
-    // Default css style for the buttons.
     defaultButtonStyle = 'height: 100%; aspect-ratio: 1; cursor: pointer; border: none; border-radius: 20%; background: transparent';
-    defaultImgStyle = 'height: 50%; aspect-ratio: 1';
-    
+    defaultImgStyle = 'height: 50%; aspect-ratio: 1';    
     // Placing it outside the body to make it be on top of other elements with max z-index in the body.
     toolbarIframe = document.createElement('iframe');
+    toolbarIframe.setAttribute('id', 'essBtnsToolbar');
     toolbarIframe.style = 'height: ' + toolbarHeight + 'px; ' + defaultPosition + ': 0px; left: 0px; width: 100%; display: block; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light; border-radius: 0';
     document.body.insertAdjacentElement('afterend', toolbarIframe);
-    
-    // Creating the toolbar.
     toolbarDiv = document.createElement('div');
     toolbarDiv.style = 'height: ' + toolbarHeight + 'px; padding: 0 4%; box-sizing: border-box; display: flex; justify-content: space-between; width: 100%; position: absolute; background-color: rgba(43, 42, 51, ' + toolbarTransparency + '); border-style: solid; border-color: #38373f';
-    
-    // Creating the menu.
     menuDiv = document.createElement('div');
     menuDiv.style = 'height: ' + toolbarHeight + 'px; padding: 0 4%; box-sizing: border-box; display: none; justify-content: space-between; width: 100%; position: absolute; background-color: #2b2a33; border-style: solid; border-color: #38373f';
-    
     if (defaultPosition === 'top') {
         toolbarDiv.style.borderWidth = '0 0 2px';
         toolbarDiv.style.top = '0';
@@ -95,8 +99,7 @@ function createToolbar() {
         toolbarDiv.style.bottom = '0';
         menuDiv.style.borderWidth = '2px 0 0';
         menuDiv.style.top = '0';
-    };
-    
+    }; 
     toolbarIframe.addEventListener('load', function() {
         toolbarIframe.contentWindow.document.body.appendChild(menuDiv);
         toolbarIframe.contentWindow.document.body.appendChild(toolbarDiv);
@@ -104,7 +107,18 @@ function createToolbar() {
     });
 }
 
-// Map button IDs to their corresponding button elements and their behaviors
+function closeMenu() {
+    if (!menuDivHidden) {
+        menuDiv.style.display = 'none';
+        menuDivHidden = true;
+        toolbarIframe.style.height = toolbarHeight + 'px';
+        menuButtonFlag.style.background = 'transparent'
+    }
+};
+
+//
+// Buttons
+//
 const buttonElements = {
     homeButton: {
         behavior: function () {
@@ -309,16 +323,7 @@ const buttonElements = {
             }, 100);
         },
     },
-    // Add more buttons.
-};
-
-function closeMenu() {
-    if (!menuDivHidden) {
-        menuDiv.style.display = 'none';
-        menuDivHidden = true;
-        toolbarIframe.style.height = toolbarHeight + 'px';
-        menuButtonFlag.style.background = 'transparent'
-    }
+    // Add more buttons
 };
 
 function createButtons() {
@@ -326,7 +331,6 @@ function createButtons() {
         if (buttonElements[buttonId] && checkboxStates[buttonId]) {
             let button;
             const img = document.createElement('img');
-
             switch (buttonId) {
                 case 'duplicateTabButton':
                     button = document.createElement('a');
@@ -358,19 +362,10 @@ function createButtons() {
                     img.src = browser.runtime.getURL('icons/' + iconTheme + '/' + buttonId + '.svg');
                     break;
             }
-
             if (button) {
                 img.style = defaultImgStyle;
                 button.appendChild(img);
-
-                function buttonClickHandler(e) {
-                    buttonElements[buttonId].behavior.call(button, e);
-                }
-
-                button.addEventListener('click', buttonClickHandler);
-
-                // Store the event handler function in the buttonElements object for removal later
-                buttonElements[buttonId].clickHandler = buttonClickHandler;
+                button.addEventListener('click', buttonElements[buttonId].behavior);
                 buttonElements[buttonId].element = button;
             }
         }
@@ -391,6 +386,9 @@ function appendButtons() {
     });    
 }
 
+//
+// Hide on scroll method
+//
 function handleScroll() {
     let currentScrollPos = window.scrollY;
     if (!isThrottled) {
@@ -437,7 +435,6 @@ function handleTouchMove(event) {
     prevTouchY = currentTouchY;
 }
 
-// Hide the iframe when scrolling. By default ignores changes in the scrolling smaller than 5.
 function hideOnScroll() {
     if (hideMethodInUse === 'scroll') {
         window.removeEventListener('scroll', handleScroll)
@@ -459,36 +456,20 @@ function hideOnScroll() {
     };
 }
 
-// Remove event listeners
-function removeEventListeners() {
-    buttonOrder.forEach(buttonId => {
-        const buttonInfo = buttonElements[buttonId];
-        if (buttonInfo && buttonInfo.element) {
-            const button = buttonInfo.element;
-            const clickHandler = buttonInfo.clickHandler;
-            // Remove the click event listener
-            button.removeEventListener('click', clickHandler);
-        }
-    });
-}
-
+//
+// Initialize toolbar
+//
 async function removeToolbar() {
-    if (toolbarIframe) {
-        removeEventListeners();
-        toolbarIframe.remove();
+    const essBtnsToolbar = document.getElementById('essBtnsToolbar')
+    if (essBtnsToolbar) {
+        essBtnsToolbar.remove();
     }
 }
 
 async function initializeToolbar() {
-    // Remove the existing toolbar and its event listeners
     removeToolbar();
-
-    // Get settings values
     await getSettingsValues();
-
-    // Check if the current page is excluded
     if (!isCurrentPageExcluded) {
-        // Create a new toolbar and buttons
         createToolbar();
         createButtons();
         appendButtons();

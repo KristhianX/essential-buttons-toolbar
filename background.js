@@ -1,9 +1,32 @@
-// Set a flag to check if onActivated event is triggered.
+//
+// Listeners
+//
 let updatedEventTriggered = false;      
+
 function onActivatedListener() {
     updatedEventTriggered = true;
 }
+
+function handleInstallOrUpdate(details) {
+    if (details.reason === 'install') {
+        browser.storage.local.set({ disableUpdatesMsg: false, installedOrUpdated: true }).then( () => {
+            browser.runtime.openOptionsPage();  
+        })
+    } else if (details.reason === 'update') {
+        browser.storage.local.get('disableUpdatesMsg').then( (result) => {
+            if (result.disableUpdatesMsg === false || !result.disableUpdatesMsg) {
+                browser.storage.local.set({ installedOrUpdated: true }).then( () => {
+                    browser.runtime.openOptionsPage();  
+                })
+            }
+        })
+    }
+}
+
 browser.tabs.onActivated.addListener(onActivatedListener);
+
+browser.runtime.onInstalled.addListener(handleInstallOrUpdate);
+
 
 browser.browserAction.onClicked.addListener((tab) => {
     browser.storage.local.set({ senderURL: tab.url }).then( () => {
@@ -11,7 +34,6 @@ browser.browserAction.onClicked.addListener((tab) => {
     });
 });
 
-// Listener to close or create tabs.
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'closeTab') {
         browser.storage.local.set({ lastClosedTabURL: sender.tab.url }).then( () => {
@@ -47,11 +69,14 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return true;
     } else if (message.action === 'undoCloseTab') {
         browser.storage.local.get('lastClosedTabURL').then((result) => {
-            if (result.lastClosedTabURL && result.lastClosedTabURL.length > 0) {
-                result.lastClosedTabURL.forEach(url => {
-                    browser.tabs.create({ url: url });
-                });
-                browser.storage.local.remove('lastClosedTabURL');
+            if (result.lastClosedTabURL) {
+                let urls = Array.isArray(result.lastClosedTabURL) ? result.lastClosedTabURL : [result.lastClosedTabURL];        
+                if (urls.length > 0) {
+                    urls.forEach(url => {
+                        browser.tabs.create({ url: url });
+                    });
+                    browser.storage.local.remove('lastClosedTabURL');
+                }
             }
         });
     } else if (message.action === 'closeAllTabs') {
@@ -81,7 +106,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     };
 });
 
-// Define the default values.
+//
+// Define the default values
+//
 const defaultVariables = {
     homepageURL: 'https://web.tabliss.io',
     newTabURL: 'https://web.tabliss.io',
@@ -175,22 +202,6 @@ function resetSettingsToDefault() {
     return browser.storage.sync.set(defaultVariables);
 }
 
-function handleInstallOrUpdate(details) {
-    if (details.reason === 'install') {
-        browser.storage.local.set({ disableUpdatesMsg: false, installedOrUpdated: true }).then( () => {
-            browser.runtime.openOptionsPage();  
-        })
-    } else if (details.reason === 'update') {
-        browser.storage.local.get('disableUpdatesMsg').then( (result) => {
-            if (result.disableUpdatesMsg === false || !result.disableUpdatesMsg) {
-                browser.storage.local.set({ installedOrUpdated: true }).then( () => {
-                    browser.runtime.openOptionsPage();  
-                })
-            }
-        })
-    }
-}
 
-browser.runtime.onInstalled.addListener(handleInstallOrUpdate);
 
 
