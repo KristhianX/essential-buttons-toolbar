@@ -54,8 +54,8 @@ function loadValues() {
 		newTabURLInput.value = result.newTabURL;
 		currentValueHeight.textContent = result.toolbarHeight;
 		toolbarHeightRangeInput.value = result.toolbarHeight;
-		toolbarContainer.style.height = (result.toolbarHeight - 2) + 'px'
-		menuContainer.style.height = (result.toolbarHeight - 2) + 'px'
+		toolbarContainer.style.height = result.toolbarHeight + 'px'
+		menuContainer.style.height = result.toolbarHeight + 'px'
 		currentValueTransparency.textContent = result.toolbarTransparency
 		toolbarTransparencyRangeInput.value = result.toolbarTransparency
 		defaultPositionSelect.value = result.defaultPosition;

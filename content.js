@@ -17,22 +17,22 @@ let isCurrentPageExcluded
 let iframeHidden = false
 let iframeVisible = true
 let menuDivHidden = true
-let defaultButtonStyle
-let defaultImgStyle
 let toolbarIframe
+let toolbarStyle
 let toolbarDiv
 let menuDiv
 let menuButtonFlag
 let hideMethodInUse
 let isThrottled
+let isThrottledSizeAndPosition
 let prevScrollPos
 
 //
-// TODO: 
-//  Improve undo close tab button
+// TODO:
 //  Add toggle desktop site button
 //  Add option to display an unhide button when the toolbar is hidden
-//  Option to change toolbar theme (TRON)
+//  Improve undo close tab button
+//  Option to change toolbar theme
 //  Import and export settings
 //  Add-on idea: Fix problematic pages
 //  about:newtab altenernative
@@ -57,62 +57,62 @@ function getSettingsValues() {
                 buttonOrder = result.buttonOrder
                 buttonsInToolbarDiv = result.buttonsInToolbarDiv
                 excludedUrls = result.excludedUrls || []
-                // Check if the current page's URL should be excluded.
                 isCurrentPageExcluded = excludedUrls.some((excludedUrl) => {
-                    const pattern = new RegExp('^' + excludedUrl.replace(/\*/g, '.*') + '$');
-                    return pattern.test(currentUrl);
-                });
+                    const pattern = new RegExp('^' + excludedUrl.replace(/\*/g, '.*') + '$')
+                    return pattern.test(currentUrl)
+                })
                 // Check if all values are available, otherwise, recursively call checkValues.
                 if (homepageURL && newTabURL && toolbarHeight && toolbarTransparency && defaultPosition && iconTheme && hideMethod && checkboxStates && buttonOrder && buttonsInToolbarDiv) {
-                    resolve();
+                    resolve()
                 } else {
-                    setTimeout(checkValues, 100);
+                    setTimeout(checkValues, 100)
                 }
-            });
-        };
-        checkValues();
-    });
+            })
+        }
+        checkValues()
+    })
 }
 
 //
 // Toolbar
 //
 function createToolbar() {
-    // Icons from https://github.com/feathericons/feather and https://github.com/tailwindlabs/heroicons
-    defaultButtonStyle = 'height: 100%; aspect-ratio: 1; cursor: pointer; border: none; border-radius: 20%; background: transparent';
-    defaultImgStyle = 'height: 50%; aspect-ratio: 1';    
-    // Placing it outside the body to make it be on top of other elements with max z-index in the body.
-    toolbarIframe = document.createElement('iframe');
-    toolbarIframe.setAttribute('id', 'essBtnsToolbar');
-    toolbarIframe.style = 'height: ' + toolbarHeight + 'px; ' + defaultPosition + ': 0px; left: 0px; width: 100%; display: block; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light; border-radius: 0';
-    document.body.insertAdjacentElement('afterend', toolbarIframe);
-    toolbarDiv = document.createElement('div');
-    toolbarDiv.style = 'height: ' + toolbarHeight + 'px; padding: 0 4%; box-sizing: border-box; display: flex; justify-content: space-between; width: 100%; position: absolute; background-color: rgba(43, 42, 51, ' + toolbarTransparency + '); border-style: solid; border-color: #38373f';
-    menuDiv = document.createElement('div');
-    menuDiv.style = 'height: ' + toolbarHeight + 'px; padding: 0 4%; box-sizing: border-box; display: none; justify-content: space-between; width: 100%; position: absolute; background-color: #2b2a33; border-style: solid; border-color: #38373f';
+    toolbarIframe = document.createElement('iframe')
+    toolbarIframe.src = browser.runtime.getURL('toolbar.html')
+    toolbarIframe.setAttribute('id', 'essBtnsToolbar')
+    toolbarIframe.style = 'display: block; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light; border-radius: 0'
+    toolbarStyle = toolbarIframe.style
+    toolbarDiv = document.createElement('div')
+    toolbarDiv.style = 'height: 100%; display: flex; background-color: rgba(43, 42, 51, ' + toolbarTransparency + ')'
+    menuDiv = document.createElement('div')
+    menuDiv.style = 'height: 50%; display: none; background-color: #2b2a33'
     if (defaultPosition === 'top') {
-        toolbarDiv.style.borderWidth = '0 0 2px';
-        toolbarDiv.style.top = '0';
-        menuDiv.style.borderWidth = '0 0 2px';
-        menuDiv.style.bottom = '0';
+        toolbarDiv.style.top = '0'
+        menuDiv.style.bottom = '0'
+        toolbarDiv.style.borderWidth = '0 0 5px'
+        menuDiv.style.borderWidth = '0 0 2px'
     } else {
-        toolbarDiv.style.borderWidth = '2px 0 0';
-        toolbarDiv.style.bottom = '0';
-        menuDiv.style.borderWidth = '2px 0 0';
-        menuDiv.style.top = '0';
-    }; 
+        toolbarDiv.style.bottom = '0'
+        menuDiv.style.top = '0'
+        toolbarDiv.style.borderWidth = '2px 0 0'
+        menuDiv.style.borderWidth = '2px 0 0'
+    }
+    document.body.insertAdjacentElement('afterend', toolbarIframe)
     toolbarIframe.addEventListener('load', function() {
-        toolbarIframe.contentWindow.document.body.appendChild(menuDiv);
-        toolbarIframe.contentWindow.document.body.appendChild(toolbarDiv);
-        toolbarIframe.contentWindow.document.body.style = 'margin: 0; height: 100%';
-    });
+        toolbarIframe.contentWindow.document.body.appendChild(menuDiv)
+        toolbarIframe.contentWindow.document.body.appendChild(toolbarDiv)
+    })
+    window.visualViewport.addEventListener('resize', updateToolbarSizeAndPosition)
+    window.visualViewport.addEventListener('scroll', updateToolbarSizeAndPosition)
 }
 
 function closeMenu() {
     if (!menuDivHidden) {
-        menuDiv.style.display = 'none';
-        menuDivHidden = true;
-        toolbarIframe.style.height = toolbarHeight + 'px';
+        menuDivHidden = true
+        menuDiv.style.display = 'none'
+        toolbarDiv.style.height = '100%'
+        const currentToolbarHeight = toolbarIframe.getBoundingClientRect().height
+        toolbarIframe.style.height =  currentToolbarHeight / 2 + 'px'
         menuButtonFlag.style.background = 'transparent'
     }
 };
@@ -146,16 +146,15 @@ const buttonElements = {
     menuButton: {
         behavior: function () {
             if (menuDivHidden) {
-                this.style.background = '#6eb9f7cc';
-                menuDiv.style.display = 'flex';
-                menuDivHidden = false;
-                toolbarIframe.style.height = toolbarHeight * 2 + 'px';
+                this.style.background = '#6eb9f7cc'
+                menuDivHidden = false
+                const currentToolbarHeight = toolbarIframe.getBoundingClientRect().height
+                toolbarIframe.style.height =  currentToolbarHeight * 2 + 'px'
+                toolbarDiv.style.height = '50%'
+                menuDiv.style.display = 'flex'
                 menuButtonFlag = this
             } else {
-                this.style.background = 'transparent';
-                menuDiv.style.display = 'none';
-                menuDivHidden = true;
-                toolbarIframe.style.height = toolbarHeight + 'px';
+                closeMenu()
             }
         },
     },
@@ -334,37 +333,30 @@ function createButtons() {
             const img = document.createElement('img');
             switch (buttonId) {
                 case 'duplicateTabButton':
-                    button = document.createElement('a');
-                    img.src = browser.runtime.getURL('icons/' + iconTheme + '/' + buttonId + '.svg');
-                    button.style = defaultButtonStyle;
-                    button.style.display = 'flex';
-                    button.style.justifyContent = 'center';
-                    button.style.alignItems = 'center';
-                    button.href = currentUrl;
-                    button.addEventListener('touchstart', function () {
-                        if (currentUrl !== window.location.href) {
-                            currentUrl = window.location.href;
-                            button.href = currentUrl;
-                        }
-                    });
-                    break;
-                case 'moveToolbarButton':
-                    button = document.createElement('button');
-                    button.style = defaultButtonStyle;
-                    if (defaultPosition === 'bottom') {
-                        img.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronUp.svg');
-                    } else {
-                        img.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronDown.svg');
+                button = document.createElement('a');
+                img.src = browser.runtime.getURL('icons/' + iconTheme + '/' + buttonId + '.svg');
+                button.href = currentUrl;
+                button.addEventListener('touchstart', function () {
+                    if (currentUrl !== window.location.href) {
+                        currentUrl = window.location.href;
+                        button.href = currentUrl;
                     }
-                    break;
+                });
+                break;
+                case 'moveToolbarButton':
+                button = document.createElement('button');
+                if (defaultPosition === 'bottom') {
+                    img.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronUp.svg');
+                } else {
+                    img.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronDown.svg');
+                }
+                break;
                 default:
-                    button = document.createElement('button');
-                    button.style = defaultButtonStyle;
-                    img.src = browser.runtime.getURL('icons/' + iconTheme + '/' + buttonId + '.svg');
-                    break;
+                button = document.createElement('button');
+                img.src = browser.runtime.getURL('icons/' + iconTheme + '/' + buttonId + '.svg');
+                break;
             }
             if (button) {
-                img.style = defaultImgStyle;
                 button.appendChild(img);
                 button.addEventListener('click', buttonElements[buttonId].behavior);
                 buttonElements[buttonId].element = button;
@@ -458,30 +450,79 @@ function hideOnScroll() {
 }
 
 //
+// Update size and position
+//
+function updateToolbarSizeAndPosition() {
+    if (!isThrottledSizeAndPosition) {
+        isThrottledSizeAndPosition = true
+        setTimeout(function() {
+            isThrottledSizeAndPosition = false
+        }, 100)
+        let calculatedHeight
+        if (document.documentElement.scrollWidth === window.innerWidth) {
+            if (!menuDivHidden) {
+                calculatedHeight = toolbarHeight / window.visualViewport.scale * 2
+            } else {
+                calculatedHeight = toolbarHeight / window.visualViewport.scale
+            }
+            const newHeight = calculatedHeight + 'px'
+            toolbarStyle.height = newHeight
+            toolbarStyle.width = '100vw'
+            toolbarStyle.left = '0'
+            if (defaultPosition === 'top') {
+                toolbarStyle.top = '0px'
+            } else if (defaultPosition === 'bottom') {
+                toolbarStyle.bottom = '0px'
+            }
+        } else if (document.documentElement.scrollWidth !== window.innerWidth) {
+            if (!menuDivHidden) {
+                calculatedHeight = toolbarHeight / window.visualViewport.scale * 2
+            } else {
+                calculatedHeight = toolbarHeight / window.visualViewport.scale
+            }
+            const newHeight = calculatedHeight + 'px'
+            const newWidth = visualViewport.width + 'px'
+            const newLeft = `${visualViewport.offsetLeft}px`
+            toolbarStyle.height = newHeight
+            toolbarStyle.width = newWidth
+            toolbarStyle.left = newLeft
+            if (defaultPosition === 'top') {
+                toolbarStyle.top = '0px'
+            } else if (defaultPosition === 'bottom') {
+                toolbarStyle.bottom = '0px'
+            }
+        }
+    }
+}
+
+//
 // Initialize toolbar
 //
 async function removeToolbar() {
     const essBtnsToolbar = document.getElementById('essBtnsToolbar')
     if (essBtnsToolbar) {
-        essBtnsToolbar.remove();
-    }
+        essBtnsToolbar.remove()
+        window.visualViewport.removeEventListener('resize', updateToolbarSizeAndPosition)
+        window.visualViewport.removeEventListener('scroll', updateToolbarSizeAndPosition)
+    }    
 }
 
 async function initializeToolbar() {
-    removeToolbar();
-    await getSettingsValues();
+    removeToolbar()
+    await getSettingsValues()
     if (!isCurrentPageExcluded) {
-        createToolbar();
-        createButtons();
-        appendButtons();
-        hideOnScroll();
+        createToolbar()
+        updateToolbarSizeAndPosition()
+        createButtons()
+        appendButtons()
+        hideOnScroll()
     }
 }
 
 browser.runtime.onMessage.addListener((message) => {
     if (message.action === 'reloadToolbar') {
-        initializeToolbar();
+        initializeToolbar()
     }
-});
+})
 
-initializeToolbar();
+initializeToolbar()

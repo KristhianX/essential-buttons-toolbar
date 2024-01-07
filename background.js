@@ -112,11 +112,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 const defaultVariables = {
     homepageURL: 'https://web.tabliss.io',
     newTabURL: 'https://web.tabliss.io',
-    toolbarHeight: '42',
-    toolbarTransparency: '0.8',
+    toolbarHeight: 42,
+    toolbarTransparency: 0.8,
     defaultPosition: 'bottom',
     iconTheme: 'heroIcons',
-    hideMethod: 'scroll',
+    hideMethod: 'disable',
     buttonsInToolbarDiv: 6,
     buttonOrder: [
         'homeButton',
@@ -170,6 +170,11 @@ const settingsToCheck = [
     'buttonsInToolbarDiv'
 ];
 
+//
+// TODO: 
+//  This should only run on install or update
+//  Option to clear values from storage?
+// 
 browser.storage.sync.get(settingsToCheck).then((result) => {
     settingsToCheck.forEach((setting) => {
         if (!result[setting]) {
@@ -195,7 +200,7 @@ browser.storage.sync.get(settingsToCheck).then((result) => {
         // Set added items to false
         const updatedCheckboxStates = { ...existingCheckboxStates, ...Object.fromEntries(addedItems.map(item => [item, false])) };
         browser.storage.sync.set({ checkboxStates: updatedCheckboxStates });
-    }    
+    }
 });
 
 function resetSettingsToDefault() {

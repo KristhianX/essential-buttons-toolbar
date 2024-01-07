@@ -284,11 +284,13 @@ li button {
     padding: 0 4%;
     display: flex;
     justify-content: space-between;
-    border-radius: 4px;
+    border-top: #1e1e1e;
+    border-style: solid;
+    border-width: 2px 0 0 0;
 }
 
 #availableContainer {
-    min-height: 40px;
+    min-height: 50px;
     font-size: 0;
     width: 100%;
     background: #777;
@@ -299,13 +301,12 @@ li button {
 
 .drag-able {
     display: inline-flex;
-    font-size: 16px;
     height: 100%;
     aspect-ratio: 1;
     background: #444;
     border-radius: 20%;
     color: #001d29;
-    will-change: transform;
+    /* will-change: transform; */
 }
 
 #availableContainer .drag-able {

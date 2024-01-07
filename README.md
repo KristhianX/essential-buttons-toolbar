@@ -66,7 +66,9 @@ https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/version
 ## Support me.
 Love this add-on? Help me keep it awesome! Consider donating to support future updates:  
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/V7V7QI34Z)  
+<a href="https://www.buymeacoffee.com/kristhianx" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+<!-- [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/V7V7QI34Z)   -->
 
 Thanks for your support! 🚀  
 
@@ -108,9 +110,7 @@ Remember, you can choose any website, even 'about:blank' if you wish. Another go
 https://booky.io/
 
 ## Known issues:
-Some websites are not well optimized for mobile. Some will have a little zoom that will make the toolbar be displayed outside of the viewport or display only a part of it. You can find the toolbar by zooming out, as shown in the following screenshots:
-
-<img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231027-202946.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231027-203000.png?raw=true" width="200px"/>
+Some websites are not well optimized for mobile. Some will have a little zoom that will make the toolbar be displayed outside of the viewport or display only a part of it. You can find the toolbar by zooming out.
 
 ## Note:
 This initially began as a userscript, which I later developed into an extension to access additional features.  

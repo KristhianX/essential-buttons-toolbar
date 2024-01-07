@@ -1,0 +1,33 @@
+body {
+    margin: 0;
+    height: 100%;
+}
+
+button, a {
+    height: 100%;
+    aspect-ratio: 1;
+    cursor: pointer;
+    border: none;
+    border-radius: 20%;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+img {
+    height: 50%;
+    aspect-ratio: 1;    
+}
+
+div {
+    padding: 0 4%;
+    box-sizing: border-box;
+    justify-content: space-between;
+    min-width: 100%;
+    width: fit-content;
+    position: absolute;
+    border-style: solid;
+    border-color: #38373f;
+}
