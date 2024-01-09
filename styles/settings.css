@@ -41,7 +41,7 @@ body {
 }
 
 a {
-    color: cornflowerblue;
+    color: lightsteelblue;
 }
 
 h2 {
@@ -51,10 +51,11 @@ h2 {
 }
 
 h3 {
-    font-size: 14px;
+    font-size: 16px;
     font-style: italic;
     display: inline-block;
     margin: 0;
+    color: lavender;
 }
 
 label {
@@ -102,7 +103,7 @@ input[type="checkbox"]:checked {
 }
 
 input[type="text"] {
-    width: 300px;
+    width: 90%;
     min-width: 250px;
     padding: 8px;
     font-size: 14px;
@@ -116,7 +117,7 @@ input[type="text"] {
 
 input[type="range"] {
     appearance: none;
-    width: 270px;
+    width: 80%;
     min-width: 250px;
     height: 6px; 
     background: #2b2a33;
@@ -128,10 +129,10 @@ input[type="range"] {
 input[type="range"]::-moz-range-thumb {
     width: 12px;
     height: 24px;
-    background: cornflowerblue;
+    background: #2b2a33;
+    border: 1px solid cornflowerblue;
     border-radius: 4px;
     cursor: pointer;
-    border: none;
 }
 
 select {
@@ -166,11 +167,11 @@ ul {
     list-style: none;
     padding: 0;
     margin: 10px 0;
-    width: 318px;
+    width: 90%;
 }
 
 li {
-    width: 300px;
+    width: 100%;
     border: 1px solid #2b2a33;
     border-radius: 4px;
     margin: 0 0 6px;
@@ -181,7 +182,6 @@ li {
 
 li span {
     display: block;
-    width: 282px;
     overflow: auto;
     padding: 8px 0;
 }
@@ -211,7 +211,8 @@ li button {
     justify-content: center;
     border-radius: 4px;
     margin: 0 auto 10px;
-    max-width: 340px;
+    width: 90%;
+    max-width: 500px;
     background: #2b2a33;
     font-weight: bold;
 }
@@ -244,7 +245,8 @@ li button {
 
 #generalSettings, #excludeSettings {
     margin: 0 auto;
-    max-width: 340px;
+    width: 90%;
+    max-width: 500px;
 }
 
 .containers {
@@ -328,17 +330,19 @@ li button {
 
 #addonInfo {
     display: none;
-    max-width: 320px;
+    max-width: 460px;
     margin: 0 auto 20px;
     padding: 10px;
     border-radius: 10px;
     text-align: center;
-    width: 320px;
+    width: 85%;
     background: #2b2a33;
 }
 
 #addonInfo h2 {
-    font-size: 15px;
     display: block;
     padding: 0;
+    color: cornflowerblue;
+    width: fit-content;
+    margin: 15px auto;
 }

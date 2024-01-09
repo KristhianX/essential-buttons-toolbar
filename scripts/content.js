@@ -24,19 +24,17 @@ let menuDiv
 let menuButtonFlag
 let hideMethodInUse
 let isThrottled
-let isThrottledSizeAndPosition
 let prevScrollPos
 
 //
 // TODO:
-//  Add about:blank
 //  Add option to display an unhide button when the toolbar is hidden
 //  Improve undo close tab button
 //  Option to change toolbar theme
 //  Import and export settings
 //  Add-on idea: Fix problematic pages
 //  about:newtab altenernative
-//  Archive; daily; mail
+//  Archive; daily; 📬
 //
 
 //
@@ -97,12 +95,6 @@ function createToolbar() {
         toolbarDiv.style.borderWidth = '2px 0 0'
         menuDiv.style.borderWidth = '2px 0 0'
     }
-    document.body.insertAdjacentElement('afterend', toolbarIframe)
-    toolbarIframe.addEventListener('load', function() {
-        toolbarIframe.contentWindow.document.body.appendChild(menuDiv)
-        toolbarIframe.contentWindow.document.body.appendChild(toolbarDiv)
-    })
-    window.visualViewport.addEventListener('resize', updateToolbarSizeAndPosition)
 }
 
 function closeMenu() {
@@ -122,7 +114,7 @@ function closeMenu() {
 const buttonElements = {
     homeButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc'
+            this.style.background = '#6495EDcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
@@ -134,7 +126,7 @@ const buttonElements = {
         behavior: function (e) {
             e.preventDefault()
             let updatedUrl = window.location.href
-            this.style.background = '#6eb9f7cc'
+            this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
@@ -145,7 +137,7 @@ const buttonElements = {
     menuButton: {
         behavior: function () {
             if (menuDivHidden) {
-                this.style.background = '#6eb9f7cc'
+                this.style.background = '#6495edcc'
                 menuDivHidden = false
                 const currentToolbarHeight = toolbarIframe.getBoundingClientRect().height
                 toolbarIframe.style.height =  currentToolbarHeight * 2 + 'px'
@@ -159,7 +151,7 @@ const buttonElements = {
     },
     closeTabButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc'
+            this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
                 browser.runtime.sendMessage({ action: 'closeTab', url: homepageURL })
@@ -168,7 +160,7 @@ const buttonElements = {
     },
     newTabButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc'
+            this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
@@ -178,7 +170,7 @@ const buttonElements = {
     },
     hideButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc'
+            this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
                 toolbarIframe.style.display = 'none'
@@ -188,7 +180,7 @@ const buttonElements = {
     },
     moveToolbarButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc'            
+            this.style.background = '#6495edcc'            
             setTimeout(() => {
                 const imgElement = this.querySelector('img')
                 closeMenu()
@@ -219,7 +211,7 @@ const buttonElements = {
     },
     // devToolsButton: {
     //     behavior: function () {
-    //         this.style.background = '#6eb9f7cc'
+    //         this.style.background = '#6495edcc'
     //         const bookmarkletCode = "(function () { var script = document.createElement('script'); script.src='https://cdn.jsdelivr.net/npm/eruda'; document.body.append(script); script.onload = function () { eruda.init(); } })();"
     //         const bookmarkletAnchor = document.createElement('a')
     //         bookmarkletAnchor.href = 'javascript:' + bookmarkletCode
@@ -234,7 +226,7 @@ const buttonElements = {
     // },
     goBackButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc'
+            this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
@@ -244,7 +236,7 @@ const buttonElements = {
     },
     goForwardButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc'
+            this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
@@ -254,7 +246,7 @@ const buttonElements = {
     },
     reloadButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc'
+            this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
@@ -264,7 +256,7 @@ const buttonElements = {
     },
     settingsButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc'
+            this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
@@ -274,7 +266,7 @@ const buttonElements = {
     },
     undoCloseTabButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc'
+            this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
@@ -284,7 +276,7 @@ const buttonElements = {
     },
     scrollTopButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc'
+            this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
@@ -294,7 +286,7 @@ const buttonElements = {
     },
     scrollBottomButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc'
+            this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
@@ -304,7 +296,7 @@ const buttonElements = {
     },
     closeAllTabsButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc'
+            this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
@@ -314,7 +306,7 @@ const buttonElements = {
     },
     closeOtherTabsButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc'
+            this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
@@ -324,7 +316,7 @@ const buttonElements = {
     },
     toggleDesktopSiteButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc'
+            this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
@@ -481,7 +473,7 @@ function hideOnScroll() {
 //
 // Update size and position
 //
-function updateToolbarSizeAndPosition() {
+function updateToolbarHeight() {
     let calculatedHeight
     if (!menuDivHidden) {
         calculatedHeight = toolbarHeight / window.visualViewport.scale * 2
@@ -502,11 +494,53 @@ function updateToolbarSizeAndPosition() {
 //
 // Initialize toolbar
 //
+function appendToolbar() {
+    let timeout, interval
+    const checkAndLoadToolbar = () => {
+        if (document.body) {
+            document.body.insertAdjacentElement('afterend', toolbarIframe)
+            toolbarIframe.addEventListener('load', function () {
+                toolbarIframe.contentWindow.document.body.appendChild(menuDiv)
+                toolbarIframe.contentWindow.document.body.appendChild(toolbarDiv)
+            })
+            window.visualViewport.addEventListener('resize', updateToolbarHeight)
+            clearInterval(interval)
+            clearTimeout(timeout)
+        }
+    }
+    timeout = setTimeout(() => clearInterval(interval), 10000)
+    interval = setInterval(checkAndLoadToolbar, 100)
+}
+
+function checkExistenceAndHeight() {
+    let timeout, interval, calculatedHeight
+    const checkToolbar = () => {
+        const essBtnsToolbar = document.getElementById('essBtnsToolbar')
+        if (!menuDivHidden) {
+            calculatedHeight = toolbarHeight / window.visualViewport.scale * 2
+        } else {
+            calculatedHeight = toolbarHeight / window.visualViewport.scale
+        }
+        if (!essBtnsToolbar) {
+            initializeToolbar()
+            clearInterval(interval)
+            clearTimeout(timeout)
+        }
+        if (essBtnsToolbar) {
+            if (essBtnsToolbar.getBoundingClientRect().height !== calculatedHeight) {
+                updateToolbarHeight()
+            }
+        }
+    }
+    timeout = setTimeout(() => clearInterval(interval), 10000)
+    interval = setInterval(checkToolbar, 1000)
+}
+
 async function removeToolbar() {
     const essBtnsToolbar = document.getElementById('essBtnsToolbar')
     if (essBtnsToolbar) {
         essBtnsToolbar.remove()
-        window.visualViewport.removeEventListener('resize', updateToolbarSizeAndPosition)
+        window.visualViewport.removeEventListener('resize', updateToolbarHeight)
     }    
 }
 
@@ -515,9 +549,11 @@ async function initializeToolbar() {
     await getSettingsValues()
     if (!isCurrentPageExcluded) {
         createToolbar()
-        updateToolbarSizeAndPosition()
         createButtons()
         appendButtons()
+        await appendToolbar()
+        updateToolbarHeight()
+        checkExistenceAndHeight()
         hideOnScroll()
     }
 }

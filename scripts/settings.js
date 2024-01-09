@@ -1,6 +1,8 @@
 //
 // Variables
 //
+const settingsURL = browser.runtime.getURL('pages/settings.html')
+const blankURL = browser.runtime.getURL('pages/blank.html')
 const homepageURLInput = document.getElementById('homepageURL')
 const newTabURLInput = document.getElementById('newTabURL')
 const toolbarHeightRangeInput = document.getElementById('toolbarHeight')
@@ -27,7 +29,7 @@ browser.storage.local.get([ 'senderURL', 'installedOrUpdated', 'disableUpdatesMs
 	}
 	if (result.installedOrUpdated === true) {
 		addonInfo.style.display = 'block'
-		headerInfo.style.display = 'none'
+		//headerInfo.style.display = 'none'
 		browser.storage.local.set({ installedOrUpdated: false })
 	}
 	if (result.disableUpdatesMsg) {
@@ -148,10 +150,10 @@ buttonsSettingsCloseButton.addEventListener('click', () => {
 infoCardCloseButton.addEventListener('click', closeButtonInfo)
 addonInfoCloseButton.addEventListener('click', () => {
 	addonInfo.style.display = 'none'
-	headerInfo.style.display = 'inline-flex'
+	//headerInfo.style.display = 'inline-flex'
 })
 headerInfo.addEventListener('click', () => {
-	headerInfo.style.display = 'none'
+	//headerInfo.style.display = 'none'
 	addonInfo.style.display = 'block'
 })
 
@@ -169,6 +171,7 @@ function createTab(tabId, tabText) {
 }
 
 function showTab(tabId) {
+	addonInfo.style.display = 'none'
 	statusMessage.style.display = 'none'
 	generalSettings.style.display = tabId === 'generalTab' ? 'block' : 'none'
 	buttonsSettings.style.display = tabId === 'buttonsTab' ? 'block' : 'none'
@@ -402,7 +405,7 @@ buttonsSaveButton.addEventListener('click', () => {
 })
 
 function sendMessageToTabs() {
-	browser.tabs.query({}, function(tabs) {
+	browser.tabs.query({ url: ['*://*/*', settingsURL, blankURL] }, function(tabs) {
 		for (const tab of tabs) {
 			browser.tabs.sendMessage(tab.id, { action: 'reloadToolbar' })
 		}

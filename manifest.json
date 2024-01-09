@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Essential Buttons Toolbar",
-  "version": "1.5.2",
+  "version": "1.6.1",
   "permissions": [
     "*://*/*",
     "activeTab", 
@@ -27,7 +27,7 @@
       "js": [
         "scripts/content.js"
       ],
-      "run_at": "document_end"
+      "run_at": "document_start"
     }
   ],
   "background": {

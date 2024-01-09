@@ -1,3 +1,77 @@
+
+//
+// Define the default values
+//
+const settingsURL = browser.runtime.getURL('pages/settings.html')
+const blankURL = browser.runtime.getURL('pages/blank.html')
+const defaultVariables = {
+    homepageURL: 'https://web.tabliss.io',
+    newTabURL: 'https://web.tabliss.io',
+    toolbarHeight: 42,
+    toolbarTransparency: 0.8,
+    defaultPosition: 'bottom',
+    iconTheme: 'heroIcons',
+    hideMethod: 'scroll',
+    buttonsInToolbarDiv: 6,
+    buttonOrder: [
+        'homeButton',
+        'duplicateTabButton',
+        'moveToolbarButton',
+        'closeTabButton',
+        'newTabButton',
+        'menuButton',
+        'hideButton',
+        'undoCloseTabButton',
+        'closeOtherTabsButton',
+        'toggleDesktopSiteButton',
+        'settingsButton',
+        'goBackButton',
+        'goForwardButton',
+        'reloadButton',
+        'scrollTopButton',
+        'scrollBottomButton',
+        'closeAllTabsButton',
+    ],
+    checkboxStates: {
+        'homeButton': true,
+        'duplicateTabButton': true,
+        'hideButton': true,
+        'closeTabButton': true,
+        'newTabButton': true,
+        'menuButton': true,
+        'moveToolbarButton': true,
+        'undoCloseTabButton': true,
+        //'devToolsButton': true,
+        'closeOtherTabsButton': true,
+        'toggleDesktopSiteButton': true,
+        'settingsButton': true,
+        'goBackButton': false,
+        'goForwardButton': false,
+        'reloadButton': false,
+        'scrollTopButton': false,
+        'scrollBottomButton': false,
+        'closeAllTabsButton': false,
+    },
+}
+const settingsToCheck = [
+    'homepageURL',
+    'newTabURL',
+    'toolbarHeight',
+    'toolbarTransparency',
+    'defaultPosition',
+    'iconTheme',
+    'hideMethod',
+    'buttonOrder',
+    'checkboxStates',
+    'buttonsInToolbarDiv',
+]
+
+browser.storage.local.get('isDesktopSite').then((result) => {
+    if (result.isDesktopSite) {
+        browser.webRequest.onBeforeSendHeaders.addListener(rewriteUserAgentHeader, { urls: ["*://*/*"] }, ["blocking", "requestHeaders"])
+    }
+})
+
 //
 // Listeners
 //
@@ -106,86 +180,14 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 browser.webRequest.onBeforeSendHeaders.removeListener(rewriteUserAgentHeader)
             }
             browser.tabs.reload(sender.tab.id, { bypassCache: true })
-            browser.tabs.query({}, function(tabs) {
-                for (const tab of tabs) {
-                    if (tab.id !== sender.tab.id) {
+            browser.tabs.query({ url: ['*://*/*', settingsURL, blankURL] }, function(tabs) {
+		        for (const tab of tabs) {
+			        if (tab.id !== sender.tab.id) {
                         browser.tabs.sendMessage(tab.id, { action: 'reloadToolbar' })
                     }
-                }
-            })
+		        }
+	        })
         })
-    }
-})
-
-//
-// Define the default values
-//
-const defaultVariables = {
-    homepageURL: 'https://web.tabliss.io',
-    newTabURL: 'https://web.tabliss.io',
-    toolbarHeight: 42,
-    toolbarTransparency: 0.8,
-    defaultPosition: 'bottom',
-    iconTheme: 'heroIcons',
-    hideMethod: 'scroll',
-    buttonsInToolbarDiv: 6,
-    buttonOrder: [
-        'homeButton',
-        'duplicateTabButton',
-        'moveToolbarButton',
-        'closeTabButton',
-        'newTabButton',
-        'menuButton',
-        'hideButton',
-        'undoCloseTabButton',
-        'closeOtherTabsButton',
-        'toggleDesktopSiteButton',
-        'settingsButton',
-        'goBackButton',
-        'goForwardButton',
-        'reloadButton',
-        'scrollTopButton',
-        'scrollBottomButton',
-        'closeAllTabsButton',
-    ],
-    checkboxStates: {
-        'homeButton': true,
-        'duplicateTabButton': true,
-        'hideButton': true,
-        'closeTabButton': true,
-        'newTabButton': true,
-        'menuButton': true,
-        'moveToolbarButton': true,
-        'undoCloseTabButton': true,
-        //'devToolsButton': true,
-        'closeOtherTabsButton': true,
-        'toggleDesktopSiteButton': true,
-        'settingsButton': true,
-        'goBackButton': false,
-        'goForwardButton': false,
-        'reloadButton': false,
-        'scrollTopButton': false,
-        'scrollBottomButton': false,
-        'closeAllTabsButton': false,
-    },
-}
-
-const settingsToCheck = [
-    'homepageURL',
-    'newTabURL',
-    'toolbarHeight',
-    'toolbarTransparency',
-    'defaultPosition',
-    'iconTheme',
-    'hideMethod',
-    'buttonOrder',
-    'checkboxStates',
-    'buttonsInToolbarDiv',
-]
-
-browser.storage.local.get('isDesktopSite').then((result) => {
-    if (result.isDesktopSite) {
-        browser.webRequest.onBeforeSendHeaders.addListener(rewriteUserAgentHeader, { urls: ["*://*/*"] }, ["blocking", "requestHeaders"])
     }
 })
 
