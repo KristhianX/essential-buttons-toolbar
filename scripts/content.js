@@ -14,7 +14,7 @@ let buttonsInToolbarDiv
 let excludedUrls
 let currentUrl = window.location.href
 let isCurrentPageExcluded
-let iframeHidden = false
+let iframeHidden
 let iframeVisible = true
 let menuDivHidden = true
 let toolbarIframe
@@ -29,7 +29,7 @@ let prevScrollPos
 
 //
 // TODO:
-//  Add toggle desktop site button
+//  Add about:blank
 //  Add option to display an unhide button when the toolbar is hidden
 //  Improve undo close tab button
 //  Option to change toolbar theme
@@ -78,7 +78,7 @@ function getSettingsValues() {
 //
 function createToolbar() {
     toolbarIframe = document.createElement('iframe')
-    toolbarIframe.src = browser.runtime.getURL('toolbar.html')
+    toolbarIframe.src = browser.runtime.getURL('pages/toolbar.html')
     toolbarIframe.setAttribute('id', 'essBtnsToolbar')
     toolbarIframe.style = 'display: block; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light; border-radius: 0'
     toolbarStyle = toolbarIframe.style
@@ -103,7 +103,6 @@ function createToolbar() {
         toolbarIframe.contentWindow.document.body.appendChild(toolbarDiv)
     })
     window.visualViewport.addEventListener('resize', updateToolbarSizeAndPosition)
-    window.visualViewport.addEventListener('scroll', updateToolbarSizeAndPosition)
 }
 
 function closeMenu() {
@@ -115,7 +114,7 @@ function closeMenu() {
         toolbarIframe.style.height =  currentToolbarHeight / 2 + 'px'
         menuButtonFlag.style.background = 'transparent'
     }
-};
+}
 
 //
 // Buttons
@@ -123,24 +122,24 @@ function closeMenu() {
 const buttonElements = {
     homeButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc';
+            this.style.background = '#6eb9f7cc'
             setTimeout(() => {
-                this.style.background = 'transparent';
-                closeMenu();
-                browser.runtime.sendMessage({ action: 'updateTab', url: homepageURL });
-            }, 100);
+                this.style.background = 'transparent'
+                closeMenu()
+                browser.runtime.sendMessage({ action: 'updateTab', url: homepageURL })
+            }, 100)
         },
     },
     duplicateTabButton: {
         behavior: function (e) {
-            e.preventDefault();
-            let updatedUrl = window.location.href;
-            this.style.background = '#6eb9f7cc';
+            e.preventDefault()
+            let updatedUrl = window.location.href
+            this.style.background = '#6eb9f7cc'
             setTimeout(() => {
-                this.style.background = 'transparent';
-                closeMenu();
-                browser.runtime.sendMessage({ action: 'duplicateTab', url: updatedUrl });
-            }, 100);
+                this.style.background = 'transparent'
+                closeMenu()
+                browser.runtime.sendMessage({ action: 'duplicateTab', url: updatedUrl })
+            }, 100)
         },
     },
     menuButton: {
@@ -160,272 +159,302 @@ const buttonElements = {
     },
     closeTabButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc';
+            this.style.background = '#6eb9f7cc'
             setTimeout(() => {
-                this.style.background = 'transparent';
-                browser.runtime.sendMessage({ action: 'closeTab', url: homepageURL });
-            }, 100);
+                this.style.background = 'transparent'
+                browser.runtime.sendMessage({ action: 'closeTab', url: homepageURL })
+            }, 100)
         },
     },
     newTabButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc';
+            this.style.background = '#6eb9f7cc'
             setTimeout(() => {
-                this.style.background = 'transparent';
-                closeMenu();
-                browser.runtime.sendMessage({ action: 'createTab', url: newTabURL });
-            }, 100);
+                this.style.background = 'transparent'
+                closeMenu()
+                browser.runtime.sendMessage({ action: 'createTab', url: newTabURL })
+            }, 100)
         },
     },
     hideButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc';
+            this.style.background = '#6eb9f7cc'
             setTimeout(() => {
-                this.style.background = 'transparent';
-                toolbarIframe.style.display = 'none';
-                iframeHidden = true;
-            }, 100);        
+                this.style.background = 'transparent'
+                toolbarIframe.style.display = 'none'
+                iframeHidden = true
+            }, 100)        
         },
     },
     moveToolbarButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc';            
+            this.style.background = '#6eb9f7cc'            
             setTimeout(() => {
-                const imgElement = this.querySelector('img');
-                closeMenu();
+                const imgElement = this.querySelector('img')
+                closeMenu()
                 if (toolbarIframe.style.bottom === '0px') {
-                    toolbarIframe.style.bottom = 'unset';
-                    toolbarIframe.style.top = '0px';
-                    toolbarDiv.style.bottom = 'unset';
-                    toolbarDiv.style.top = '0';
-                    menuDiv.style.top = 'unset';
-                    menuDiv.style.bottom = '0';
-                    toolbarDiv.style.borderWidth = '0 0 2px';
-                    menuDiv.style.borderWidth = '0 0 2px';
-                    imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronDown.svg');
+                    toolbarIframe.style.bottom = 'unset'
+                    toolbarIframe.style.top = '0px'
+                    toolbarDiv.style.bottom = 'unset'
+                    toolbarDiv.style.top = '0'
+                    menuDiv.style.top = 'unset'
+                    menuDiv.style.bottom = '0'
+                    toolbarDiv.style.borderWidth = '0 0 2px'
+                    menuDiv.style.borderWidth = '0 0 2px'
+                    imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronDown.svg')
                 } else {
-                    toolbarIframe.style.top = 'unset';
-                    toolbarIframe.style.bottom = '0px';
-                    toolbarDiv.style.bottom = '0';
-                    toolbarDiv.style.top = 'unset';
-                    menuDiv.style.top = '0';
-                    menuDiv.style.bottom = 'unset';
-                    toolbarDiv.style.borderWidth = '2px 0 0';
-                    menuDiv.style.borderWidth = '2px 0 0';
-                    imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronUp.svg');
-                };
-                this.style.background = 'transparent';
-            }, 100);        
+                    toolbarIframe.style.top = 'unset'
+                    toolbarIframe.style.bottom = '0px'
+                    toolbarDiv.style.bottom = '0'
+                    toolbarDiv.style.top = 'unset'
+                    menuDiv.style.top = '0'
+                    menuDiv.style.bottom = 'unset'
+                    toolbarDiv.style.borderWidth = '2px 0 0'
+                    menuDiv.style.borderWidth = '2px 0 0'
+                    imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronUp.svg')
+                }
+                this.style.background = 'transparent'
+            }, 100)        
         },
     },
     // devToolsButton: {
     //     behavior: function () {
-    //         this.style.background = '#6eb9f7cc';
-    //         const bookmarkletCode = "(function () { var script = document.createElement('script'); script.src='https://cdn.jsdelivr.net/npm/eruda'; document.body.append(script); script.onload = function () { eruda.init(); } })();";
-    //         const bookmarkletAnchor = document.createElement('a');
-    //         bookmarkletAnchor.href = 'javascript:' + bookmarkletCode;
-    //         document.body.appendChild(bookmarkletAnchor);
-    //         bookmarkletAnchor.click();
-    //         document.body.removeChild(bookmarkletAnchor);
+    //         this.style.background = '#6eb9f7cc'
+    //         const bookmarkletCode = "(function () { var script = document.createElement('script'); script.src='https://cdn.jsdelivr.net/npm/eruda'; document.body.append(script); script.onload = function () { eruda.init(); } })();"
+    //         const bookmarkletAnchor = document.createElement('a')
+    //         bookmarkletAnchor.href = 'javascript:' + bookmarkletCode
+    //         document.body.appendChild(bookmarkletAnchor)
+    //         bookmarkletAnchor.click()
+    //         document.body.removeChild(bookmarkletAnchor)
     //         setTimeout(() => {
-    //             this.style.background = 'transparent';
-    //             //closeMenu();
-    //         }, 100);
+    //             this.style.background = 'transparent'
+    //             //closeMenu()
+    //         }, 100)
     //     },
     // },
     goBackButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc';
+            this.style.background = '#6eb9f7cc'
             setTimeout(() => {
-                this.style.background = 'transparent';
-                closeMenu();
-                browser.runtime.sendMessage({ action: 'goBack' });
-            }, 100);
+                this.style.background = 'transparent'
+                closeMenu()
+                browser.runtime.sendMessage({ action: 'goBack' })
+            }, 100)
         },
     },
     goForwardButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc';
+            this.style.background = '#6eb9f7cc'
             setTimeout(() => {
-                this.style.background = 'transparent';
-                closeMenu();
-                browser.runtime.sendMessage({ action: 'goForward' });
-            }, 100);
+                this.style.background = 'transparent'
+                closeMenu()
+                browser.runtime.sendMessage({ action: 'goForward' })
+            }, 100)
         },
     },
     reloadButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc';
+            this.style.background = '#6eb9f7cc'
             setTimeout(() => {
-                this.style.background = 'transparent';
-                closeMenu();
-                browser.runtime.sendMessage({ action: 'reload' });
-            }, 100);
+                this.style.background = 'transparent'
+                closeMenu()
+                browser.runtime.sendMessage({ action: 'reload' })
+            }, 100)
         },
     },
     settingsButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc';
+            this.style.background = '#6eb9f7cc'
             setTimeout(() => {
-                this.style.background = 'transparent';
-                closeMenu();
-                browser.runtime.sendMessage({ action: 'openSettings' });
-            }, 100);
+                this.style.background = 'transparent'
+                closeMenu()
+                browser.runtime.sendMessage({ action: 'openSettings' })
+            }, 100)
         },
     },
     undoCloseTabButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc';
+            this.style.background = '#6eb9f7cc'
             setTimeout(() => {
-                this.style.background = 'transparent';
-                closeMenu();
-                browser.runtime.sendMessage({ action: 'undoCloseTab' });
-            }, 100);
+                this.style.background = 'transparent'
+                closeMenu()
+                browser.runtime.sendMessage({ action: 'undoCloseTab' })
+            }, 100)
         },
     },
     scrollTopButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc';
+            this.style.background = '#6eb9f7cc'
             setTimeout(() => {
-                this.style.background = 'transparent';
-                closeMenu();
-                document.documentElement.scrollTop = 0;
-            }, 100);
+                this.style.background = 'transparent'
+                closeMenu()
+                document.documentElement.scrollTop = 0
+            }, 100)
         },
     },
     scrollBottomButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc';
+            this.style.background = '#6eb9f7cc'
             setTimeout(() => {
-                this.style.background = 'transparent';
-                closeMenu();
-                document.documentElement.scrollTop = document.documentElement.scrollHeight;
-            }, 100);
+                this.style.background = 'transparent'
+                closeMenu()
+                document.documentElement.scrollTop = document.documentElement.scrollHeight
+            }, 100)
         },
     },
     closeAllTabsButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc';
+            this.style.background = '#6eb9f7cc'
             setTimeout(() => {
-                this.style.background = 'transparent';
-                closeMenu();
-                browser.runtime.sendMessage({ action: 'closeAllTabs', url: homepageURL });
-            }, 100);
+                this.style.background = 'transparent'
+                closeMenu()
+                browser.runtime.sendMessage({ action: 'closeAllTabs', url: homepageURL })
+            }, 100)
         },
     },
     closeOtherTabsButton: {
         behavior: function () {
-            this.style.background = '#6eb9f7cc';
+            this.style.background = '#6eb9f7cc'
             setTimeout(() => {
-                this.style.background = 'transparent';
-                closeMenu();
-                browser.runtime.sendMessage({ action: 'closeOtherTabs' });
-            }, 100);
+                this.style.background = 'transparent'
+                closeMenu()
+                browser.runtime.sendMessage({ action: 'closeOtherTabs' })
+            }, 100)
+        },
+    },
+    toggleDesktopSiteButton: {
+        behavior: function () {
+            this.style.background = '#6eb9f7cc'
+            setTimeout(() => {
+                this.style.background = 'transparent'
+                closeMenu()
+                browser.storage.local.get('isDesktopSite').then( (result) => {
+                    if (!result.isDesktopSite) {
+                        browser.storage.local.set({ isDesktopSite: true }).then( () => {
+                            browser.runtime.sendMessage({ action: 'toggleDesktopSite' })
+                        })
+                    } else {
+                        browser.storage.local.set({ isDesktopSite: false }).then( () => {
+                            browser.runtime.sendMessage({ action: 'toggleDesktopSite' })
+                        })
+                    }
+                })
+            }, 100)
         },
     },
     // Add more buttons
-};
+}
 
 function createButtons() {
     buttonOrder.forEach(buttonId => {
         if (buttonElements[buttonId] && checkboxStates[buttonId]) {
-            let button;
-            const img = document.createElement('img');
+            let button
+            const img = document.createElement('img')
             switch (buttonId) {
                 case 'duplicateTabButton':
-                button = document.createElement('a');
-                img.src = browser.runtime.getURL('icons/' + iconTheme + '/' + buttonId + '.svg');
-                button.href = currentUrl;
+                button = document.createElement('a')
+                img.src = browser.runtime.getURL('icons/' + iconTheme + '/' + buttonId + '.svg')
+                button.href = currentUrl
                 button.addEventListener('touchstart', function () {
                     if (currentUrl !== window.location.href) {
-                        currentUrl = window.location.href;
-                        button.href = currentUrl;
+                        currentUrl = window.location.href
+                        button.href = currentUrl
                     }
-                });
-                break;
+                })
+                break
                 case 'moveToolbarButton':
-                button = document.createElement('button');
+                button = document.createElement('button')
                 if (defaultPosition === 'bottom') {
-                    img.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronUp.svg');
+                    img.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronUp.svg')
                 } else {
-                    img.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronDown.svg');
+                    img.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronDown.svg')
                 }
-                break;
+                break
+                case 'toggleDesktopSiteButton':
+                button = document.createElement('button')
+                browser.storage.local.get('isDesktopSite').then( (result) => {
+                    if (!result.isDesktopSite) {
+                        img.src = browser.runtime.getURL('icons/' + iconTheme + '/toggleDesktopSiteButton.svg')
+                    } else {
+                        img.src = browser.runtime.getURL('icons/' + iconTheme + '/smartphone.svg')
+                    }
+                })
+                break
                 default:
-                button = document.createElement('button');
-                img.src = browser.runtime.getURL('icons/' + iconTheme + '/' + buttonId + '.svg');
-                break;
+                button = document.createElement('button')
+                img.src = browser.runtime.getURL('icons/' + iconTheme + '/' + buttonId + '.svg')
+                break
             }
             if (button) {
-                button.appendChild(img);
-                button.addEventListener('click', buttonElements[buttonId].behavior);
-                buttonElements[buttonId].element = button;
+                button.appendChild(img)
+                button.addEventListener('click', buttonElements[buttonId].behavior)
+                buttonElements[buttonId].element = button
             }
         }
-    });
+    })
 }
 
 function appendButtons() {
-    let buttonsAppended = 0;
+    let buttonsAppended = 0
     buttonOrder.forEach(buttonId => {
         if (buttonsAppended < buttonsInToolbarDiv && buttonElements[buttonId] && checkboxStates[buttonId]) {
-            const buttonToAppend = buttonElements[buttonId].element;
-            toolbarDiv.appendChild(buttonToAppend);
-            buttonsAppended++;
+            const buttonToAppend = buttonElements[buttonId].element
+            toolbarDiv.appendChild(buttonToAppend)
+            buttonsAppended++
         } else if (buttonElements[buttonId] && checkboxStates[buttonId]) {
-            const buttonToAppend = buttonElements[buttonId].element;
-            menuDiv.appendChild(buttonToAppend);
+            const buttonToAppend = buttonElements[buttonId].element
+            menuDiv.appendChild(buttonToAppend)
         }
-    });    
+    })    
 }
 
 //
 // Hide on scroll method
 //
 function handleScroll() {
-    let currentScrollPos = window.scrollY;
+    let currentScrollPos = window.scrollY
     if (!isThrottled) {
-        isThrottled = true;
+        isThrottled = true
         setTimeout(function() {
-            isThrottled = false;
-        }, 100);
+            isThrottled = false
+        }, 100)
         if (Math.abs(prevScrollPos - currentScrollPos) <= 5) {
-            return;
-        };
+            return
+        }
         if (prevScrollPos > currentScrollPos && !iframeHidden && !iframeVisible) {
-            toolbarIframe.style.display = 'block';
-            iframeVisible = true;
+            toolbarIframe.style.display = 'block'
+            iframeVisible = true
         } else if (prevScrollPos < currentScrollPos && iframeVisible) {
-            toolbarIframe.style.display = 'none';
-            iframeVisible = false;
-        };
-    };
-    prevScrollPos = currentScrollPos;
+            toolbarIframe.style.display = 'none'
+            iframeVisible = false
+        }
+    }
+    prevScrollPos = currentScrollPos
 }
 
 function handleTouchStart(event) {
-    prevTouchY = event.touches[0].clientY;
+    prevTouchY = event.touches[0].clientY
 }                     
 
 function handleTouchMove(event) {
-    let currentTouchY = event.touches[0].clientY;
+    let currentTouchY = event.touches[0].clientY
     if (!isThrottled) {
-        isThrottled = true;
+        isThrottled = true
         setTimeout(function() {
-            isThrottled = false;
-        }, 100);
+            isThrottled = false
+        }, 100)
         if (Math.abs(prevTouchY - currentTouchY) <= 5) {
-            return;
-        };
+            return
+        }
         if (prevTouchY < currentTouchY && !iframeHidden && !iframeVisible) {
-            toolbarIframe.style.display = 'block';
-            iframeVisible = true;
+            toolbarIframe.style.display = 'block'
+            iframeVisible = true
         } else if (prevTouchY > currentTouchY && iframeVisible) {
-            toolbarIframe.style.display = 'none';
-            iframeVisible = false;
-        };
-    };
-    prevTouchY = currentTouchY;
+            toolbarIframe.style.display = 'none'
+            iframeVisible = false
+        }
+    }
+    prevTouchY = currentTouchY
 }
 
 function hideOnScroll() {
@@ -446,52 +475,27 @@ function hideOnScroll() {
         let prevTouchY           
         window.addEventListener('touchstart', handleTouchStart)
         window.addEventListener('touchmove', handleTouchMove)
-    };
+    }
 }
 
 //
 // Update size and position
 //
 function updateToolbarSizeAndPosition() {
-    if (!isThrottledSizeAndPosition) {
-        isThrottledSizeAndPosition = true
-        setTimeout(function() {
-            isThrottledSizeAndPosition = false
-        }, 100)
-        let calculatedHeight
-        if (document.documentElement.scrollWidth === window.innerWidth) {
-            if (!menuDivHidden) {
-                calculatedHeight = toolbarHeight / window.visualViewport.scale * 2
-            } else {
-                calculatedHeight = toolbarHeight / window.visualViewport.scale
-            }
-            const newHeight = calculatedHeight + 'px'
-            toolbarStyle.height = newHeight
-            toolbarStyle.width = '100vw'
-            toolbarStyle.left = '0'
-            if (defaultPosition === 'top') {
-                toolbarStyle.top = '0px'
-            } else if (defaultPosition === 'bottom') {
-                toolbarStyle.bottom = '0px'
-            }
-        } else if (document.documentElement.scrollWidth !== window.innerWidth) {
-            if (!menuDivHidden) {
-                calculatedHeight = toolbarHeight / window.visualViewport.scale * 2
-            } else {
-                calculatedHeight = toolbarHeight / window.visualViewport.scale
-            }
-            const newHeight = calculatedHeight + 'px'
-            const newWidth = visualViewport.width + 'px'
-            const newLeft = `${visualViewport.offsetLeft}px`
-            toolbarStyle.height = newHeight
-            toolbarStyle.width = newWidth
-            toolbarStyle.left = newLeft
-            if (defaultPosition === 'top') {
-                toolbarStyle.top = '0px'
-            } else if (defaultPosition === 'bottom') {
-                toolbarStyle.bottom = '0px'
-            }
-        }
+    let calculatedHeight
+    if (!menuDivHidden) {
+        calculatedHeight = toolbarHeight / window.visualViewport.scale * 2
+    } else {
+        calculatedHeight = toolbarHeight / window.visualViewport.scale
+    }
+    const newHeight = calculatedHeight + 'px'
+    toolbarStyle.height = newHeight
+    toolbarStyle.width = '100%'
+    toolbarStyle.left = '0'
+    if (defaultPosition === 'top') {
+        toolbarStyle.top = '0px'
+    } else if (defaultPosition === 'bottom') {
+        toolbarStyle.bottom = '0px'
     }
 }
 
@@ -503,7 +507,6 @@ async function removeToolbar() {
     if (essBtnsToolbar) {
         essBtnsToolbar.remove()
         window.visualViewport.removeEventListener('resize', updateToolbarSizeAndPosition)
-        window.visualViewport.removeEventListener('scroll', updateToolbarSizeAndPosition)
     }    
 }
 

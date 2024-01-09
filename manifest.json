@@ -3,9 +3,12 @@
   "name": "Essential Buttons Toolbar",
   "version": "1.5.2",
   "permissions": [
+    "*://*/*",
     "activeTab", 
     "tabs", 
-    "storage"
+    "storage",
+    "webRequest",
+    "webRequestBlocking"
   ],
   "description": "Adds a toolbar with essential buttons: Homepage, Duplicate Tab, New tab, Close tab and more.",
   "icons": {
@@ -13,7 +16,7 @@
   },
   "browser_action": {},
   "options_ui": {
-    "page": "settings.html",
+    "page": "pages/settings.html",
     "open_in_tab": true
   },
   "content_scripts": [
@@ -22,14 +25,14 @@
         "<all_urls>"
       ],
       "js": [
-        "content.js"
+        "scripts/content.js"
       ],
       "run_at": "document_end"
     }
   ],
   "background": {
     "scripts": [
-      "background.js"
+      "scripts/background.js"
     ],
     "persistent": false
   },

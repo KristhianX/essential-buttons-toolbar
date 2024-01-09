@@ -3,14 +3,14 @@
 <head>
   <title>Settings</title>
   <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" type="text/css" href="settings.css">
+  <link rel="stylesheet" type="text/css" href="../styles/settings.css">
 </head>
 <body>
   <div id="header">
     <h2>Essential Buttons Toolbar</h2>
     <h3 id="versionHeader"></h3>
     <div id="headerInfo">
-      <img src="icons/featherIcons/info.svg"/>
+      <img src="../icons/featherIcons/info.svg"/>
     </div>
   </div>
   <div id="addonInfo">
@@ -67,7 +67,11 @@
           javascript: URLs<br>
           data: URLs<br>
           file: URLs (i.e., files on the filesystem.)<br>
-          privileged about: URLs (for example, about:config, about:addons, about:debugging). Non-privileged URLs (e.g., about:blank) are allowed.
+          privileged about: URLs (for example, about:config, about:addons, about:debugging).
+          <br><br>
+          Non-privileged URLs (e.g., about:blank) are allowed.
+          <br>
+          <a href="blank.html">blank.html</a>
         </p>
       </div>
       <input type="text" id="homepageURL">
@@ -113,6 +117,24 @@
       <button id="generalResetButton">Reset</button>
     </div>
     <div id="buttonsSettings">
+      <div class="containers">
+        <label>Toolbar buttons:<span class="question-mark" id="buttonsSettingsQuestionMark">?</span></label>
+        <div class="message-box" id="buttonsSettingsInfo">
+          <span class="close-button" id="buttonsSettingsCloseButton">X</span>
+          <p>
+            Drag and drop the buttons to your desired position.
+            <br><br>
+            Click any button to get information about its functionality.
+            <br><br>
+            Note that buttons placed in the menu will only be accessible if the menu button is in the toolbar section.
+          </p>
+        </div>
+        <div class="drop-target" id="toolbarContainer"></div>
+        <label>Menu buttons:</label>
+        <div class="drop-target" id="menuContainer"></div>
+        <label>Available buttons:</label>
+        <div class="drop-target" id="availableContainer"></div>
+      </div>
       <div class="message-box" id="infoCard">
         <span class="close-button" id="infoCardCloseButton">X</span>
         <label id="infoCardTitle"></label>
@@ -219,26 +241,19 @@
               Closed tabs can be restored with the undo close tab button.
             </p>
           </div>
+          <div id="toggleDesktopSiteButtonDescription">
+            <p>
+              Modifies the user agent string to the one used in the desktop version of Firefox across <b>all tabs, persisting through browser restarts.</b>
+              <br><br>
+              Please reload currently opened tabs for the change to take effect.
+              <br>
+              The button icon will switch to a phone when enabled and a monitor when disabled.
+              <br>
+              Note that while some sites may appear unchanged, the user agent has been applied.
+            </p>
+          </div>
         </div>
       </div>  
-      <div class="containers">
-        <label>Toolbar buttons:<span class="question-mark" id="buttonsSettingsQuestionMark">?</span></label>
-        <div class="message-box" id="buttonsSettingsInfo">
-          <span class="close-button" id="buttonsSettingsCloseButton">X</span>
-          <p>
-            Drag and drop the buttons to your desired position.
-            <br><br>
-            Click any button to get information about its functionality.
-            <br><br>
-            Note that buttons placed in the menu will only be accessible if the menu button is in the toolbar section.
-          </p>
-        </div>
-        <div class="drop-target" id="toolbarContainer"></div>
-        <label>Menu buttons:</label>
-        <div class="drop-target" id="menuContainer"></div>
-        <label>Available buttons:</label>
-        <div class="drop-target" id="availableContainer"></div>
-      </div>
       <button id="buttonsSaveButton">Save</button>
     </div>
     <div id="excludeSettings">
@@ -253,8 +268,8 @@
       <label>Excluded URLs:</label>
       <ul id="excludedUrls"></ul>
     </div>
-    <script src="content.js"></script>
-    <script src="settings.js"></script>
+    <script src="../scripts/content.js"></script>
+    <script src="../scripts/settings.js"></script>
   </body>
   </html>
   
