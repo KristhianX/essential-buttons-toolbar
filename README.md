@@ -2,7 +2,7 @@
 *Adds a toolbar to Android Firefox with essential buttons: Homepage, Duplicate Tab, New tab, Close tab and more.*  
 
 ## Some screenshots.
-<img src="images/Screenshot_20240101-163148.png" width="200px"/> <img src="images/Screenshot_20240101-163355.png" width="200px"/> <img src="images/Screenshot_20240101-163308.png" width="200px"/> <img src="images/Screenshot_20240101-163042.png" width="200px"/>  
+<img src="images/Screenshot_20240110-212734.png" width="200px"/> <img src="images/Screenshot_20240101-163355.png" width="200px"/> <img src="images/Screenshot_20240101-163308.png" width="200px"/> <img src="images/Screenshot_20240101-163042.png" width="200px"/>  
 
 ## Why?  
 This add-on aims to fill basic missing functionality in Android Firefox. The main reason is to provide a normal home button.  
@@ -25,6 +25,7 @@ Other buttons are being added to offer easier access or missing functionality.
 - **Reload:** Reloads the current page.
 - **Scroll to the top.**
 - **Scroll to the bottom.**
+- **Toggle Desktop Site:** Modifies the user agent string to the one used in the desktop version of Firefox across all tabs, persisting through browser restarts.
 - **Move toolbar:** Moves the toolbar to the top of the page or to the bottom if it is at the top.
 - **Hide toolbar:** Hides the toolbar. Refresh the page to display it again.
 - **Menu:** Opens an additional bar. This feature is provided to improve organization. Buttons in the menu can be customized on the settings page.
@@ -40,6 +41,7 @@ Other buttons are being added to offer easier access or missing functionality.
 - **Toolbar buttons:** Enable/disable the buttons and change their position.  
 - **Exclude URLs:** Specify which web addresses to exclude.  
 - **Live reload of settings changes:** No more need to refresh the pages to apply the new settings or the exclude rules.
+- **Integrated blank.html:** A blank page where the toolbar is accessible.  
 
 This extension does not access, log, or share your data. It is also ad-free and will always remain so.  
 

@@ -28,13 +28,16 @@ let prevScrollPos
 
 //
 // TODO:
+//  window.stop()
+//  Open with button
 //  Add option to display an unhide button when the toolbar is hidden
-//  Improve undo close tab button
-//  Option to change toolbar theme
-//  Import and export settings
-//  Add-on idea: Fix problematic pages
 //  about:newtab altenernative
 //  Archive; daily; 📬
+//  Import and export settings
+//  Improve undo close tab button
+//  Option to change toolbar theme
+//  Add-on idea: Fix problematic pages
+//  Find button
 //
 
 //
@@ -551,7 +554,7 @@ async function initializeToolbar() {
         createToolbar()
         createButtons()
         appendButtons()
-        await appendToolbar()
+        appendToolbar()
         updateToolbarHeight()
         checkExistenceAndHeight()
         hideOnScroll()
