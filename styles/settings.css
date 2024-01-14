@@ -98,11 +98,11 @@ label {
     color: tomato;
 }
 
-input[type="checkbox"]:checked {
+input[type='checkbox']:checked {
     accent-color: cornflowerblue;
 }
 
-input[type="text"] {
+input[type='text'] {
     width: 90%;
     min-width: 250px;
     padding: 8px;
@@ -115,18 +115,18 @@ input[type="text"] {
     outline: none;
 }
 
-input[type="range"] {
+input[type='range'] {
     appearance: none;
     width: 80%;
     min-width: 250px;
-    height: 6px; 
+    height: 6px;
     background: #2b2a33;
     border: none;
     border-radius: 4px;
     outline: none;
 }
 
-input[type="range"]::-moz-range-thumb {
+input[type='range']::-moz-range-thumb {
     width: 12px;
     height: 24px;
     background: #2b2a33;
@@ -239,11 +239,13 @@ li button {
     border-radius: 0 4px 4px 0;
 }
 
-#buttonsSettings, #excludeSettings {
+#buttonsSettings,
+#excludeSettings {
     display: none;
 }
 
-#generalSettings, #excludeSettings {
+#generalSettings,
+#excludeSettings {
     margin: 0 auto;
     width: 90%;
     max-width: 500px;
@@ -296,7 +298,7 @@ li button {
 
 #availableContainer .drag-able {
     height: 40px;
-    margin: 10px 10px 0 0; 
+    margin: 10px 10px 0 0;
 }
 
 .drag-able img {

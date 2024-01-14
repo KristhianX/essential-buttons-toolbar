@@ -1,45 +1,39 @@
 {
-  "manifest_version": 2,
-  "name": "Essential Buttons Toolbar",
-  "version": "1.6.2",
-  "incognito": "not_allowed",
-  "permissions": [
-    "*://*/*",
-    "activeTab", 
-    "tabs", 
-    "storage",
-    "webRequest",
-    "webRequestBlocking"
-  ],
-  "description": "Adds a toolbar with essential buttons: Homepage, Duplicate Tab, New tab, Close tab and more.",
-  "icons": {
-    "48": "icons/home.svg"
-  },
-  "browser_action": {},
-  "options_ui": {
-    "page": "pages/settings.html",
-    "open_in_tab": true
-  },
-  "content_scripts": [
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "scripts/content.js"
-      ],
-      "run_at": "document_start"
-    }
-  ],
-  "background": {
-    "scripts": [
-      "scripts/background.js"
+    "manifest_version": 2,
+    "name": "Essential Buttons Toolbar",
+    "version": "1.6.2",
+    "incognito": "not_allowed",
+    "permissions": [
+        "*://*/*",
+        "activeTab",
+        "tabs",
+        "storage",
+        "webRequest",
+        "webRequestBlocking"
     ],
-    "persistent": false
-  },
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "{df2262aa-a56b-416a-aff0-3a13644a578b}"
+    "description": "Adds a toolbar with essential buttons: Homepage, Duplicate Tab, New tab, Close tab and more.",
+    "icons": {
+        "48": "icons/home.svg"
+    },
+    "browser_action": {},
+    "options_ui": {
+        "page": "pages/settings.html",
+        "open_in_tab": true
+    },
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["scripts/content.js"],
+            "run_at": "document_start"
+        }
+    ],
+    "background": {
+        "scripts": ["scripts/background.js"],
+        "persistent": false
+    },
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "{df2262aa-a56b-416a-aff0-3a13644a578b}"
+        }
     }
-  }
 }

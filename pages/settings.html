@@ -1,280 +1,377 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Settings</title>
-  <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" type="text/css" href="../styles/settings.css">
-</head>
-<body>
-  <div id="header">
-    <h2>Essential Buttons Toolbar</h2>
-    <h3 id="versionHeader"></h3>
-    <div id="headerInfo">
-      <img src="../icons/featherIcons/info.svg"/>
-    </div>
-  </div>
-  <div id="addonInfo">
-    <span class="close-button" id="addonInfoCloseButton">X</span>
-    <h2>Important Note!!</h2>
-    <div>
-      <h3>New in this version</h3>
-      <p style="text-align: left; padding: 0 10px;">
-        <b>The toolbar won't run in private browsing:</b>
-        <br>
-        This add-on utilizes the web extension API's tabs.create(), which doesn't ensure that tabs opened from the toolbar in private browsing are private, as they should be.
-        <br>
-        If you've used this add-on in private browsing to create tabs, duplicate tabs, etc., please check for unwanted traces in your browsing history.
-        <br>
-        I sincerely apologize for any inconvenience. Your understanding is greatly appreciated.
-        <br><br>
-        For more information, <a href="https://github.com/KristhianX/essential-buttons-toolbar/issues/5">an issue</a> has been created on GitHub. Feel free to leave any questions or suggestions there.
-        <br>
-        Thank you.
-        <br><br>
-        <a href="https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/versions/">View Version History</a>
-      </p>
-    </div>  
-    <div>
-      <h3>About</h3>
-      <p>
-        Free and open-source!
-        <br>
-        Report issues or share your suggestions:
-        <br>
-        <a href="https://github.com/KristhianX/essential-buttons-toolbar">GitHub Repository</a>
-      </p>
-    </div>
-    <div>
-      <h3>Support Me</h3>
-      <p>Leave a <a href="https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/reviews/">review</a> or consider donating
-        <br>
-        to support future updates ❤️</p>
-        <a href="https://www.buymeacoffee.com/kristhianx" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="max-width: 160px !important;" ></a>
-        <!-- <a href='https://ko-fi.com/V7V7QI34Z' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi2.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a> -->
-      </div>
-      <div style="margin-top: 20px;">
-        <label style="display: flex; align-items: center; justify-content: center;">
-          <input type="checkbox" id="disableUpdatesMsg"> Disable Update Notifications
-        </label>
-      </div>
-    </div>
-    <div id="settingsTabs"></div>
-    <p id="statusMessage">Settings saved!</p>
-    <div id="generalSettings">  
-      <label for="homepageURL">Homepage URL:<span class="question-mark" id="homepageURLQuestionMark">?</span></label>
-      <div class="message-box" id="homepageURLInfo">
-        <span class="close-button" id="homepageURLCloseButton">X</span>
-        <p>Fully-qualified URLs must include a scheme (for example, 'https://www.google.com' not 'www.google.com').
-          <br><br>
-          For security reasons, in Firefox, this may not be a privileged URL. So passing any of the following URLs will fail:
-          <br><br>
-          chrome: URLs<br>
-          javascript: URLs<br>
-          data: URLs<br>
-          file: URLs (i.e., files on the filesystem.)<br>
-          privileged about: URLs (for example, about:config, about:addons, about:debugging).
-          <br><br>
-          Non-privileged URLs (e.g., about:blank) are allowed.
-          <br>
-          You can use <a href="blank.html">blank.html</a> to have a blank page where the toolbar is accessible.
-        </p>
-      </div>
-      <input type="text" id="homepageURL">
-      <br>
-      <label for="newTabURL">New tab URL:</label>
-      <input type="text" id="newTabURL">
-      <br>
-      <label for="toolbarHeight">Toolbar height:</label>
-      <span class="currentValue" id="currentValueHeight"></span>
-      <input type="range" id="toolbarHeight" min="10" max="100" step="2">
-      <br>
-      <label for="toolbarTransparency">Toolbar transparency:</label>
-      <span class="currentValue" id="currentValueTransparency"></span>
-      <input type="range" id="toolbarTransparency" min="0.5" max="1" step="0.1">
-      <br>
-      <label for="defaultPosition">Toolbar position:</label>
-      <select id="defaultPosition">
-        <option value="top">Top</option>
-        <option value="bottom">Bottom</option>
-      </select>
-      <label for="iconTheme">Icon theme:</label>
-      <select id="iconTheme">
-        <option value="featherIcons">Feather</option>
-        <option value="heroIcons">Heroicons</option>
-      </select>
-      <label for="hideMethod">Hide on scroll method:<span class="question-mark" id="hideMethodQuestionMark">?</span></label>
-      <div class="message-box" id="hideMethodInfo">
-        <span class="close-button" id="hideMethodCloseButton">X</span>
-        <p>
-          <b>Scroll:</b> It does not work on some websites.
-          <br><br>
-          <b>Touchmove:</b> This method uses touch events to hide the toolbar and works on every page, as it is not dependent on scrolling. Note that touches are not detected while the page is scrolling.
-          <br><br>
-          <b>Disable:</b> Disable the hide toolbar on scroll feature.
-        </p>
-      </div>
-      <select id="hideMethod">
-        <option value="scroll">Scroll</option>
-        <option value="touch">Touchmove</option>
-        <option value="disable">Disable</option>
-      </select>
-      <button id="generalSaveButton">Save</button>
-      <button id="generalResetButton">Reset</button>
-    </div>
-    <div id="buttonsSettings">
-      <div class="containers">
-        <label>Toolbar buttons:<span class="question-mark" id="buttonsSettingsQuestionMark">?</span></label>
-        <div class="message-box" id="buttonsSettingsInfo">
-          <span class="close-button" id="buttonsSettingsCloseButton">X</span>
-          <p>
-            Drag and drop the buttons to your desired position.
-            <br><br>
-            Click any button to get information about its functionality.
-            <br><br>
-            Note that buttons placed in the menu will only be accessible if the menu button is in the toolbar section.
-          </p>
+    <head>
+        <title>Settings</title>
+        <meta
+            charset="UTF-8"
+            name="viewport"
+            content="width=device-width, initial-scale=1"
+        />
+        <link rel="stylesheet" type="text/css" href="../styles/settings.css" />
+    </head>
+    <body>
+        <div id="header">
+            <h2>Essential Buttons Toolbar</h2>
+            <h3 id="versionHeader"></h3>
+            <div id="headerInfo">
+                <img src="../icons/featherIcons/info.svg" />
+            </div>
         </div>
-        <div class="drop-target" id="toolbarContainer"></div>
-        <label>Menu buttons:</label>
-        <div class="drop-target" id="menuContainer"></div>
-        <label>Available buttons:</label>
-        <div class="drop-target" id="availableContainer"></div>
-      </div>
-      <div class="message-box" id="infoCard">
-        <span class="close-button" id="infoCardCloseButton">X</span>
-        <label id="infoCardTitle"></label>
-        <div id="infoCardDescription">
-          <div id="homeButtonDescription">
-            <p>
-              Opens the default homepage URL.
-              <br>
-              Can be changed in options.
-            </p>
-          </div>
-          <div id="duplicateTabButtonDescription">
-            <p>
-              Opens current URL in new tab.
-              <br>
-              Long-press it to access the browser's default link options, such as opening in the background, copying the link, etc.
-            </p>
-          </div>
-          <div id="hideButtonDescription">
-            <p>
-              Hides the toolbar.
-              <br>
-              Refresh the page to display it again.
-            </p>
-          </div>
-          <div id="closeTabButtonDescription">
-            <p>
-              Closes the current tab.
-              <br>
-              If the current tab is the only open tab, it opens the homepage URL instead.
-            </p>
-          </div>
-          <div id="newTabButtonDescription">
-            <p>
-              Opens the default new tab page URL.
-              <br>
-              Can be changed in options.
-            </p>
-          </div>
-          <div id="menuButtonDescription">
-            <p>
-              Opens an additional bar.
-              <br>
-              This feature is provided to improve organization.
-              <br>
-              Cannot be placed in the menu buttons section.
-            </p>
-          </div>
-          <div id="moveToolbarButtonDescription">
-            <p>
-              Moves the toolbar to the top of the page or to the bottom if it is at the top.
-            </p>
-          </div>
-          <div id="undoCloseTabButtonDescription">
-            <p>
-              Opens in a new tab the most recently closed tab(s) by this add-on.
-              <br>
-              Please note that, at the moment, it does not keep track of tabs closed by the browser or other add-ons.
-            </p>
-          </div>
-          <div id="goBackButtonDescription">
-            <p>
-              Navigate back in history.
-            </p>
-          </div>
-          <div id="goForwardButtonDescription">
-            <p>
-              Navigate forward in history.
-            </p>
-          </div>
-          <div id="reloadButtonDescription">
-            <p>
-              Reloads the current page.
-            </p>
-          </div>
-          <div id="settingsButtonDescription">
-            <p>
-              Opens the settings page for this add-on in a new tab.
-            </p>
-          </div>
-          <div id="scrollTopButtonDescription">
-            <p>
-              🐾
-            </p>
-          </div>
-          <div id="scrollBottomButtonDescription">
-            <p>
-              🐾
-            </p>
-          </div>
-          <div id="closeAllTabsButtonDescription">
-            <p>
-              Due to the current behavior of the tabs API on Android Firefox, it cannot close unloaded tabs.
-              <br>
-              As the close tab button, it opens your homepage URL when the last tab is closed.
-              <br>
-              Closed tabs can be restored with the undo close tab button.
-            </p>
-          </div>
-          <div id="closeOtherTabsButtonDescription">
-            <p>
-              Due to the current behavior of the tabs API on Android Firefox, it cannot close unloaded tabs.
-              <br>
-              Closed tabs can be restored with the undo close tab button.
-            </p>
-          </div>
-          <div id="toggleDesktopSiteButtonDescription">
-            <p>
-              Modifies the user agent string to the one used in the desktop version of Firefox across <b>all tabs, persisting through browser restarts.</b>
-              <br><br>
-              Please reload currently opened tabs for the change to take effect.
-              <br>
-              The button icon will switch to a phone when enabled and a monitor when disabled.
-              <br>
-              Note that while some sites may appear unchanged, the user agent has been applied.
-            </p>
-          </div>
+        <div id="addonInfo">
+            <span class="close-button" id="addonInfoCloseButton">X</span>
+            <h2>Important Note!!</h2>
+            <div>
+                <h3>New in this version</h3>
+                <p style="text-align: left; padding: 0 10px">
+                    <b>The toolbar won't run in private browsing:</b>
+                    <br />
+                    This add-on utilizes the web extension API's tabs.create(),
+                    which doesn't ensure that tabs opened from the toolbar in
+                    private browsing are private, as they should be.
+                    <br />
+                    If you've used this add-on in private browsing to create
+                    tabs, duplicate tabs, etc., please check for unwanted traces
+                    in your browsing history.
+                    <br />
+                    I sincerely apologize for any inconvenience. Your
+                    understanding is greatly appreciated.
+                    <br /><br />
+                    For more information,
+                    <a
+                        href="https://github.com/KristhianX/essential-buttons-toolbar/issues/5"
+                        >an issue</a
+                    >
+                    has been created on GitHub. Feel free to leave any questions
+                    or suggestions there.
+                    <br />
+                    Thank you.
+                    <br /><br />
+                    <a
+                        href="https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/versions/"
+                        >View Version History</a
+                    >
+                </p>
+            </div>
+            <div>
+                <h3>About</h3>
+                <p>
+                    Free and open-source!
+                    <br />
+                    Report issues or share your suggestions:
+                    <br />
+                    <a
+                        href="https://github.com/KristhianX/essential-buttons-toolbar"
+                        >GitHub Repository</a
+                    >
+                </p>
+            </div>
+            <div>
+                <h3>Support Me</h3>
+                <p>
+                    Leave a
+                    <a
+                        href="https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/reviews/"
+                        >review</a
+                    >
+                    or consider donating
+                    <br />
+                    to support future updates ❤️
+                </p>
+                <a
+                    href="https://www.buymeacoffee.com/kristhianx"
+                    target="_blank"
+                    ><img
+                        src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
+                        alt="Buy Me A Coffee"
+                        style="max-width: 160px !important"
+                /></a>
+                <!-- <a href='https://ko-fi.com/V7V7QI34Z' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi2.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a> -->
+            </div>
+            <div style="margin-top: 20px">
+                <label
+                    style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    "
+                >
+                    <input type="checkbox" id="disableUpdatesMsg" /> Disable
+                    Update Notifications
+                </label>
+            </div>
         </div>
-      </div>  
-      <button id="buttonsSaveButton">Save</button>
-    </div>
-    <div id="excludeSettings">
-      <label for="customUrl">URL:<span class="question-mark" id="customUrlQuestionMark">?</span></label>
-      <div class="message-box" id="customUrlInfo">
-        <span class="close-button" id="customUrlCloseButton">X</span>
-        <p>URL to exclude. Wildcards are supported: *.example.com/*</p>
-      </div>
-      <input type="text" id="customUrl">
-      <br>
-      <button id="addUrlButton">Exclude URL</button>
-      <label>Excluded URLs:</label>
-      <ul id="excludedUrls"></ul>
-    </div>
-    <script src="../scripts/content.js"></script>
-    <script src="../scripts/settings.js"></script>
-  </body>
-  </html>
-  
+        <div id="settingsTabs"></div>
+        <p id="statusMessage">Settings saved!</p>
+        <div id="generalSettings">
+            <label for="homepageURL"
+                >Homepage URL:<span
+                    class="question-mark"
+                    id="homepageURLQuestionMark"
+                    >?</span
+                ></label
+            >
+            <div class="message-box" id="homepageURLInfo">
+                <span class="close-button" id="homepageURLCloseButton">X</span>
+                <p>
+                    Fully-qualified URLs must include a scheme (for example,
+                    'https://www.google.com' not 'www.google.com'). <br /><br />
+                    For security reasons, in Firefox, this may not be a
+                    privileged URL. So passing any of the following URLs will
+                    fail:
+                    <br /><br />
+                    chrome: URLs<br />
+                    javascript: URLs<br />
+                    data: URLs<br />
+                    file: URLs (i.e., files on the filesystem.)<br />
+                    privileged about: URLs (for example, about:config,
+                    about:addons, about:debugging).
+                    <br /><br />
+                    Non-privileged URLs (e.g., about:blank) are allowed.
+                    <br />
+                    You can use <a href="blank.html">blank.html</a> to have a
+                    blank page where the toolbar is accessible.
+                </p>
+            </div>
+            <input type="text" id="homepageURL" />
+            <br />
+            <label for="newTabURL">New tab URL:</label>
+            <input type="text" id="newTabURL" />
+            <br />
+            <label for="toolbarHeight">Toolbar height:</label>
+            <span class="currentValue" id="currentValueHeight"></span>
+            <input
+                type="range"
+                id="toolbarHeight"
+                min="10"
+                max="100"
+                step="2"
+            />
+            <br />
+            <label for="toolbarTransparency">Toolbar transparency:</label>
+            <span class="currentValue" id="currentValueTransparency"></span>
+            <input
+                type="range"
+                id="toolbarTransparency"
+                min="0.5"
+                max="1"
+                step="0.1"
+            />
+            <br />
+            <label for="defaultPosition">Toolbar position:</label>
+            <select id="defaultPosition">
+                <option value="top">Top</option>
+                <option value="bottom">Bottom</option>
+            </select>
+            <label for="iconTheme">Icon theme:</label>
+            <select id="iconTheme">
+                <option value="featherIcons">Feather</option>
+                <option value="heroIcons">Heroicons</option>
+            </select>
+            <label for="hideMethod"
+                >Hide on scroll method:<span
+                    class="question-mark"
+                    id="hideMethodQuestionMark"
+                    >?</span
+                ></label
+            >
+            <div class="message-box" id="hideMethodInfo">
+                <span class="close-button" id="hideMethodCloseButton">X</span>
+                <p>
+                    <b>Scroll:</b> It does not work on some websites.
+                    <br /><br />
+                    <b>Touchmove:</b> This method uses touch events to hide the
+                    toolbar and works on every page, as it is not dependent on
+                    scrolling. Note that touches are not detected while the page
+                    is scrolling. <br /><br />
+                    <b>Disable:</b> Disable the hide toolbar on scroll feature.
+                </p>
+            </div>
+            <select id="hideMethod">
+                <option value="scroll">Scroll</option>
+                <option value="touch">Touchmove</option>
+                <option value="disable">Disable</option>
+            </select>
+            <button id="generalSaveButton">Save</button>
+            <button id="generalResetButton">Reset</button>
+        </div>
+        <div id="buttonsSettings">
+            <div class="containers">
+                <label
+                    >Toolbar buttons:<span
+                        class="question-mark"
+                        id="buttonsSettingsQuestionMark"
+                        >?</span
+                    ></label
+                >
+                <div class="message-box" id="buttonsSettingsInfo">
+                    <span class="close-button" id="buttonsSettingsCloseButton"
+                        >X</span
+                    >
+                    <p>
+                        Drag and drop the buttons to your desired position.
+                        <br /><br />
+                        Click any button to get information about its
+                        functionality.
+                        <br /><br />
+                        Note that buttons placed in the menu will only be
+                        accessible if the menu button is in the toolbar section.
+                    </p>
+                </div>
+                <div class="drop-target" id="toolbarContainer"></div>
+                <label>Menu buttons:</label>
+                <div class="drop-target" id="menuContainer"></div>
+                <label>Available buttons:</label>
+                <div class="drop-target" id="availableContainer"></div>
+            </div>
+            <div class="message-box" id="infoCard">
+                <span class="close-button" id="infoCardCloseButton">X</span>
+                <label id="infoCardTitle"></label>
+                <div id="infoCardDescription">
+                    <div id="homeButtonDescription">
+                        <p>
+                            Opens the default homepage URL.
+                            <br />
+                            Can be changed in options.
+                        </p>
+                    </div>
+                    <div id="duplicateTabButtonDescription">
+                        <p>
+                            Opens current URL in new tab.
+                            <br />
+                            Long-press it to access the browser's default link
+                            options, such as opening in the background, copying
+                            the link, etc.
+                        </p>
+                    </div>
+                    <div id="hideButtonDescription">
+                        <p>
+                            Hides the toolbar.
+                            <br />
+                            Refresh the page to display it again.
+                        </p>
+                    </div>
+                    <div id="closeTabButtonDescription">
+                        <p>
+                            Closes the current tab.
+                            <br />
+                            If the current tab is the only open tab, it opens
+                            the homepage URL instead.
+                        </p>
+                    </div>
+                    <div id="newTabButtonDescription">
+                        <p>
+                            Opens the default new tab page URL.
+                            <br />
+                            Can be changed in options.
+                        </p>
+                    </div>
+                    <div id="menuButtonDescription">
+                        <p>
+                            Opens an additional bar.
+                            <br />
+                            This feature is provided to improve organization.
+                            <br />
+                            Cannot be placed in the menu buttons section.
+                        </p>
+                    </div>
+                    <div id="moveToolbarButtonDescription">
+                        <p>
+                            Moves the toolbar to the top of the page or to the
+                            bottom if it is at the top.
+                        </p>
+                    </div>
+                    <div id="undoCloseTabButtonDescription">
+                        <p>
+                            Opens in a new tab the most recently closed tab(s)
+                            by this add-on.
+                            <br />
+                            Please note that, at the moment, it does not keep
+                            track of tabs closed by the browser or other
+                            add-ons.
+                        </p>
+                    </div>
+                    <div id="goBackButtonDescription">
+                        <p>Navigate back in history.</p>
+                    </div>
+                    <div id="goForwardButtonDescription">
+                        <p>Navigate forward in history.</p>
+                    </div>
+                    <div id="reloadButtonDescription">
+                        <p>Reloads the current page.</p>
+                    </div>
+                    <div id="settingsButtonDescription">
+                        <p>
+                            Opens the settings page for this add-on in a new
+                            tab.
+                        </p>
+                    </div>
+                    <div id="scrollTopButtonDescription">
+                        <p>🐾</p>
+                    </div>
+                    <div id="scrollBottomButtonDescription">
+                        <p>🐾</p>
+                    </div>
+                    <div id="closeAllTabsButtonDescription">
+                        <p>
+                            Due to the current behavior of the tabs API on
+                            Android Firefox, it cannot close unloaded tabs.
+                            <br />
+                            As the close tab button, it opens your homepage URL
+                            when the last tab is closed.
+                            <br />
+                            Closed tabs can be restored with the undo close tab
+                            button.
+                        </p>
+                    </div>
+                    <div id="closeOtherTabsButtonDescription">
+                        <p>
+                            Due to the current behavior of the tabs API on
+                            Android Firefox, it cannot close unloaded tabs.
+                            <br />
+                            Closed tabs can be restored with the undo close tab
+                            button.
+                        </p>
+                    </div>
+                    <div id="toggleDesktopSiteButtonDescription">
+                        <p>
+                            Modifies the user agent string to the one used in
+                            the desktop version of Firefox across
+                            <b
+                                >all tabs, persisting through browser
+                                restarts.</b
+                            >
+                            <br /><br />
+                            Please reload currently opened tabs for the change
+                            to take effect.
+                            <br />
+                            The button icon will switch to a phone when enabled
+                            and a monitor when disabled.
+                            <br />
+                            Note that while some sites may appear unchanged, the
+                            user agent has been applied.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <button id="buttonsSaveButton">Save</button>
+        </div>
+        <div id="excludeSettings">
+            <label for="customUrl"
+                >URL:<span class="question-mark" id="customUrlQuestionMark"
+                    >?</span
+                ></label
+            >
+            <div class="message-box" id="customUrlInfo">
+                <span class="close-button" id="customUrlCloseButton">X</span>
+                <p>URL to exclude. Wildcards are supported: *.example.com/*</p>
+            </div>
+            <input type="text" id="customUrl" />
+            <br />
+            <button id="addUrlButton">Exclude URL</button>
+            <label>Excluded URLs:</label>
+            <ul id="excludedUrls"></ul>
+        </div>
+        <script src="../scripts/content.js"></script>
+        <script src="../scripts/settings.js"></script>
+    </body>
+</html>

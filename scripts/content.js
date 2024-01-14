@@ -1,96 +1,93 @@
 //
 // Variables
 //
-let homepageURL
-let newTabURL
-let toolbarHeight
-let toolbarTransparency
-let defaultPosition
-let iconTheme
-let hideMethod
-let checkboxStates
-let buttonOrder
-let buttonsInToolbarDiv
-let excludedUrls
 let currentUrl = window.location.href
-let isCurrentPageExcluded
 let iframeHidden
 let iframeVisible = true
 let menuDivHidden = true
 let toolbarIframe
-let toolbarStyle
 let toolbarDiv
 let menuDiv
 let menuButtonFlag
 let hideMethodInUse
 let isThrottled
 let prevScrollPos
+const settings = {}
 
 //
-// TODO:
-//  window.stop()
-//  Open with button
-//  Add option to display an unhide button when the toolbar is hidden
-//  about:newtab altenernative
-//  Archive; daily; 📬
-//  Import and export settings
-//  Improve undo close tab button
-//  Option to change toolbar theme
-//  Add-on idea: Fix problematic pages
-//  Find button
-//
-
-//
-// Get settings from storage
+//  Get settings
 //
 function getSettingsValues() {
     return new Promise((resolve) => {
-        const checkValues = () => {
-            browser.storage.sync.get(['homepageURL', 'newTabURL', 'toolbarHeight', 'defaultPosition', 'iconTheme', 'hideMethod', 'excludedUrls', 'checkboxStates', 'buttonOrder', 'buttonsInToolbarDiv', 'toolbarTransparency']).then((result) => {
-                homepageURL = result.homepageURL
-                newTabURL = result.newTabURL
-                toolbarHeight = result.toolbarHeight
-                toolbarTransparency = result.toolbarTransparency
-                defaultPosition = result.defaultPosition
-                iconTheme = result.iconTheme
-                hideMethod = result.hideMethod
-                checkboxStates = result.checkboxStates
-                buttonOrder = result.buttonOrder
-                buttonsInToolbarDiv = result.buttonsInToolbarDiv
-                excludedUrls = result.excludedUrls || []
-                isCurrentPageExcluded = excludedUrls.some((excludedUrl) => {
-                    const pattern = new RegExp('^' + excludedUrl.replace(/\*/g, '.*') + '$')
-                    return pattern.test(currentUrl)
-                })
-                // Check if all values are available, otherwise, recursively call checkValues.
-                if (homepageURL && newTabURL && toolbarHeight && toolbarTransparency && defaultPosition && iconTheme && hideMethod && checkboxStates && buttonOrder && buttonsInToolbarDiv) {
-                    resolve()
-                } else {
-                    setTimeout(checkValues, 100)
-                }
+        const keys = [
+            'homepageURL',
+            'newTabURL',
+            'toolbarHeight',
+            'toolbarTransparency',
+            'defaultPosition',
+            'iconTheme',
+            'hideMethod',
+            'excludedUrls',
+            'checkboxStates',
+            'buttonOrder',
+            'buttonsInToolbarDiv',
+        ]
+        browser.storage.sync.get(keys).then((result) => {
+            keys.forEach((key) => {
+                settings[key] = result[key]
             })
-        }
-        checkValues()
+            resolve()
+        })
     })
 }
 
 //
 // Toolbar
 //
-function createToolbar() {
+function appendToolbar() {
+    return new Promise((resolve) => {
+        if (document.body) {
+            appendToolbarAndResolve(resolve)
+        } else {
+            const observer = new MutationObserver(() => {
+                if (document.body) {
+                    observer.disconnect()
+                    appendToolbarAndResolve(resolve)
+                }
+            })
+            observer.observe(document, { childList: true })
+        }
+    })
+}
+
+function appendToolbarAndResolve(resolve) {
     toolbarIframe = document.createElement('iframe')
     toolbarIframe.src = browser.runtime.getURL('pages/toolbar.html')
     toolbarIframe.setAttribute('id', 'essBtnsToolbar')
-    toolbarIframe.style = 'display: block; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light; border-radius: 0'
-    toolbarStyle = toolbarIframe.style
-    toolbarDiv = document.createElement('div')
-    toolbarDiv.style = 'height: 100%; display: flex; background-color: rgba(43, 42, 51, ' + toolbarTransparency + ')'
-    menuDiv = document.createElement('div')
+    toolbarIframe.style =
+        'display: block; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light; border-radius: 0'
+    document.body.insertAdjacentElement('afterend', toolbarIframe)
+    function handleToolbarLoad() {
+        const iframeDocument = toolbarIframe.contentWindow.document
+        toolbarDiv = iframeDocument.createElement('div')
+        menuDiv = iframeDocument.createElement('div')
+        iframeDocument.body.appendChild(toolbarDiv)
+        iframeDocument.body.appendChild(menuDiv)
+        styleToolbar()
+        window.visualViewport.addEventListener('resize', updateToolbarHeight)
+        resolve()
+        toolbarIframe.removeEventListener('load', handleToolbarLoad)
+    }
+    toolbarIframe.addEventListener('load', handleToolbarLoad)
+}
+
+function styleToolbar() {
+    toolbarDiv.style = `height: 100%; display: flex; background-color: rgba(43, 42, 51, ${settings.toolbarTransparency})`
     menuDiv.style = 'height: 50%; display: none; background-color: #2b2a33'
-    if (defaultPosition === 'top') {
+    if (settings.defaultPosition === 'top') {
         toolbarDiv.style.top = '0'
         menuDiv.style.bottom = '0'
-        toolbarDiv.style.borderWidth = '0 0 5px'
+        toolbarDiv.style.borderWidth = '0 0 2px'
         menuDiv.style.borderWidth = '0 0 2px'
     } else {
         toolbarDiv.style.bottom = '0'
@@ -105,8 +102,9 @@ function closeMenu() {
         menuDivHidden = true
         menuDiv.style.display = 'none'
         toolbarDiv.style.height = '100%'
-        const currentToolbarHeight = toolbarIframe.getBoundingClientRect().height
-        toolbarIframe.style.height =  currentToolbarHeight / 2 + 'px'
+        const currentToolbarHeight =
+            toolbarIframe.getBoundingClientRect().height
+        toolbarIframe.style.height = currentToolbarHeight / 2 + 'px'
         menuButtonFlag.style.background = 'transparent'
     }
 }
@@ -121,7 +119,10 @@ const buttonElements = {
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
-                browser.runtime.sendMessage({ action: 'updateTab', url: homepageURL })
+                browser.runtime.sendMessage({
+                    action: 'updateTab',
+                    url: settings.homepageURL,
+                })
             }, 100)
         },
     },
@@ -133,7 +134,10 @@ const buttonElements = {
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
-                browser.runtime.sendMessage({ action: 'duplicateTab', url: updatedUrl })
+                browser.runtime.sendMessage({
+                    action: 'duplicateTab',
+                    url: updatedUrl,
+                })
             }, 100)
         },
     },
@@ -142,8 +146,9 @@ const buttonElements = {
             if (menuDivHidden) {
                 this.style.background = '#6495edcc'
                 menuDivHidden = false
-                const currentToolbarHeight = toolbarIframe.getBoundingClientRect().height
-                toolbarIframe.style.height =  currentToolbarHeight * 2 + 'px'
+                const currentToolbarHeight =
+                    toolbarIframe.getBoundingClientRect().height
+                toolbarIframe.style.height = currentToolbarHeight * 2 + 'px'
                 toolbarDiv.style.height = '50%'
                 menuDiv.style.display = 'flex'
                 menuButtonFlag = this
@@ -157,7 +162,10 @@ const buttonElements = {
             this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
-                browser.runtime.sendMessage({ action: 'closeTab', url: homepageURL })
+                browser.runtime.sendMessage({
+                    action: 'closeTab',
+                    url: settings.homepageURL,
+                })
             }, 100)
         },
     },
@@ -167,7 +175,10 @@ const buttonElements = {
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
-                browser.runtime.sendMessage({ action: 'createTab', url: newTabURL })
+                browser.runtime.sendMessage({
+                    action: 'createTab',
+                    url: settings.newTabURL,
+                })
             }, 100)
         },
     },
@@ -178,12 +189,12 @@ const buttonElements = {
                 this.style.background = 'transparent'
                 toolbarIframe.style.display = 'none'
                 iframeHidden = true
-            }, 100)        
+            }, 100)
         },
     },
     moveToolbarButton: {
         behavior: function () {
-            this.style.background = '#6495edcc'            
+            this.style.background = '#6495edcc'
             setTimeout(() => {
                 const imgElement = this.querySelector('img')
                 closeMenu()
@@ -196,7 +207,9 @@ const buttonElements = {
                     menuDiv.style.bottom = '0'
                     toolbarDiv.style.borderWidth = '0 0 2px'
                     menuDiv.style.borderWidth = '0 0 2px'
-                    imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronDown.svg')
+                    imgElement.src = browser.runtime.getURL(
+                        'icons/' + settings.iconTheme + '/chevronDown.svg'
+                    )
                 } else {
                     toolbarIframe.style.top = 'unset'
                     toolbarIframe.style.bottom = '0px'
@@ -206,10 +219,12 @@ const buttonElements = {
                     menuDiv.style.bottom = 'unset'
                     toolbarDiv.style.borderWidth = '2px 0 0'
                     menuDiv.style.borderWidth = '2px 0 0'
-                    imgElement.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronUp.svg')
+                    imgElement.src = browser.runtime.getURL(
+                        'icons/' + settings.iconTheme + '/chevronUp.svg'
+                    )
                 }
                 this.style.background = 'transparent'
-            }, 100)        
+            }, 100)
         },
     },
     // devToolsButton: {
@@ -293,7 +308,8 @@ const buttonElements = {
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
-                document.documentElement.scrollTop = document.documentElement.scrollHeight
+                document.documentElement.scrollTop =
+                    document.documentElement.scrollHeight
             }, 100)
         },
     },
@@ -303,7 +319,10 @@ const buttonElements = {
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
-                browser.runtime.sendMessage({ action: 'closeAllTabs', url: homepageURL })
+                browser.runtime.sendMessage({
+                    action: 'closeAllTabs',
+                    url: settings.homepageURL,
+                })
             }, 100)
         },
     },
@@ -323,15 +342,23 @@ const buttonElements = {
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
-                browser.storage.local.get('isDesktopSite').then( (result) => {
+                browser.storage.local.get('isDesktopSite').then((result) => {
                     if (!result.isDesktopSite) {
-                        browser.storage.local.set({ isDesktopSite: true }).then( () => {
-                            browser.runtime.sendMessage({ action: 'toggleDesktopSite' })
-                        })
+                        browser.storage.local
+                            .set({ isDesktopSite: true })
+                            .then(() => {
+                                browser.runtime.sendMessage({
+                                    action: 'toggleDesktopSite',
+                                })
+                            })
                     } else {
-                        browser.storage.local.set({ isDesktopSite: false }).then( () => {
-                            browser.runtime.sendMessage({ action: 'toggleDesktopSite' })
-                        })
+                        browser.storage.local
+                            .set({ isDesktopSite: false })
+                            .then(() => {
+                                browser.runtime.sendMessage({
+                                    action: 'toggleDesktopSite',
+                                })
+                            })
                     }
                 })
             }, 100)
@@ -341,48 +368,65 @@ const buttonElements = {
 }
 
 function createButtons() {
-    buttonOrder.forEach(buttonId => {
-        if (buttonElements[buttonId] && checkboxStates[buttonId]) {
+    settings.buttonOrder.forEach((buttonId) => {
+        if (buttonElements[buttonId] && settings.checkboxStates[buttonId]) {
             let button
             const img = document.createElement('img')
             switch (buttonId) {
                 case 'duplicateTabButton':
-                button = document.createElement('a')
-                img.src = browser.runtime.getURL('icons/' + iconTheme + '/' + buttonId + '.svg')
-                button.href = currentUrl
-                button.addEventListener('touchstart', function () {
-                    if (currentUrl !== window.location.href) {
-                        currentUrl = window.location.href
-                        button.href = currentUrl
-                    }
-                })
-                break
+                    button = document.createElement('a')
+                    img.src = browser.runtime.getURL(
+                        `icons/${settings.iconTheme}/${buttonId}.svg`
+                    )
+                    button.href = currentUrl
+                    button.addEventListener('touchstart', function () {
+                        if (currentUrl !== window.location.href) {
+                            currentUrl = window.location.href
+                            button.href = currentUrl
+                        }
+                    })
+                    break
                 case 'moveToolbarButton':
-                button = document.createElement('button')
-                if (defaultPosition === 'bottom') {
-                    img.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronUp.svg')
-                } else {
-                    img.src = browser.runtime.getURL('icons/' + iconTheme + '/chevronDown.svg')
-                }
-                break
-                case 'toggleDesktopSiteButton':
-                button = document.createElement('button')
-                browser.storage.local.get('isDesktopSite').then( (result) => {
-                    if (!result.isDesktopSite) {
-                        img.src = browser.runtime.getURL('icons/' + iconTheme + '/toggleDesktopSiteButton.svg')
+                    button = document.createElement('button')
+                    if (settings.defaultPosition === 'bottom') {
+                        img.src = browser.runtime.getURL(
+                            `icons/${settings.iconTheme}/chevronUp.svg`
+                        )
                     } else {
-                        img.src = browser.runtime.getURL('icons/' + iconTheme + '/smartphone.svg')
+                        img.src = browser.runtime.getURL(
+                            `icons/${settings.iconTheme}/chevronDown.svg`
+                        )
                     }
-                })
-                break
+                    break
+                case 'toggleDesktopSiteButton':
+                    button = document.createElement('button')
+                    browser.storage.local
+                        .get('isDesktopSite')
+                        .then((result) => {
+                            if (!result.isDesktopSite) {
+                                img.src = browser.runtime.getURL(
+                                    `icons/${settings.iconTheme}/toggleDesktopSiteButton.svg`
+                                )
+                            } else {
+                                img.src = browser.runtime.getURL(
+                                    `icons/${settings.iconTheme}/smartphone.svg`
+                                )
+                            }
+                        })
+                    break
                 default:
-                button = document.createElement('button')
-                img.src = browser.runtime.getURL('icons/' + iconTheme + '/' + buttonId + '.svg')
-                break
+                    button = document.createElement('button')
+                    img.src = browser.runtime.getURL(
+                        `icons/${settings.iconTheme}/${buttonId}.svg`
+                    )
+                    break
             }
             if (button) {
                 button.appendChild(img)
-                button.addEventListener('click', buttonElements[buttonId].behavior)
+                button.addEventListener(
+                    'click',
+                    buttonElements[buttonId].behavior
+                )
                 buttonElements[buttonId].element = button
             }
         }
@@ -391,16 +435,23 @@ function createButtons() {
 
 function appendButtons() {
     let buttonsAppended = 0
-    buttonOrder.forEach(buttonId => {
-        if (buttonsAppended < buttonsInToolbarDiv && buttonElements[buttonId] && checkboxStates[buttonId]) {
+    settings.buttonOrder.forEach((buttonId) => {
+        if (
+            buttonsAppended < settings.buttonsInToolbarDiv &&
+            buttonElements[buttonId] &&
+            settings.checkboxStates[buttonId]
+        ) {
             const buttonToAppend = buttonElements[buttonId].element
             toolbarDiv.appendChild(buttonToAppend)
             buttonsAppended++
-        } else if (buttonElements[buttonId] && checkboxStates[buttonId]) {
+        } else if (
+            buttonElements[buttonId] &&
+            settings.checkboxStates[buttonId]
+        ) {
             const buttonToAppend = buttonElements[buttonId].element
             menuDiv.appendChild(buttonToAppend)
         }
-    })    
+    })
 }
 
 //
@@ -410,13 +461,17 @@ function handleScroll() {
     let currentScrollPos = window.scrollY
     if (!isThrottled) {
         isThrottled = true
-        setTimeout(function() {
+        setTimeout(function () {
             isThrottled = false
         }, 100)
         if (Math.abs(prevScrollPos - currentScrollPos) <= 5) {
             return
         }
-        if (prevScrollPos > currentScrollPos && !iframeHidden && !iframeVisible) {
+        if (
+            prevScrollPos > currentScrollPos &&
+            !iframeHidden &&
+            !iframeVisible
+        ) {
             toolbarIframe.style.display = 'block'
             iframeVisible = true
         } else if (prevScrollPos < currentScrollPos && iframeVisible) {
@@ -429,13 +484,13 @@ function handleScroll() {
 
 function handleTouchStart(event) {
     prevTouchY = event.touches[0].clientY
-}                     
+}
 
 function handleTouchMove(event) {
     let currentTouchY = event.touches[0].clientY
     if (!isThrottled) {
         isThrottled = true
-        setTimeout(function() {
+        setTimeout(function () {
             isThrottled = false
         }, 100)
         if (Math.abs(prevTouchY - currentTouchY) <= 5) {
@@ -459,15 +514,15 @@ function hideOnScroll() {
         window.removeEventListener('touchstart', handleTouchStart)
         window.removeEventListener('touchmove', handleTouchMove)
     }
-    if (hideMethod === 'scroll') {
+    if (settings.hideMethod === 'scroll') {
         hideMethodInUse = 'scroll'
         isThrottled = false
-        prevScrollPos = window.scrollY 
+        prevScrollPos = window.scrollY
         window.addEventListener('scroll', handleScroll)
-    } else if (hideMethod === 'touch') {
+    } else if (settings.hideMethod === 'touch') {
         hideMethodInUse = 'touch'
         isThrottled = false
-        let prevTouchY           
+        let prevTouchY
         window.addEventListener('touchstart', handleTouchStart)
         window.addEventListener('touchmove', handleTouchMove)
     }
@@ -479,50 +534,34 @@ function hideOnScroll() {
 function updateToolbarHeight() {
     let calculatedHeight
     if (!menuDivHidden) {
-        calculatedHeight = toolbarHeight / window.visualViewport.scale * 2
+        calculatedHeight =
+            (settings.toolbarHeight / window.visualViewport.scale) * 2
     } else {
-        calculatedHeight = toolbarHeight / window.visualViewport.scale
+        calculatedHeight = settings.toolbarHeight / window.visualViewport.scale
     }
-    const newHeight = calculatedHeight + 'px'
-    toolbarStyle.height = newHeight
-    toolbarStyle.width = '100%'
-    toolbarStyle.left = '0'
-    if (defaultPosition === 'top') {
-        toolbarStyle.top = '0px'
-    } else if (defaultPosition === 'bottom') {
-        toolbarStyle.bottom = '0px'
+    toolbarIframe.style.height = `${calculatedHeight}px`
+    toolbarIframe.style.width = '100%'
+    toolbarIframe.style.left = '0'
+    if (settings.defaultPosition === 'top') {
+        toolbarIframe.style.top = '0px'
+    } else {
+        toolbarIframe.style.bottom = '0px'
     }
 }
 
 //
 // Initialize toolbar
 //
-function appendToolbar() {
-    let timeout, interval
-    const checkAndLoadToolbar = () => {
-        if (document.body) {
-            document.body.insertAdjacentElement('afterend', toolbarIframe)
-            toolbarIframe.addEventListener('load', function () {
-                toolbarIframe.contentWindow.document.body.appendChild(menuDiv)
-                toolbarIframe.contentWindow.document.body.appendChild(toolbarDiv)
-            })
-            window.visualViewport.addEventListener('resize', updateToolbarHeight)
-            clearInterval(interval)
-            clearTimeout(timeout)
-        }
-    }
-    timeout = setTimeout(() => clearInterval(interval), 10000)
-    interval = setInterval(checkAndLoadToolbar, 100)
-}
-
 function checkExistenceAndHeight() {
     let timeout, interval, calculatedHeight
     const checkToolbar = () => {
         const essBtnsToolbar = document.getElementById('essBtnsToolbar')
         if (!menuDivHidden) {
-            calculatedHeight = toolbarHeight / window.visualViewport.scale * 2
+            calculatedHeight =
+                (settings.toolbarHeight / window.visualViewport.scale) * 2
         } else {
-            calculatedHeight = toolbarHeight / window.visualViewport.scale
+            calculatedHeight =
+                settings.toolbarHeight / window.visualViewport.scale
         }
         if (!essBtnsToolbar) {
             initializeToolbar()
@@ -530,7 +569,10 @@ function checkExistenceAndHeight() {
             clearTimeout(timeout)
         }
         if (essBtnsToolbar) {
-            if (essBtnsToolbar.getBoundingClientRect().height !== calculatedHeight) {
+            if (
+                essBtnsToolbar.getBoundingClientRect().height !==
+                calculatedHeight
+            ) {
                 updateToolbarHeight()
             }
         }
@@ -539,23 +581,26 @@ function checkExistenceAndHeight() {
     interval = setInterval(checkToolbar, 1000)
 }
 
-async function removeToolbar() {
+function removeToolbar() {
     const essBtnsToolbar = document.getElementById('essBtnsToolbar')
     if (essBtnsToolbar) {
         essBtnsToolbar.remove()
         window.visualViewport.removeEventListener('resize', updateToolbarHeight)
-    }    
+    }
 }
 
 async function initializeToolbar() {
     removeToolbar()
     await getSettingsValues()
+    const isCurrentPageExcluded = settings.excludedUrls?.some((excludedUrl) => {
+        const pattern = new RegExp('^' + excludedUrl.replace(/\*/g, '.*') + '$')
+        return pattern.test(currentUrl)
+    })
     if (!isCurrentPageExcluded) {
-        createToolbar()
+        await appendToolbar()
+        updateToolbarHeight()
         createButtons()
         appendButtons()
-        appendToolbar()
-        updateToolbarHeight()
         checkExistenceAndHeight()
         hideOnScroll()
     }

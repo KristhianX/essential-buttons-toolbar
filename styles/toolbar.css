@@ -3,7 +3,8 @@ body {
     height: 100%;
 }
 
-button, a {
+button,
+a {
     height: 100%;
     aspect-ratio: 1;
     cursor: pointer;
@@ -18,7 +19,7 @@ button, a {
 
 img {
     height: 50%;
-    aspect-ratio: 1;    
+    aspect-ratio: 1;
 }
 
 div {
