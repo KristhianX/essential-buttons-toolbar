@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Essential Buttons Toolbar",
-    "version": "1.6.2",
+    "version": "1.7",
     "incognito": "not_allowed",
     "permissions": [
         "*://*/*",

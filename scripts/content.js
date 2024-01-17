@@ -2,9 +2,11 @@
 // Variables
 //
 let currentUrl = window.location.href
-let iframeHidden
 let iframeVisible = true
 let menuDivHidden = true
+let iframeHidden
+let unhideIcon
+let dragging
 let toolbarIframe
 let toolbarDiv
 let menuDiv
@@ -33,6 +35,11 @@ function getSettingsValues() {
             'buttonsInToolbarDiv',
         ]
         browser.storage.sync.get(keys).then((result) => {
+            const nonExcludedKeys = keys.filter((key) => key !== 'excludedUrls')
+            const isEmpty = nonExcludedKeys.some((key) => !result[key])
+            if (isEmpty) {
+                return getSettingsValues()
+            }
             keys.forEach((key) => {
                 settings[key] = result[key]
             })
@@ -45,43 +52,64 @@ function getSettingsValues() {
 // Toolbar
 //
 function appendToolbar() {
-    return new Promise((resolve) => {
-        if (document.body) {
-            appendToolbarAndResolve(resolve)
-        } else {
-            const observer = new MutationObserver(() => {
-                if (document.body) {
-                    observer.disconnect()
-                    appendToolbarAndResolve(resolve)
-                }
-            })
-            observer.observe(document, { childList: true })
+    return new Promise((resolve, reject) => {
+        let retryCount = 0
+        const maxRetries = 5
+        const initialDelay = 100
+        const backoffFactor = 2
+        function tryAppend() {
+            if (document.body) {
+                appendToolbarAndResolve(resolve)
+            } else if (retryCount < maxRetries) {
+                const delay = initialDelay * Math.pow(backoffFactor, retryCount)
+                setTimeout(tryAppend, delay)
+                retryCount++
+            } else {
+                reject(new Error('Toolbar appending failed'))
+            }
         }
+        tryAppend()
     })
 }
 
 function appendToolbarAndResolve(resolve) {
-    toolbarIframe = document.createElement('iframe')
-    toolbarIframe.src = browser.runtime.getURL('pages/toolbar.html')
-    toolbarIframe.setAttribute('id', 'essBtnsToolbar')
-    toolbarIframe.style =
-        'display: block; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light; border-radius: 0'
-    document.body.insertAdjacentElement('afterend', toolbarIframe)
-    function handleToolbarLoad() {
-        const iframeDocument = toolbarIframe.contentWindow.document
-        toolbarDiv = iframeDocument.createElement('div')
-        menuDiv = iframeDocument.createElement('div')
-        iframeDocument.body.appendChild(toolbarDiv)
-        iframeDocument.body.appendChild(menuDiv)
-        styleToolbar()
-        window.visualViewport.addEventListener('resize', updateToolbarHeight)
+    if (iframeHidden) {
+        unhideIcon = document.createElement('div')
+        unhideIcon.setAttribute('id', 'essUnhideIcon')
+        const img = document.createElement('img')
+        img.src = browser.runtime.getURL(
+            `icons/${settings.iconTheme}/unhide.svg`
+        )
+        img.style =
+            'pointer-events: none; height: 50%; width: 50%; margin: auto'
+        unhideIcon.style =
+            'display: flex; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 2px solid #38373f !important; background: rgba(43, 42, 51, 0.8) !important; color-scheme: light; border-radius: 20%; box-sizing: border-box'
+        unhideIcon.appendChild(img)
+        document.body.insertAdjacentElement('beforeend', unhideIcon)
+        makeDraggable(unhideIcon)
         resolve()
-        toolbarIframe.removeEventListener('load', handleToolbarLoad)
+    } else {
+        toolbarIframe = document.createElement('iframe')
+        toolbarIframe.src = browser.runtime.getURL('pages/toolbar.html')
+        toolbarIframe.setAttribute('id', 'essBtnsToolbar')
+        toolbarIframe.style =
+            'display: block; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light; border-radius: 0'
+        document.body.insertAdjacentElement('afterend', toolbarIframe)
+        function handleToolbarLoad() {
+            const iframeDocument = toolbarIframe.contentWindow.document
+            toolbarDiv = iframeDocument.createElement('div')
+            menuDiv = iframeDocument.createElement('div')
+            iframeDocument.body.appendChild(toolbarDiv)
+            iframeDocument.body.appendChild(menuDiv)
+            styleToolbarDivs()
+            toolbarIframe.removeEventListener('load', handleToolbarLoad)
+            resolve()
+        }
+        toolbarIframe.addEventListener('load', handleToolbarLoad)
     }
-    toolbarIframe.addEventListener('load', handleToolbarLoad)
 }
 
-function styleToolbar() {
+function styleToolbarDivs() {
     toolbarDiv.style = `height: 100%; display: flex; background-color: rgba(43, 42, 51, ${settings.toolbarTransparency})`
     menuDiv.style = 'height: 50%; display: none; background-color: #2b2a33'
     if (settings.defaultPosition === 'top') {
@@ -97,6 +125,43 @@ function styleToolbar() {
     }
 }
 
+function updateToolbarHeight() {
+    const calculatedHeight = calculateToolbarHeight()
+    if (iframeHidden) {
+        unhideIcon.style.height = `${calculatedHeight}px`
+        unhideIcon.style.width = `${calculatedHeight}px`
+        unhideIcon.style.left = `${
+            visualViewport.width - calculatedHeight * 1.5
+        }px`
+        settings.defaultPosition === 'top'
+            ? (unhideIcon.style.top = `${calculatedHeight * 1.5}px`)
+            : (unhideIcon.style.top = `${
+                  visualViewport.height - calculatedHeight * 2.5
+              }px`)
+    } else {
+        toolbarIframe.style.height = `${calculatedHeight}px`
+        toolbarIframe.style.width = '100%'
+        toolbarIframe.style.left = '0'
+        settings.defaultPosition === 'top'
+            ? (toolbarIframe.style.top = '0px')
+            : (toolbarIframe.style.bottom = '0px')
+    }
+}
+
+function calculateToolbarHeight() {
+    if (iframeHidden) {
+        return (calculatedHeight = Math.floor(
+            settings.toolbarHeight / window.visualViewport.scale
+        ))
+    } else {
+        return (calculatedHeight = menuDivHidden
+            ? Math.floor(settings.toolbarHeight / window.visualViewport.scale)
+            : Math.floor(
+                  (settings.toolbarHeight / window.visualViewport.scale) * 2
+              ))
+    }
+}
+
 function closeMenu() {
     if (!menuDivHidden) {
         menuDivHidden = true
@@ -109,12 +174,57 @@ function closeMenu() {
     }
 }
 
+function makeDraggable(element) {
+    element.addEventListener('mousedown', handleDragStart)
+    element.addEventListener('touchstart', handleDragStart)
+    function handleDragStart() {
+        unhideToolbar()
+        document.body.style.overflow = 'hidden'
+        document.body.style.touchAction = 'none'
+        document.body.style.userSelect = 'none'
+        const elWidth = element.getBoundingClientRect().width
+        const elHeight = element.getBoundingClientRect().height
+        const moveHandler = (event) => {
+            //event.preventDefault()
+            dragging = true
+            const clientX = event.clientX || event.touches[0].clientX
+            const clientY = event.clientY || event.touches[0].clientY
+            const xPos = clientX - elWidth / 2
+            const yPos = clientY - elHeight / 2
+            element.style.left = `${xPos}px`
+            element.style.top = `${yPos}px`
+        }
+        document.addEventListener('mousemove', moveHandler)
+        document.addEventListener('touchmove', moveHandler)
+        document.addEventListener('mouseup', handleDragEnd)
+        document.addEventListener('touchend', handleDragEnd)
+        function handleDragEnd() {
+            dragging = false
+            document.body.style.overflow = ''
+            document.body.style.touchAction = ''
+            document.body.style.userSelect = ''
+            document.removeEventListener('mousemove', moveHandler)
+            document.removeEventListener('touchmove', moveHandler)
+        }
+    }
+}
+
+function unhideToolbar() {
+    setTimeout(function () {
+        if (!dragging) {
+            iframeHidden = false
+            initializeToolbar()
+        }
+    }, 200)
+}
+
 //
 // Buttons
 //
 const buttonElements = {
     homeButton: {
         behavior: function () {
+            window.stop()
             this.style.background = '#6495EDcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
@@ -159,6 +269,7 @@ const buttonElements = {
     },
     closeTabButton: {
         behavior: function () {
+            window.stop()
             this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
@@ -187,8 +298,9 @@ const buttonElements = {
             this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
-                toolbarIframe.style.display = 'none'
                 iframeHidden = true
+                closeMenu()
+                initializeToolbar()
             }, 100)
         },
     },
@@ -244,6 +356,7 @@ const buttonElements = {
     // },
     goBackButton: {
         behavior: function () {
+            window.stop()
             this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
@@ -254,6 +367,7 @@ const buttonElements = {
     },
     goForwardButton: {
         behavior: function () {
+            window.stop()
             this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
@@ -264,6 +378,7 @@ const buttonElements = {
     },
     reloadButton: {
         behavior: function () {
+            window.stop()
             this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
@@ -315,6 +430,7 @@ const buttonElements = {
     },
     closeAllTabsButton: {
         behavior: function () {
+            window.stop()
             this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
@@ -338,6 +454,7 @@ const buttonElements = {
     },
     toggleDesktopSiteButton: {
         behavior: function () {
+            window.stop()
             this.style.background = '#6495edcc'
             setTimeout(() => {
                 this.style.background = 'transparent'
@@ -364,10 +481,29 @@ const buttonElements = {
             }, 100)
         },
     },
+    openWithButton: {
+        behavior: function () {
+            window.stop()
+            this.style.background = '#6495edcc'
+            const currentUrl = window.location.href
+            const scheme = currentUrl.split(':').shift()
+            const shortUrl = currentUrl.split(':').pop()
+            const intentUrl = `intent:${shortUrl}#Intent;action=android.intent.action.VIEW;scheme=${scheme};end`
+            setTimeout(() => {
+                this.style.background = 'transparent'
+                closeMenu()
+                browser.runtime.sendMessage({
+                    action: 'updateTab',
+                    url: intentUrl,
+                })
+            }, 100)
+        },
+    },
     // Add more buttons
 }
 
 function createButtons() {
+    if (iframeHidden) return
     settings.buttonOrder.forEach((buttonId) => {
         if (buttonElements[buttonId] && settings.checkboxStates[buttonId]) {
             let button
@@ -434,6 +570,7 @@ function createButtons() {
 }
 
 function appendButtons() {
+    if (iframeHidden) return
     let buttonsAppended = 0
     settings.buttonOrder.forEach((buttonId) => {
         if (
@@ -467,11 +604,7 @@ function handleScroll() {
         if (Math.abs(prevScrollPos - currentScrollPos) <= 5) {
             return
         }
-        if (
-            prevScrollPos > currentScrollPos &&
-            !iframeHidden &&
-            !iframeVisible
-        ) {
+        if (prevScrollPos > currentScrollPos && !iframeVisible) {
             toolbarIframe.style.display = 'block'
             iframeVisible = true
         } else if (prevScrollPos < currentScrollPos && iframeVisible) {
@@ -514,6 +647,7 @@ function hideOnScroll() {
         window.removeEventListener('touchstart', handleTouchStart)
         window.removeEventListener('touchmove', handleTouchMove)
     }
+    if (iframeHidden) return
     if (settings.hideMethod === 'scroll') {
         hideMethodInUse = 'scroll'
         isThrottled = false
@@ -529,64 +663,34 @@ function hideOnScroll() {
 }
 
 //
-// Update size and position
-//
-function updateToolbarHeight() {
-    let calculatedHeight
-    if (!menuDivHidden) {
-        calculatedHeight =
-            (settings.toolbarHeight / window.visualViewport.scale) * 2
-    } else {
-        calculatedHeight = settings.toolbarHeight / window.visualViewport.scale
-    }
-    toolbarIframe.style.height = `${calculatedHeight}px`
-    toolbarIframe.style.width = '100%'
-    toolbarIframe.style.left = '0'
-    if (settings.defaultPosition === 'top') {
-        toolbarIframe.style.top = '0px'
-    } else {
-        toolbarIframe.style.bottom = '0px'
-    }
-}
-
-//
 // Initialize toolbar
 //
-function checkExistenceAndHeight() {
-    let timeout, interval, calculatedHeight
-    const checkToolbar = () => {
-        const essBtnsToolbar = document.getElementById('essBtnsToolbar')
-        if (!menuDivHidden) {
-            calculatedHeight =
-                (settings.toolbarHeight / window.visualViewport.scale) * 2
-        } else {
-            calculatedHeight =
-                settings.toolbarHeight / window.visualViewport.scale
-        }
-        if (!essBtnsToolbar) {
-            initializeToolbar()
-            clearInterval(interval)
-            clearTimeout(timeout)
-        }
-        if (essBtnsToolbar) {
-            if (
-                essBtnsToolbar.getBoundingClientRect().height !==
-                calculatedHeight
-            ) {
-                updateToolbarHeight()
-            }
-        }
-    }
-    timeout = setTimeout(() => clearInterval(interval), 10000)
-    interval = setInterval(checkToolbar, 1000)
-}
-
 function removeToolbar() {
-    const essBtnsToolbar = document.getElementById('essBtnsToolbar')
-    if (essBtnsToolbar) {
-        essBtnsToolbar.remove()
+    const targetElement =
+        document.getElementById('essUnhideIcon') ||
+        document.getElementById('essBtnsToolbar')
+    if (targetElement) {
+        targetElement.remove()
+        window.removeEventListener('load', checkExistenceAndHeight)
         window.visualViewport.removeEventListener('resize', updateToolbarHeight)
     }
+}
+
+function checkExistenceAndHeight() {
+    setTimeout(function () {
+        const targetElement =
+            document.getElementById('essUnhideIcon') ||
+            document.getElementById('essBtnsToolbar')
+        if (!targetElement) {
+            initializeToolbar()
+            return
+        }
+        const calculatedHeight = calculateToolbarHeight()
+        if (targetElement.getBoundingClientRect().height !== calculatedHeight) {
+            updateToolbarHeight()
+        }
+        window.removeEventListener('load', checkExistenceAndHeight)
+    }, 1000)
 }
 
 async function initializeToolbar() {
@@ -599,10 +703,11 @@ async function initializeToolbar() {
     if (!isCurrentPageExcluded) {
         await appendToolbar()
         updateToolbarHeight()
+        window.addEventListener('load', checkExistenceAndHeight)
         createButtons()
         appendButtons()
-        checkExistenceAndHeight()
         hideOnScroll()
+        window.visualViewport.addEventListener('resize', updateToolbarHeight)
     }
 }
 

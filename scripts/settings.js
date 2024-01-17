@@ -251,6 +251,7 @@ const buttonsData = [
     { id: 'closeAllTabsButton', label: 'Close all tabs' },
     { id: 'closeOtherTabsButton', label: 'Close other tabs' },
     { id: 'toggleDesktopSiteButton', label: 'Toggle desktop site (global)' },
+    { id: 'openWithButton', label: 'Open with' },
 ]
 
 function createButtonElement(buttonData, iconTheme, defaultPosition) {
@@ -321,7 +322,7 @@ function displayButtonInfo(e) {
                 }
             }
         }
-    }, 100)
+    }, 200)
 }
 
 function closeButtonInfo() {
