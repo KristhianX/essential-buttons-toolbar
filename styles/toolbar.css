@@ -16,14 +16,13 @@ a {
     border-radius: 20%;
     background: transparent;
     display: flex;
-    align-items: center;
-    justify-content: center;
     padding: 0;
 }
 
 img {
     height: 50%;
     aspect-ratio: 1;
+    margin: auto;
 }
 
 div {

@@ -93,7 +93,7 @@ function appendToolbarAndResolve(resolve) {
         toolbarIframe.src = browser.runtime.getURL('pages/toolbar.html')
         toolbarIframe.setAttribute('id', 'essBtnsToolbar')
         toolbarIframe.style =
-            'display: block; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light; border-radius: 0'
+            'display: block !important; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light; border-radius: 0'
         document.body.insertAdjacentElement('afterend', toolbarIframe)
         function handleToolbarLoad() {
             const iframeDocument = toolbarIframe.contentWindow.document
@@ -681,7 +681,11 @@ function checkExistenceAndHeight() {
         const targetElement =
             document.getElementById('essUnhideIcon') ||
             document.getElementById('essBtnsToolbar')
-        if (!targetElement) {
+        if (
+            !targetElement ||
+            (targetElement.id === 'essBtnsToolbar' &&
+                targetElement.parentElement.tagName.toLowerCase() !== 'html')
+        ) {
             initializeToolbar()
             return
         }
@@ -690,7 +694,7 @@ function checkExistenceAndHeight() {
             updateToolbarHeight()
         }
         window.removeEventListener('load', checkExistenceAndHeight)
-    }, 1000)
+    }, 2000)
 }
 
 async function initializeToolbar() {
