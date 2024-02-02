@@ -10,6 +10,7 @@
 body {
     width: 100%;
     height: 100%;
+    margin: 0;
 }
 
 h1,
@@ -31,7 +32,7 @@ h2 {
 }
 
 h3 {
-    font-size: 20px;
+    font-size: 14px;
 }
 
 .top-sites-container {
@@ -74,7 +75,21 @@ h3 {
     margin: 5px auto;
     height: 50%;
     aspect-ratio: 1;
-    border-radius: 8%;
+}
+
+.placeholder-image {
+    height: 30px;
+    width: 30px;
+    background: #555;
+    color: lavender;
+    position: absolute;
+    margin-top: 5px;
+    left: 50%;
+    transform: translate(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
 }
 
 .top-site-group a span {
@@ -82,7 +97,7 @@ h3 {
     font-size: 10px;
     max-height: 38%;
     overflow: hidden;
-    bottom: 4px;
+    bottom: 5px;
     position: absolute;
     left: 50%;
     transform: translate(-50%);
@@ -104,6 +119,101 @@ h3 {
     transform: translate(-50%, -50%);
     background: #121212;
     z-index: 2;
+}
+
+#top-site-preview {
+    background: #2b2a33;
+    width: 60px;
+    height: 60px;
+    margin: 5px auto 10px;
+    display: block;
+    position: relative;
+    border-radius: 8px;
+}
+
+#top-site-preview-image {
+    height: 50%;
+    aspect-ratio: 1;
+    position: absolute;
+    top: 0;
+    margin-top: 5px;
+    left: 50%;
+    transform: translate(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: lavender;
+    border-radius: 50%;
+}
+
+#top-site-preview-name {
+    max-height: 38%;
+    bottom: 5px;
+    position: absolute;
+    font-size: 10px;
+    display: block;
+    left: 50%;
+    transform: translate(-50%);
+    max-width: 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    color: lavender;
+}
+
+.favicon-options {
+    color: lavender;
+    margin-bottom: 8px;
+}
+
+.favicon-options input[type='radio'] {
+    width: 12px;
+    height: 12px;
+    background-color: #2b2a33;
+    border: 1px solid cornflowerblue;
+    border-radius: 50%;
+    transition: background-color 0.3s, border-color 0.3s;
+    appearance: none;
+    margin: 0 5px 0 0;
+}
+
+.favicon-options input[type='radio']:checked {
+    background-color: cornflowerblue;
+}
+
+.favicon-options label {
+    position: relative;
+    cursor: pointer;
+    display: block;
+    line-height: 1.4;
+    user-select: none;
+}
+
+.top-site-group-overlay {
+    display: none;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    position: absolute;
+}
+
+.top-site-edit-div {
+    display: none;
+    z-index: 2;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    background: cornflowerblue;
+    content: url(../icons/featherIcons/edit-3.svg);
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.show {
+    display: block;
 }
 
 button {
@@ -144,7 +254,7 @@ input[type='text'] {
     outline: none;
 }
 
-.overlay {
+#main-overlay {
     display: none;
     position: fixed;
     top: 0;
