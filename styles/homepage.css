@@ -35,6 +35,14 @@ h3 {
     font-size: 14px;
 }
 
+#top-sites-header {
+    width: fit-content;
+    margin: 0 auto 15px;
+    background: #2b2a33;
+    padding: 8px 12px;
+    border-radius: 12px;
+}
+
 .top-sites-container {
     width: 80%;
     max-height: 70%;
@@ -197,7 +205,7 @@ h3 {
     position: absolute;
 }
 
-.top-site-edit-div {
+.top-site-remove-div {
     display: none;
     z-index: 2;
     position: absolute;
@@ -205,8 +213,8 @@ h3 {
     right: -8px;
     width: 24px;
     height: 24px;
-    background: cornflowerblue;
-    content: url(../icons/featherIcons/edit-3.svg);
+    background: tomato;
+    content: url(../icons/featherIcons/trash-2.svg);
     border-radius: 50%;
     cursor: pointer;
     padding: 4px;
@@ -226,6 +234,37 @@ button {
     cursor: pointer;
     font-weight: bold;
     background: none;
+}
+
+#top-sites-buttons {
+    display: flex;
+    width: fit-content;
+    margin: 15px auto 0;
+    gap: 10px;
+    background: #2b2a33;
+    height: fit-content;
+    padding: 0 8px 0;
+    border-radius: 12px;
+}
+
+#add-top-site-button,
+#remove-top-sites-button {
+    height: 40px;
+    aspect-ratio: 1;
+    display: inline-flex;
+    justify-content: center;
+    border: none;
+    border-radius: 20%;
+    margin: 0;
+    padding: 0;
+}
+
+#add-top-site-button img,
+#remove-top-sites-button img {
+    height: 60%;
+    aspect-ratio: 1;
+    margin: auto;
+    pointer-events: none;
 }
 
 .top-site-prompt button {

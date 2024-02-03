@@ -1,21 +1,21 @@
 const overlay = document.querySelector('#main-overlay')
 const topSitesGrid = document.querySelector('.top-sites-grid')
 const addTopSiteButton = document.querySelector('#add-top-site-button')
-const editTopSitesButton = document.querySelector('#edit-top-sites-button')
+const removeTopSitesButton = document.querySelector('#remove-top-sites-button')
 let topSitesList = []
 let addTopSitePrompt
 let lastGroup
-let editTopSitesMode
+let removeTopSitesMode
 
 function getTopSites() {
     return browser.storage.local
         .get('topSites')
         .then((result) => {
-            topSitesList = result.topSites || [];
+            topSitesList = result.topSites || []
         })
         .catch((error) => {
-            console.error('Error getting top sites:', error);
-        });
+            console.error('Error getting top sites:', error)
+        })
 }
 
 async function createTopSitesButtons() {
@@ -32,13 +32,13 @@ async function createTopSitesGroup(groupNumber) {
     if (!groupNumberDiv) {
         const group = document.createElement('div')
         const groupOverlay = document.createElement('div')
-        const topSiteEditDiv = document.createElement('div')
+        const topSiteRemoveDiv = document.createElement('div')
         group.classList.add('top-site-group')
         group.setAttribute('id', `group-${groupNumber}`)
         groupOverlay.classList.add('top-site-group-overlay')
-        topSiteEditDiv.classList.add('top-site-edit-div')
+        topSiteRemoveDiv.classList.add('top-site-remove-div')
         group.appendChild(groupOverlay)
-        group.appendChild(topSiteEditDiv)
+        group.appendChild(topSiteRemoveDiv)
         topSitesGrid.appendChild(group)
     }
 }
@@ -68,17 +68,12 @@ async function retrieveFavicon(faviconUrl) {
 
 function generatePlaceholder() {
     const faviconUrlInput = document.getElementById('top-site-favicon-url')
-    const faviconUrl = faviconUrlInput.value
     const nameInput = document.getElementById('top-site-name').value
     const previewImage = document.getElementById('top-site-preview-image')
-    if (
-        faviconUrl.startsWith('https://icons.duckduckgo.com/ip3/') ||
-        faviconUrl.startsWith('https://www.google.com/s2/favicons?domain=')
-    ) {
-        faviconUrlInput.value = ''
-    }
+    faviconUrlInput.value = ''
     previewImage.style.content = 'none'
     previewImage.style.background = '#555'
+    previewImage.style.borderRadius = '50%'
     previewImage.textContent = nameInput
         ? nameInput.trim()[0].toUpperCase()
         : 'N'
@@ -90,6 +85,7 @@ function fetchFaviconFromUrl() {
     const customFaviconUrl = faviconUrlInput.value
     previewImage.style.background = 'none'
     previewImage.textContent = ''
+    previewImage.style.borderRadius = '0'
     previewImage.style.content = 'url(' + customFaviconUrl + ')'
 }
 
@@ -104,6 +100,7 @@ function fetchFaviconFromDuckDuckGo() {
     document.getElementById('top-site-favicon-url').value = duckDuckGoFaviconUrl
     previewImage.style.background = 'none'
     previewImage.textContent = ''
+    previewImage.style.borderRadius = '0'
     previewImage.style.content = 'url(' + duckDuckGoFaviconUrl + ')'
 }
 
@@ -116,6 +113,7 @@ function fetchFaviconFromGoogle() {
     document.getElementById('top-site-favicon-url').value = googleFaviconUrl
     previewImage.style.background = 'none'
     previewImage.textContent = ''
+    previewImage.style.borderRadius = '0'
     previewImage.style.content = `url(${googleFaviconUrl})`
 }
 
@@ -151,7 +149,7 @@ function createPrompt() {
         </div>
         <div class="favicon-options">
         <label class="radio-container">
-            <input type="radio" name="favicon-option" value="tab" checked>
+            <input type="radio" name="favicon-option" value="custom" checked>
             Custom favicon
         </label>
         <label class="radio-container">
@@ -186,7 +184,7 @@ function createPrompt() {
         .querySelector('input[name="favicon-option"][value="google"]')
         .addEventListener('change', updatePreview)
     document
-        .querySelector('input[name="favicon-option"][value="tab"]')
+        .querySelector('input[name="favicon-option"][value="custom"]')
         .addEventListener('change', updatePreview)
     addTopSitePrompt
         .querySelector('#top-site-submit')
@@ -210,11 +208,19 @@ function updatePreview() {
     ).value
     previewName.textContent = nameInput.value
     switch (selectedFaviconOption) {
-        case 'tab':
-            if (faviconUrlInputValue) {
-                fetchFaviconFromUrl()
-            } else {
+        case 'custom':
+            if (
+                !faviconUrlInputValue ||
+                faviconUrlInputValue.startsWith(
+                    'https://icons.duckduckgo.com/ip3/'
+                ) ||
+                faviconUrlInputValue.startsWith(
+                    'https://www.google.com/s2/favicons?domain='
+                )
+            ) {
                 generatePlaceholder()
+            } else {
+                fetchFaviconFromUrl()
             }
             break
         case 'duckduckgo':
@@ -269,43 +275,67 @@ async function addTopSite() {
     overlay.style.display = 'none'
 }
 
-function editTopSiteElements() {
-    if (editTopSitesMode) {
-        editTopSitesMode = false
+function removeTopSiteElements() {
+    if (removeTopSitesMode) {
+        removeTopSitesMode = false
         const groupsOverlays = document.querySelectorAll(
             '.top-site-group-overlay'
         )
-        const topSiteEditDivs = document.querySelectorAll('.top-site-edit-div')
-        editTopSitesButton.style.background = '#121212'
-        if (topSiteEditDivs.length === 0) return
+        const topSiteRemoveDivs = document.querySelectorAll(
+            '.top-site-remove-div'
+        )
+        removeTopSitesButton.style.background = 'none'
+        if (topSiteRemoveDivs.length === 0) return
         for (const groupOverlay of groupsOverlays) {
             groupOverlay.classList.remove('show')
         }
-        for (const topSiteEditDiv of topSiteEditDivs) {
-            topSiteEditDiv.classList.remove('show')
+        for (const topSiteRemoveDiv of topSiteRemoveDivs) {
+            topSiteRemoveDiv.classList.remove('show')
         }
     } else {
-        editTopSitesMode = true
+        removeTopSitesMode = true
         const groupsOverlays = document.querySelectorAll(
             '.top-site-group-overlay'
         )
-        const topSiteEditDivs = document.querySelectorAll('.top-site-edit-div')
-        editTopSitesButton.style.backgroundColor = 'var(--primary-color)'
+        const topSiteRemoveDivs = document.querySelectorAll(
+            '.top-site-remove-div'
+        )
+        removeTopSitesButton.style.backgroundColor = 'var(--secondary-color)'
         if (groupsOverlays.length === 0) return
         for (const groupOverlay of groupsOverlays) {
             groupOverlay.classList.add('show')
         }
-        for (const topSiteEditDiv of topSiteEditDivs) {
-            topSiteEditDiv.classList.add('show')
+        for (const topSiteRemoveDiv of topSiteRemoveDivs) {
+            topSiteRemoveDiv.classList.add('show')
         }
+        document.body.addEventListener('click', removeTopSite)
+    }
+}
+
+function removeTopSite(event) {
+    if (event.target.classList.contains('top-site-remove-div')) {
+        const groupNumber = event.target.parentElement.id.replace('group-', '')
+        const topSiteIndex = topSitesList.findIndex(
+            (site) => site.group == groupNumber
+        )
+        if (topSiteIndex !== -1) {
+            topSitesList.splice(topSiteIndex, 1)
+            browser.storage.local
+                .set({ topSites: topSitesList })
+                .catch((error) => {
+                    console.error('Error updating local storage:', error)
+                })
+        }
+        event.target.parentElement.remove()
     }
 }
 
 const root = document.documentElement
 root.style.setProperty('--primary-color', 'cornflowerblue')
+root.style.setProperty('--secondary-color', 'tomato')
 
 addTopSiteButton.addEventListener('click', createPrompt)
-editTopSitesButton.addEventListener('click', editTopSiteElements)
+removeTopSitesButton.addEventListener('click', removeTopSiteElements)
 
 getTopSites().then(() => {
     if (topSitesList.length === 0) return
