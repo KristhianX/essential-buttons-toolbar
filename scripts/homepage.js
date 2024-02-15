@@ -2,10 +2,17 @@ const overlay = document.querySelector('#main-overlay')
 const topSitesGrid = document.querySelector('.top-sites-grid')
 const addTopSiteButton = document.querySelector('#add-top-site-button')
 const removeTopSitesButton = document.querySelector('#remove-top-sites-button')
+const moveTopSitesButton = document.querySelector('#move-top-sites-button')
 let topSitesList = []
 let addTopSitePrompt
 let lastGroup
 let removeTopSitesMode
+let moveTopSitesMode
+let draggableItem
+let pointerStartX
+let pointerStartY
+let pointerDeltaX
+let pointerDeltaY
 
 function getTopSites() {
     return browser.storage.local
@@ -137,10 +144,12 @@ async function createTopSiteElement(topSite) {
 }
 
 function createPrompt() {
-    addTopSitePrompt = document.createElement('div')
-    overlay.style.display = 'block'
-    addTopSitePrompt.classList.add('top-site-prompt')
-    addTopSitePrompt.innerHTML = `
+    addTopSiteButton.style.backgroundColor = 'var(--primary-color)'
+    setTimeout(() => {
+        addTopSitePrompt = document.createElement('div')
+        overlay.style.display = 'block'
+        addTopSitePrompt.classList.add('top-site-prompt')
+        addTopSitePrompt.innerHTML = `
         <h2>Add a new top site</h2>
         <h3>Preview</h3>
         <div id="top-site-preview">
@@ -167,35 +176,37 @@ function createPrompt() {
         <button id="top-site-submit" type="button">Add</button>
         <button id="top-site-cancel" type="button">Cancel</button>
     `
-    document.body.appendChild(addTopSitePrompt)
-    document
-        .getElementById('top-site-name')
-        .addEventListener('input', updatePreview)
-    document
-        .getElementById('top-site-url')
-        .addEventListener('input', updatePreview)
-    document
-        .getElementById('top-site-favicon-url')
-        .addEventListener('input', updatePreview)
-    document
-        .querySelector('input[name="favicon-option"][value="duckduckgo"]')
-        .addEventListener('change', updatePreview)
-    document
-        .querySelector('input[name="favicon-option"][value="google"]')
-        .addEventListener('change', updatePreview)
-    document
-        .querySelector('input[name="favicon-option"][value="custom"]')
-        .addEventListener('change', updatePreview)
-    addTopSitePrompt
-        .querySelector('#top-site-submit')
-        .addEventListener('click', addTopSite)
-    addTopSitePrompt
-        .querySelector('#top-site-cancel')
-        .addEventListener('click', () => {
-            addTopSitePrompt.remove()
-            overlay.style.display = 'none'
-        })
-    generatePlaceholder()
+        document.body.appendChild(addTopSitePrompt)
+        document
+            .getElementById('top-site-name')
+            .addEventListener('input', updatePreview)
+        document
+            .getElementById('top-site-url')
+            .addEventListener('input', updatePreview)
+        document
+            .getElementById('top-site-favicon-url')
+            .addEventListener('input', updatePreview)
+        document
+            .querySelector('input[name="favicon-option"][value="duckduckgo"]')
+            .addEventListener('change', updatePreview)
+        document
+            .querySelector('input[name="favicon-option"][value="google"]')
+            .addEventListener('change', updatePreview)
+        document
+            .querySelector('input[name="favicon-option"][value="custom"]')
+            .addEventListener('change', updatePreview)
+        addTopSitePrompt
+            .querySelector('#top-site-submit')
+            .addEventListener('click', addTopSite)
+        addTopSitePrompt
+            .querySelector('#top-site-cancel')
+            .addEventListener('click', () => {
+                addTopSitePrompt.remove()
+                overlay.style.display = 'none'
+                addTopSiteButton.style.background = 'none'
+            })
+        generatePlaceholder()
+    }, 100)
 }
 
 function updatePreview() {
@@ -246,9 +257,9 @@ async function addTopSite() {
         return
     }
     lastGroup =
-        topSitesList.length > 0
-            ? topSitesList[topSitesList.length - 1].group + 1
-            : 1
+        topSitesList.reduce((maxGroup, topSite) => {
+            return Math.max(maxGroup, topSite.group)
+        }, 0) + 1
     let dataUrl
     try {
         if (faviconUrl) {
@@ -273,19 +284,18 @@ async function addTopSite() {
     )
     groupNumber.appendChild(topSiteElement)
     overlay.style.display = 'none'
+    addTopSiteButton.style.background = 'none'
 }
 
 function removeTopSiteElements() {
+    const groupsOverlays = document.querySelectorAll('.top-site-group-overlay')
+    const topSiteRemoveDivs = document.querySelectorAll('.top-site-remove-div')
     if (removeTopSitesMode) {
         removeTopSitesMode = false
-        const groupsOverlays = document.querySelectorAll(
-            '.top-site-group-overlay'
-        )
-        const topSiteRemoveDivs = document.querySelectorAll(
-            '.top-site-remove-div'
-        )
         removeTopSitesButton.style.background = 'none'
-        if (topSiteRemoveDivs.length === 0) return
+        addTopSiteButton.style.display = 'inline-flex'
+        moveTopSitesButton.style.display = 'inline-flex'
+        if (groupsOverlays.length === 0) return
         for (const groupOverlay of groupsOverlays) {
             groupOverlay.classList.remove('show')
         }
@@ -294,13 +304,9 @@ function removeTopSiteElements() {
         }
     } else {
         removeTopSitesMode = true
-        const groupsOverlays = document.querySelectorAll(
-            '.top-site-group-overlay'
-        )
-        const topSiteRemoveDivs = document.querySelectorAll(
-            '.top-site-remove-div'
-        )
         removeTopSitesButton.style.backgroundColor = 'var(--secondary-color)'
+        addTopSiteButton.style.display = 'none'
+        moveTopSitesButton.style.display = 'none'
         if (groupsOverlays.length === 0) return
         for (const groupOverlay of groupsOverlays) {
             groupOverlay.classList.add('show')
@@ -330,12 +336,157 @@ function removeTopSite(event) {
     }
 }
 
+function moveTopSitesElements() {
+    const groupsOverlays = document.querySelectorAll('.top-site-group-overlay')
+    if (moveTopSitesMode) {
+        moveTopSitesMode = false
+        moveTopSitesButton.style.background = 'none'
+        addTopSiteButton.style.display = 'inline-flex'
+        removeTopSitesButton.style.display = 'inline-flex'
+        if (groupsOverlays.length === 0) return
+        for (const groupOverlay of groupsOverlays) {
+            groupOverlay.classList.remove('show')
+        }
+        disableDragging()
+        saveNewOrder()
+    } else {
+        moveTopSitesMode = true
+        moveTopSitesButton.style.backgroundColor = 'var(--primary-color)'
+        addTopSiteButton.style.display = 'none'
+        removeTopSitesButton.style.display = 'none'
+        if (groupsOverlays.length === 0) return
+        for (const groupOverlay of groupsOverlays) {
+            groupOverlay.classList.add('show')
+            groupOverlay.parentElement.classList.add('is-idle')
+        }
+        enableDragging()
+    }
+}
+
+function enableDragging() {
+    topSitesGrid.addEventListener('mousedown', dragStart)
+    topSitesGrid.addEventListener('touchstart', dragStart)
+    document.addEventListener('mouseup', dragEnd)
+    document.addEventListener('touchend', dragEnd)
+}
+
+function disableDragging() {
+    topSitesGrid.removeEventListener('mousedown', dragStart)
+    topSitesGrid.removeEventListener('touchstart', dragStart)
+    document.removeEventListener('mouseup', dragEnd)
+    document.removeEventListener('touchend', dragEnd)
+}
+
+function saveNewOrder() {
+    const groupDivs = document.querySelectorAll('.top-site-group')
+    const newOrder = []
+    groupDivs.forEach((groupDiv) => {
+        const groupNumber = parseInt(groupDiv.id.replace('group-', ''))
+        const topSiteElements = groupDiv.querySelectorAll('a')
+        topSiteElements.forEach((topSiteElement) => {
+            const url = topSiteElement.href
+            const topSite = topSitesList.find((site) => site.url === url)
+            if (topSite) {
+                newOrder.push({
+                    name: topSite.name,
+                    url: topSite.url,
+                    faviconUrl: topSite.faviconUrl,
+                    group: groupNumber,
+                })
+            }
+        })
+    })
+    topSitesList = newOrder
+    browser.storage.local.set({ topSites: topSitesList }).catch((error) => {
+        console.error('Error updating local storage:', error)
+    })
+}
+
+function dragStart(e) {
+    if (draggableItem) return
+    if (e.target.parentElement.classList.contains('top-site-group')) {
+        draggableItem = e.target.parentElement
+    }
+    if (!draggableItem) return
+    pointerStartX = e.clientX || e.touches[0].clientX
+    pointerStartY = e.clientY || e.touches[0].clientY
+    disablePageScroll()
+    draggableItem.classList.remove('is-idle')
+    draggableItem.classList.add('dragging')
+    document.addEventListener('mousemove', drag)
+    document.addEventListener('touchmove', drag, { passive: false })
+}
+
+function disablePageScroll() {
+    document.body.style.overflow = 'hidden'
+    document.body.style.touchAction = 'none'
+    document.body.style.userSelect = 'none'
+}
+
+function drag(e) {
+    if (!draggableItem) return
+    const pointerCurrentX = e.clientX || e.touches[0].clientX
+    const pointerCurrentY = e.clientY || e.touches[0].clientY
+    pointerDeltaX = pointerCurrentX - pointerStartX
+    pointerDeltaY = pointerCurrentY - pointerStartY
+    draggableItem.style.transform = `translate(${pointerDeltaX}px, ${pointerDeltaY}px)`
+}
+
+function dragEnd(e) {
+    if (!draggableItem) return
+    applyNewItemsOrder()
+    draggableItem.classList.remove('dragging')
+    draggableItem.classList.add('is-idle')
+    document.removeEventListener('mousemove', drag)
+    document.removeEventListener('touchmove', drag, { passive: false })
+    draggableItem.style.transform = null
+    draggableItem = null
+    pointerStartX = null
+    pointerStartY = null
+    enablePageScroll()
+}
+
+function applyNewItemsOrder() {
+    if (Math.abs(pointerDeltaX) >= 5 || Math.abs(pointerDeltaY) >= 5) {
+        const rect = topSitesGrid.getBoundingClientRect()
+        if (
+            pointerStartX >= rect.left &&
+            pointerStartX <= rect.right &&
+            pointerStartY >= rect.top &&
+            pointerStartY <= rect.bottom
+        ) {
+            const dropTarget = topSitesGrid
+            const draggedRect = draggableItem.getBoundingClientRect()
+            const targetItems = dropTarget.querySelectorAll('.is-idle')
+            let insertBeforeItem = null
+            for (const targetItem of targetItems) {
+                const targetRect = targetItem.getBoundingClientRect()
+                if (
+                    draggedRect.top <= targetRect.bottom &&
+                    draggedRect.left <= targetRect.left
+                ) {
+                    insertBeforeItem = targetItem
+                    break
+                }
+            }
+            dropTarget.insertBefore(draggableItem, insertBeforeItem)
+        }
+    }
+}
+
+function enablePageScroll() {
+    document.body.style.overflow = ''
+    document.body.style.touchAction = ''
+    document.body.style.userSelect = ''
+}
+
 const root = document.documentElement
 root.style.setProperty('--primary-color', 'cornflowerblue')
 root.style.setProperty('--secondary-color', 'tomato')
 
 addTopSiteButton.addEventListener('click', createPrompt)
 removeTopSitesButton.addEventListener('click', removeTopSiteElements)
+moveTopSitesButton.addEventListener('click', moveTopSitesElements)
 
 getTopSites().then(() => {
     if (topSitesList.length === 0) return

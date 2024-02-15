@@ -4,7 +4,7 @@
 
 :root {
     background: #121212;
-    height: 120vh;
+    height: 100vh;
 }
 
 body {
@@ -38,15 +38,15 @@ h3 {
 #top-sites-header {
     width: fit-content;
     margin: 0 auto 15px;
-    background: #2b2a33;
+    background: #2b2a33cc;
     padding: 8px 12px;
     border-radius: 12px;
 }
 
 .top-sites-container {
     width: 80%;
-    max-height: 70%;
-    top: 50%;
+    height: 80%;
+    top: 55%;
     left: 50%;
     transform: translate(-50%, -50%);
     position: absolute;
@@ -59,6 +59,8 @@ h3 {
     gap: 10px;
     margin: auto;
     max-width: 500px;
+    max-height: 69%;
+    overflow: scroll;
 }
 
 .top-site-group {
@@ -70,7 +72,7 @@ h3 {
     display: flex;
     text-decoration: none;
     color: lavender;
-    background-color: #2b2a33;
+    background-color: #2b2a33cc;
     border-radius: 8px;
     max-width: 60px;
     max-height: 60px;
@@ -130,7 +132,7 @@ h3 {
 }
 
 #top-site-preview {
-    background: #2b2a33;
+    background: #2b2a33cc;
     width: 60px;
     height: 60px;
     margin: 5px auto 10px;
@@ -176,7 +178,7 @@ h3 {
 .favicon-options input[type='radio'] {
     width: 12px;
     height: 12px;
-    background-color: #2b2a33;
+    background-color: #2b2a33cc;
     border: 1px solid cornflowerblue;
     border-radius: 50%;
     transition: background-color 0.3s, border-color 0.3s;
@@ -241,14 +243,15 @@ button {
     width: fit-content;
     margin: 15px auto 0;
     gap: 10px;
-    background: #2b2a33;
+    background: #2b2a33cc;
     height: fit-content;
     padding: 0 8px 0;
     border-radius: 12px;
 }
 
 #add-top-site-button,
-#remove-top-sites-button {
+#remove-top-sites-button,
+#move-top-sites-button {
     height: 40px;
     aspect-ratio: 1;
     display: inline-flex;
@@ -260,7 +263,8 @@ button {
 }
 
 #add-top-site-button img,
-#remove-top-sites-button img {
+#remove-top-sites-button img,
+#move-top-sites-button img {
     height: 60%;
     aspect-ratio: 1;
     margin: auto;
@@ -286,7 +290,7 @@ input[type='text'] {
     padding: 8px;
     font-size: 14px;
     margin-bottom: 10px;
-    background: #2b2a33;
+    background: #2b2a33cc;
     border: none;
     border-radius: 4px;
     color: lavender;
@@ -302,4 +306,8 @@ input[type='text'] {
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     z-index: 1;
+}
+
+.dragging {
+    z-index: 2;
 }
