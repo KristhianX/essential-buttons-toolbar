@@ -1,12 +1,14 @@
 # Essential Buttons Toolbar.
-*Adds a toolbar to Android Firefox with essential buttons: Homepage, Duplicate Tab, New tab, Close tab and more.*  
+*Adds a toolbar with essential buttons to customise the Android Firefox: Homepage, Duplicate Tab, New tab, Close tab and more.*  
 
 ## Some screenshots.
 <img src="images/Screenshot_20240110-212734.png" width="200px"/> <img src="images/Screenshot_20240101-163355.png" width="200px"/> <img src="images/Screenshot_20240101-163308.png" width="200px"/> <img src="images/Screenshot_20240101-163042.png" width="200px"/>  
 
 ## Why?  
-This add-on aims to fill basic missing functionality in Android Firefox. The main reason is to provide a normal home button.  
-The home button should not behave as the new tab button. This behavior is not intuitive and differs from the standard behavior found in most browsers, including the desktop version of Firefox, which follows the universal approach to the home button.  
+This add-on aims to fill basic missing functionality in Android Firefox. The main reason is to provide a normal home button.
+
+The home button should not behave as the new tab button. This behavior is not intuitive and differs from the standard behavior found in most browsers, including the desktop version of Firefox, which follows the universal approach to the home button.
+
 You can check other user opinions here:  
 https://connect.mozilla.org/t5/ideas/on-firefox-mobile-make-home-page-links-open-in-current-tab/idi-p/15672  
 Other buttons are being added to offer easier access or missing functionality.  
@@ -14,7 +16,7 @@ Other buttons are being added to offer easier access or missing functionality.
 ## Features.  
 **Available buttons are:**  
 - **Homepage:** Opens the default homepage URL. Can be changed in options.
-- **Duplicate Tab:** Opens current URL in new tab.Long-press it to access the browser's default link options, such as opening in the background, copying the link, etc.
+- **Duplicate Tab:** Opens current URL in new tab. Long-press it to access the browser's default link options, such as opening in the background, copying the link, etc.
 - **Close tab:** Closes the current tab. If the current tab is the only open tab, it opens the homepage URL instead.
 - **Close other tabs:** Due to the current behavior of the tabs API on Android Firefox, it cannot close unloaded tabs. Closed tabs can be restored with the undo close tab(s) button.
 - **Close all tabs:** Due to the current behavior of the tabs API on Android Firefox, it cannot close unloaded tabs. As the close tab button, it opens your homepage URL when the last tab is closed. Closed tabs can be restored with the undo close tab(s) button.
@@ -43,7 +45,7 @@ Other buttons are being added to offer easier access or missing functionality.
 - **Live reload of settings changes:** No more need to refresh the pages to apply the new settings or the exclude rules.
 - **Integrated blank.html:** A blank page where the toolbar is accessible.  
 
-This extension does not access, log, or share your data. It is also ad-free and will always remain so.  
+*This extension does not access, log, or share your data*. It is also *ad-free* and will always remain so.  
 
 The icons used in this extension are from the elegant Feather Icons collection:  
 https://github.com/feathericons/feather  
