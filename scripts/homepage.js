@@ -1,8 +1,12 @@
+const backgroundContainer = document.querySelector('#background-container')
 const overlay = document.querySelector('#main-overlay')
 const topSitesGrid = document.querySelector('.top-sites-grid')
 const addTopSiteButton = document.querySelector('#add-top-site-button')
 const removeTopSitesButton = document.querySelector('#remove-top-sites-button')
 const moveTopSitesButton = document.querySelector('#move-top-sites-button')
+const homepagePreferencesButton = document.querySelector(
+    '#homepage-preferences-button'
+)
 let topSitesList = []
 let addTopSitePrompt
 let lastGroup
@@ -175,7 +179,7 @@ function createPrompt() {
         <input type="text" placeholder="Favicon URL (optional)" id="top-site-favicon-url">
         <button id="top-site-submit" type="button">Add</button>
         <button id="top-site-cancel" type="button">Cancel</button>
-    `
+        `
         document.body.appendChild(addTopSitePrompt)
         document
             .getElementById('top-site-name')
@@ -418,9 +422,15 @@ function dragStart(e) {
 }
 
 function disablePageScroll() {
-    document.body.style.overflow = 'hidden'
-    document.body.style.touchAction = 'none'
-    document.body.style.userSelect = 'none'
+    topSitesGrid.style.overflow = 'hidden'
+    topSitesGrid.style.touchAction = 'none'
+    topSitesGrid.style.userSelect = 'none'
+}
+
+function enablePageScroll() {
+    topSitesGrid.style.overflow = ''
+    topSitesGrid.style.touchAction = ''
+    topSitesGrid.style.userSelect = ''
 }
 
 function drag(e) {
@@ -474,10 +484,75 @@ function applyNewItemsOrder() {
     }
 }
 
-function enablePageScroll() {
-    document.body.style.overflow = ''
-    document.body.style.touchAction = ''
-    document.body.style.userSelect = ''
+//
+// Walpaper changer
+//
+function saveWallpaperToLocal(wallpaperData) {
+    browser.storage.local.set({ wallpaperData: wallpaperData })
+}
+
+function setWallpaperFromLocal() {
+    browser.storage.local
+        .get(['wallpaperData', 'wallpaperSetDate'])
+        .then((result) => {
+            if (
+                result.wallpaperData &&
+                result.wallpaperSetDate === getCurrentDate()
+            ) {
+                const imageUrl = URL.createObjectURL(result.wallpaperData)
+                backgroundContainer.style.backgroundImage = `url('${imageUrl}')`
+            } else {
+                getWallpaper('landscape')
+                browser.storage.local.set({
+                    wallpaperSetDate: getCurrentDate(),
+                })
+            }
+        })
+}
+
+function getCurrentDate() {
+    const now = new Date()
+    return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`
+}
+
+function getWallpaper(query) {
+    let apiUrl = 'https://source.unsplash.com/random'
+    if (query) {
+        apiUrl += `/?${query}`
+    }
+    fetch(apiUrl)
+        .then((response) => {
+            return response.blob()
+        })
+        .then((wallpaperBlob) => {
+            saveWallpaperToLocal(wallpaperBlob)
+            const imageUrl = URL.createObjectURL(wallpaperBlob)
+            backgroundContainer.style.backgroundImage = `url('${imageUrl}')`
+        })
+}
+
+function removeWallpaperFromLocal() {
+    browser.storage.local.remove('wallpaperData').then(() => {
+        getWallpaper('landscape')
+    })
+}
+
+//
+// Preferences
+//
+function createPreferencesPrompt() {
+    homepagePreferencesButton.style.backgroundColor = 'var(--primary-color)'
+    setTimeout(() => {
+        const preferencesPrompt = document.createElement('div')
+        overlay.style.display = 'block'
+        preferencesPrompt.classList.add('preferences-prompt')
+        preferencesPrompt.innerHTML = `
+        <div class="preferences-prompt-text">
+            <h1>Preferences</h1>
+            <p>
+                <button class="preferences-prompt-button" onclick="removeTopSiteElements()">Remove Top Sites</button>
+        `
+    }, 100)
 }
 
 const root = document.documentElement
@@ -487,8 +562,11 @@ root.style.setProperty('--secondary-color', 'tomato')
 addTopSiteButton.addEventListener('click', createPrompt)
 removeTopSitesButton.addEventListener('click', removeTopSiteElements)
 moveTopSitesButton.addEventListener('click', moveTopSitesElements)
+homepagePreferencesButton.addEventListener('click', createPreferencesPrompt)
 
 getTopSites().then(() => {
     if (topSitesList.length === 0) return
     createTopSitesButtons()
 })
+
+setWallpaperFromLocal()

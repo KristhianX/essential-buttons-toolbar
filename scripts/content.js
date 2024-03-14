@@ -93,7 +93,7 @@ function appendToolbarAndResolve(resolve) {
         toolbarIframe.src = browser.runtime.getURL('pages/toolbar.html')
         toolbarIframe.setAttribute('id', 'essBtnsToolbar')
         toolbarIframe.style =
-            'display: block !important; position: fixed; z-index: 2147483647; margin: 0; padding: 0; border: 0; background: transparent; color-scheme: light; border-radius: 0'
+            'display: block !important; position: fixed; z-index: 2147483647; margin: 0; padding: 0; min-height: unset; max-height: unset; min-width: unset; max-width: unset; border: 0; background: transparent; color-scheme: light; border-radius: 0'
         document.body.insertAdjacentElement('afterend', toolbarIframe)
         function handleToolbarLoad() {
             const iframeDocument = toolbarIframe.contentWindow.document
