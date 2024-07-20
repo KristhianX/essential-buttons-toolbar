@@ -15,6 +15,7 @@ let hideMethodInUse
 let isThrottled
 let prevScrollPos
 const settings = {}
+const isPrivate = browser.extension.inIncognitoContext
 
 //
 //  Get settings
@@ -122,6 +123,9 @@ function styleToolbarDivs() {
         menuDiv.style.top = '0'
         toolbarDiv.style.borderWidth = '2px 0 0'
         menuDiv.style.borderWidth = '2px 0 0'
+    }
+    if (isPrivate) {
+        toolbarDiv.style.backgroundColor = `rgba(109, 65, 148, ${settings.toolbarTransparency})`
     }
 }
 
@@ -571,22 +575,29 @@ function createButtons() {
 
 function appendButtons() {
     if (iframeHidden) return
+    const buttonsToDisable = [
+        'duplicateTabButton',
+        'newTabButton',
+        'settingsButton',
+        'undoCloseTabButton',
+        'closeAllTabsButton',
+        'closeOtherTabsButton',
+    ]
     let buttonsAppended = 0
     settings.buttonOrder.forEach((buttonId) => {
-        if (
-            buttonsAppended < settings.buttonsInToolbarDiv &&
-            buttonElements[buttonId] &&
-            settings.checkboxStates[buttonId]
-        ) {
+        if (buttonElements[buttonId] && settings.checkboxStates[buttonId]) {
+            if (isPrivate && buttonsToDisable.includes(buttonId)) {
+                buttonsAppended++
+                return // Skip appending this button
+            }
+
             const buttonToAppend = buttonElements[buttonId].element
-            toolbarDiv.appendChild(buttonToAppend)
-            buttonsAppended++
-        } else if (
-            buttonElements[buttonId] &&
-            settings.checkboxStates[buttonId]
-        ) {
-            const buttonToAppend = buttonElements[buttonId].element
-            menuDiv.appendChild(buttonToAppend)
+            if (buttonsAppended < settings.buttonsInToolbarDiv) {
+                toolbarDiv.appendChild(buttonToAppend)
+                buttonsAppended++
+            } else {
+                menuDiv.appendChild(buttonToAppend)
+            }
         }
     })
 }

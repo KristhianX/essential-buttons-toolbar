@@ -1,8 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Essential Buttons Toolbar",
-    "version": "1.7",
-    "incognito": "not_allowed",
+    "version": "1.7.1",
     "permissions": [
         "*://*/*",
         "activeTab",

@@ -53,7 +53,7 @@ h3 {
 .top-sites-container {
     width: 80%;
     height: fit-content;
-    top: 40%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     position: absolute;
@@ -321,4 +321,8 @@ input[type='text'] {
 
 .dragging {
     z-index: 2;
+}
+
+#homepage-preferences-button {
+    display: none;
 }
