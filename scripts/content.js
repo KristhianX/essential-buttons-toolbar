@@ -417,7 +417,7 @@ const buttonElements = {
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
-                document.documentElement.scrollTop = 0
+                window.scrollTo({ top: 0, behavior: 'smooth' })
             }, 100)
         },
     },
@@ -427,8 +427,10 @@ const buttonElements = {
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
-                document.documentElement.scrollTop =
-                    document.documentElement.scrollHeight
+                window.scrollTo({ 
+                    top: document.documentElement.scrollHeight, 
+                    behavior: 'smooth' 
+                })
             }, 100)
         },
     },
