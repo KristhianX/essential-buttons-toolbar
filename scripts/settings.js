@@ -3,6 +3,7 @@
 //
 const settingsURL = browser.runtime.getURL('pages/settings.html')
 const blankURL = browser.runtime.getURL('pages/blank.html')
+const homepageURL = browser.runtime.getURL('pages/homepage.html')
 const homepageURLInput = document.getElementById('homepageURL')
 const newTabURLInput = document.getElementById('newTabURL')
 const toolbarHeightRangeInput = document.getElementById('toolbarHeight')
@@ -455,7 +456,7 @@ buttonsSaveButton.addEventListener('click', () => {
 
 function sendMessageToTabs() {
     browser.tabs.query(
-        { url: ['*://*/*', settingsURL, blankURL] },
+        { url: ['*://*/*', settingsURL, blankURL, homepageURL] },
         function (tabs) {
             for (const tab of tabs) {
                 browser.tabs.sendMessage(tab.id, { action: 'reloadToolbar' })

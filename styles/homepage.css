@@ -5,12 +5,16 @@
 :root {
     background: #121212;
     height: 100vh;
+    overflow: hidden;
 }
 
 body {
     width: 100%;
     height: 100%;
     margin: 0;
+    padding: 0;
+    position: relative;
+    display: flex;
 }
 
 #background-container {
@@ -19,6 +23,24 @@ body {
     background-size: cover;
     background-position: center;
     opacity: .8;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+#credit-container {
+    position: absolute;
+    color: lavender;
+    font-size: 12px;
+    bottom: 48px;
+    left: 0;
+    background: #2b2a33cc;
+    width: fit-content;
+    text-align: center;
+    padding: 8px 12px;
+    border-radius: 0 12px 12px 0;
+    z-index: 1;
 }
 
 h1,
@@ -42,6 +64,18 @@ h3 {
     font-size: 14px;
 }
 
+a {
+    color: cornflowerblue;
+}
+
+.main-container {
+    width: 80%;
+    height: 80%;
+    margin: auto;
+    position: relative;
+    display: flex;
+}
+
 #top-sites-header {
     width: fit-content;
     margin: 0 auto 15px;
@@ -51,24 +85,31 @@ h3 {
 }
 
 .top-sites-container {
-    width: 80%;
-    height: fit-content;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    position: absolute;
-    max-height: 80%;
+    width: 100%;
+    max-height: 90%;
+    overflow: scroll;
+    margin: auto;
+    position: relative;
 }
 
 .top-sites-grid {
     display: grid;
-    place-items: center;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fill, 60px);
     gap: 10px;
-    margin: auto;
-    max-width: 500px;
-    max-height: 340px;
-    overflow: scroll;
+    justify-content: center;
+    overflow-y: auto;
+}
+
+@media only screen and (orientation: portrait) {
+    .top-sites-grid {
+        max-height: 270px;
+    }
+}
+
+@media only screen and (orientation: landscape) {
+    .top-sites-grid {
+        max-height: 130px;
+    }
 }
 
 .top-site-group {
@@ -112,7 +153,7 @@ h3 {
 
 .top-site-group a span {
     display: block;
-    font-size: 10px;
+    font-size: 11px;
     max-height: 38%;
     overflow: hidden;
     bottom: 5px;
@@ -125,8 +166,10 @@ h3 {
 
 .top-site-prompt,
 .preferences-prompt {
-    max-width: 500px;
     width: 80%;
+    max-width: 500px;
+    max-height: 70%;
+    overflow: scroll;
     margin: auto;
     position: fixed;
     border: 1px solid darkgray;

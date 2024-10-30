@@ -2,16 +2,63 @@
     box-sizing: border-box;
 }
 
+/* :root {
+    --background-color: #212132;
+    --box-background: #2b2a33;
+    --text-color: lavender;
+    --primary-color: cornflowerblue;
+    --secondary-color: tomato;
+    --link-color: lightsteelblue;
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --background-color: #c7c7da;
+        --box-background: #f9f9fb;
+        --text-color: #18171e;
+        --primary-color: steelblue;
+        --secondary-color: crimson;
+        --link-color: midnightblue;
+    }
+}
+
 :root {
-    background: #121212;
+    background: var(--background-color);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    padding-bottom: 100px;
+} */
+
+:root {
+    --background-color: #1e1e30;       /* Darker, with a subtle hint of blue for depth */
+    --box-background: #2a2939;         /* A bit deeper to match background tones */
+    --text-color: #dcdce4;             /* Soft off-white for smoother readability */
+    --primary-color: #6495ed;          /* Lighter blue that pairs well with dark tones */
+    --secondary-color: #ff6347;        /* Slightly warmer tomato color for accents */
+    --link-color: #87a2d6;             /* Calmer blue tone for links */
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --background-color: #e0e0f3;    /* Softer, with a subtle lavender tint */
+        --box-background: #f2f2f9;      /* Lightened for a cleaner, airy feel */
+        --text-color: #18171f;          /* Deepened for better readability on light */
+        --primary-color: #4682b4;       /* More muted blue for a refined look */
+        --secondary-color: #dc143c;     /* Slightly cooler crimson for accents */
+        --link-color: #4169e1;          /* Royal blue for clarity in links */
+    }
+}
+
+:root {
+    background: var(--background-color);
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     padding-bottom: 100px;
 }
 
 body {
-    background: #121212;
-    color: lavender;
+    background: var(--background-color);
+    color: var(--text-color);
     font-family: Arial, sans-serif;
     font-size: 14px;
     margin: 0 auto;
@@ -41,7 +88,7 @@ body {
 }
 
 a {
-    color: lightsteelblue;
+    color: var(--link-color);
 }
 
 h2 {
@@ -55,7 +102,7 @@ h3 {
     font-style: italic;
     display: inline-block;
     margin: 0;
-    color: lavender;
+    color: var(--text-color);
 }
 
 label {
@@ -75,7 +122,7 @@ label {
 .question-mark {
     font-size: 18px;
     cursor: pointer;
-    color: cornflowerblue;
+    color: var(--primary-color);
     display: inline-block;
     margin-left: 5px;
 }
@@ -85,7 +132,7 @@ label {
     position: relative;
     width: 300px;
     margin-top: 10px;
-    background: #2b2a33;
+    background: var(--box-background);
     border-radius: 10px;
     padding: 8px;
     z-index: 1;
@@ -95,11 +142,11 @@ label {
     float: right;
     cursor: pointer;
     font-size: 20px;
-    color: tomato;
+    color: var(--secondary-color);
 }
 
 input[type='checkbox']:checked {
-    accent-color: cornflowerblue;
+    accent-color: var(--primary-color);
 }
 
 input[type='text'] {
@@ -108,10 +155,10 @@ input[type='text'] {
     padding: 8px;
     font-size: 14px;
     margin-top: 4px;
-    background: #2b2a33;
+    background: var(--box-background);
     border: none;
     border-radius: 4px;
-    color: lavender;
+    color: var(--text-color);
     outline: none;
 }
 
@@ -120,7 +167,7 @@ input[type='range'] {
     width: 80%;
     min-width: 250px;
     height: 6px;
-    background: #2b2a33;
+    background: var(--box-background);
     border: none;
     border-radius: 4px;
     outline: none;
@@ -129,8 +176,8 @@ input[type='range'] {
 input[type='range']::-moz-range-thumb {
     width: 12px;
     height: 24px;
-    background: #2b2a33;
-    border: 1px solid cornflowerblue;
+    background: var(--box-background);
+    border: 1px solid var(--primary-color);
     border-radius: 4px;
     cursor: pointer;
 }
@@ -140,8 +187,8 @@ select {
     padding: 8px;
     font-size: 14px;
     margin-top: 4px;
-    background: #2b2a33;
-    color: lavender;
+    background: var(--box-background);
+    color: var(--text-color);
     border-radius: 4px;
     outline: none;
     border: none;
@@ -151,8 +198,8 @@ button {
     display: block;
     margin: 20px auto;
     padding: 6px 16px;
-    color: lavender;
-    border: 1px solid cornflowerblue;
+    color: var(--text-color);
+    border: 1px solid var(--primary-color);
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
@@ -160,7 +207,7 @@ button {
 }
 
 #generalResetButton {
-    border: 1px solid tomato;
+    border: 1px solid var(--secondary-color);
 }
 
 ul {
@@ -172,7 +219,7 @@ ul {
 
 li {
     width: 100%;
-    border: 1px solid #2b2a33;
+    border: 1px solid var(--box-background);
     border-radius: 4px;
     margin: 0 0 6px;
     padding: 0 8px;
@@ -188,8 +235,8 @@ li span {
 
 li button {
     display: block;
-    border: 1px solid tomato;
-    color: lavender;
+    border: 1px solid var(--secondary-color);
+    color: var(--text-color);
     cursor: pointer;
     margin: 0;
 }
@@ -200,7 +247,7 @@ li button {
     padding: 2px 8px;
     border-width: 1px;
     border-style: solid;
-    border-color: #2b2a33;
+    border-color: var(--box-background);
     border-radius: 8px;
     font-size: 16px;
     width: fit-content;
@@ -213,7 +260,7 @@ li button {
     margin: 0 auto 10px;
     width: 90%;
     max-width: 500px;
-    background: #2b2a33;
+    background: var(--box-background);
     font-weight: bold;
 }
 
@@ -226,16 +273,16 @@ li button {
 }
 
 #generalTab {
-    border-color: cornflowerblue;
+    border-color: var(--box-background);
     border-radius: 4px 0 0 4px;
 }
 
 #buttonsTab {
-    border-color: #2b2a33;
+    border-color: var(--box-background);
 }
 
 #excludeTab {
-    border-color: #2b2a33;
+    border-color: var(--box-background);
     border-radius: 0 4px 4px 0;
 }
 
@@ -269,12 +316,12 @@ li button {
 #toolbarContainer,
 #menuContainer {
     width: 100%;
-    background: #2b2a33;
+    background: var(--box-background);
     margin: 5px auto 0;
     padding: 0 4%;
     display: flex;
     justify-content: space-between;
-    border-top: #2b2a33;
+    border-top: var(--box-background);
     border-style: solid;
     border-width: 2px 0 0 0;
 }
@@ -283,7 +330,7 @@ li button {
     min-height: 50px;
     font-size: 0;
     width: 100%;
-    background: #2b2a33;
+    background: var(--box-background);
     margin: 5px auto 0;
     padding: 0 10px 10px;
 }
@@ -310,7 +357,7 @@ li button {
 
 .is-draggable {
     z-index: 10;
-    background: cornflowerblue;
+    background: var(--primary-color);
 }
 
 #infoCard {
@@ -338,13 +385,13 @@ li button {
     border-radius: 10px;
     text-align: center;
     width: 85%;
-    background: #2b2a33;
+    background: var(--box-background);
 }
 
 #addonInfo h2 {
     display: block;
     padding: 0;
-    color: cornflowerblue;
+    color: var(--primary-color);
     width: fit-content;
     margin: 15px auto;
 }

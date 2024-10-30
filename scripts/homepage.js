@@ -1,4 +1,5 @@
 const backgroundContainer = document.querySelector('#background-container')
+const creditContainer = document.querySelector('#credit-container')
 const overlay = document.querySelector('#main-overlay')
 const topSitesGrid = document.querySelector('.top-sites-grid')
 const addTopSiteButton = document.querySelector('#add-top-site-button')
@@ -485,10 +486,14 @@ function applyNewItemsOrder() {
 }
 
 //
-// Walpaper changer
+// Wallpaper changer
 //
-function saveWallpaperToLocal(wallpaperData) {
-    browser.storage.local.set({ wallpaperData: wallpaperData })
+function saveWallpaperToLocal(wallpaperBlob) {
+    const reader = new FileReader()
+    reader.onloadend = () => {
+        browser.storage.local.set({ wallpaperData: reader.result })
+    }
+    reader.readAsDataURL(wallpaperBlob) // Converts to Base64
 }
 
 function setWallpaperFromLocal() {
@@ -499,8 +504,8 @@ function setWallpaperFromLocal() {
                 result.wallpaperData &&
                 result.wallpaperSetDate === getCurrentDate()
             ) {
-                const imageUrl = URL.createObjectURL(result.wallpaperData)
-                backgroundContainer.style.backgroundImage = `url('${imageUrl}')`
+                backgroundContainer.style.backgroundImage = `url('${result.wallpaperData}')`
+                generateCreditsContainer()
             } else {
                 getWallpaper('landscape')
                 browser.storage.local.set({
@@ -508,6 +513,7 @@ function setWallpaperFromLocal() {
                 })
             }
         })
+        .catch((error) => console.error('Error retrieving wallpaper:', error))
 }
 
 function getCurrentDate() {
@@ -515,26 +521,66 @@ function getCurrentDate() {
     return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`
 }
 
-function getWallpaper(query) {
-    let apiUrl = 'https://source.unsplash.com/random'
-    if (query) {
-        apiUrl += `/?${query}`
+async function getWallpaper(query) {
+    const apiUrl = `https://essential-homepage-background.kristhianx.workers.dev/?query=${encodeURIComponent(
+        query
+    )}`
+
+    try {
+        const response = await fetch(apiUrl)
+        const data = await response.json()
+
+        if (!data || !data.imageUrl) {
+            console.error('No image found')
+            return
+        }
+
+        const imageUrl = data.imageUrl
+        const photoUrl = data.photoUrl
+        const authorUrl = data.authorUrl
+        const authorName = data.authorName
+
+        // Fetch the wallpaper image blob
+        const imageResponse = await fetch(imageUrl)
+        const wallpaperBlob = await imageResponse.blob()
+
+        // Save the wallpaper locally
+        saveWallpaperToLocal(wallpaperBlob)
+        const objectUrl = URL.createObjectURL(wallpaperBlob)
+        backgroundContainer.style.backgroundImage = `url('${objectUrl}')`
+
+        // Store credit information in local storage
+        const creditInfo = {
+            authorUrl: authorUrl,
+            authorName: authorName,
+            photoUrl: photoUrl,
+        }
+        localStorage.setItem('creditInfo', JSON.stringify(creditInfo))
+
+        // Generate credits container
+        generateCreditsContainer()
+    } catch (error) {
+        console.error('Error fetching wallpaper:', error)
     }
-    fetch(apiUrl)
-        .then((response) => {
-            return response.blob()
-        })
-        .then((wallpaperBlob) => {
-            saveWallpaperToLocal(wallpaperBlob)
-            const imageUrl = URL.createObjectURL(wallpaperBlob)
-            backgroundContainer.style.backgroundImage = `url('${imageUrl}')`
-        })
+}
+
+// Function to generate the credits container
+function generateCreditsContainer() {
+    const creditInfo = JSON.parse(localStorage.getItem('creditInfo'))
+    if (creditInfo) {
+        creditContainer.innerHTML = `
+            Photo by <a href="${creditInfo.authorUrl}" target="_blank">${creditInfo.authorName}</a> on <a href="${creditInfo.photoUrl}" target="_blank">Unsplash</a>
+        `
+    }
 }
 
 function removeWallpaperFromLocal() {
-    browser.storage.local.remove('wallpaperData').then(() => {
-        getWallpaper('landscape')
-    })
+    browser.storage.local
+        .remove('wallpaperData')
+        .then(() => {
+            getWallpaper('landscape')
+        })
+        .catch((error) => console.error('Error removing wallpaper:', error))
 }
 
 //
@@ -555,9 +601,11 @@ function createPreferencesPrompt() {
     }, 100)
 }
 
-const root = document.documentElement
-root.style.setProperty('--primary-color', 'cornflowerblue')
-root.style.setProperty('--secondary-color', 'tomato')
+setWallpaperFromLocal()
+
+// const root = document.documentElement
+// root.style.setProperty('--primary-color', 'cornflowerblue')
+// root.style.setProperty('--secondary-color', 'tomato')
 
 addTopSiteButton.addEventListener('click', createPrompt)
 removeTopSitesButton.addEventListener('click', removeTopSiteElements)
@@ -568,5 +616,3 @@ getTopSites().then(() => {
     if (topSitesList.length === 0) return
     createTopSitesButtons()
 })
-
-setWallpaperFromLocal()

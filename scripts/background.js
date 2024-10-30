@@ -5,8 +5,8 @@ const settingsURL = browser.runtime.getURL('pages/settings.html')
 const blankURL = browser.runtime.getURL('pages/blank.html')
 const homepageURL = browser.runtime.getURL('pages/homepage.html')
 const defaultVariables = {
-    homepageURL: 'https://web.tabliss.io',
-    newTabURL: 'https://web.tabliss.io',
+    homepageURL: homepageURL,
+    newTabURL: homepageURL,
     toolbarHeight: 42,
     toolbarTransparency: 0.8,
     defaultPosition: 'bottom',
