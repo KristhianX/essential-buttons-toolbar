@@ -8,5 +8,215 @@
         />
         <link rel="stylesheet" type="text/css" href="../styles/toolbar.css" />
     </head>
-    <body></body>
+    <body>
+        <div id="toolbar"></div>
+        <div id="menu"></div>
+        <button data-button="homeButton" class="toolbar-button">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24px"
+                height="24px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                background="transparent"
+                color="var(--icon-color)"
+                class="featherIcons feather feather-home"
+            >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                background="transparent"
+                color="var(--icon-color)"
+                class="heroIcons w-6 h-6"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+                />
+            </svg>
+        </button>
+        <a data-button="duplicateTabButton" class="toolbar-button">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                background="transparent"
+                color="var(--icon-color)"
+                class="featherIcons feather feather-external-link"
+            >
+                <path
+                    d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                ></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                background="transparent"
+                color="var(--icon-color)"
+                class="heroIcons w-6 h-6"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+                />
+            </svg>
+        </a>
+        <button data-button="menuButton" class="toolbar-button">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                background="transparent"
+                color="var(--icon-color)"
+                class="featherIcons feather feather-menu"
+            >
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                background="transparent"
+                color="var(--icon-color)"
+                class="heroIcons w-6 h-6"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                />
+            </svg>
+        </button>
+        <button data-button="closeTabButton" class="toolbar-button">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                background="transparent"
+                color="var(--icon-color)"
+                class="featherIcons feather feather-x"
+            >
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                background="transparent"
+                color="var(--icon-color)"
+                class="heroIcons w-6 h-6"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                />
+            </svg>
+        </button>
+        <button data-button="newTabButton" class="toolbar-button">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                background="transparent"
+                color="var(--icon-color)"
+                class="featherIcons feather feather-plus"
+            >
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                background="transparent"
+                color="var(--icon-color)"
+                class="heroIcons w-6 h-6"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 4.5v15m7.5-7.5h-15"
+                />
+            </svg>
+        </button>
+        <button data-button="hideButton" class="toolbar-button"></button>
+        <button data-button="moveToolbarButton" class="toolbar-button"></button>
+        <button data-button="goBackButton" class="toolbar-button"></button>
+        <button data-button="goForwardButton" class="toolbar-button"></button>
+        <button data-button="reloadButton" class="toolbar-button"></button>
+        <button data-button="settingsButton" class="toolbar-button"></button>
+        <button
+            data-button="undoCloseTabButton"
+            class="toolbar-button"
+        ></button>
+        <button data-button="scrollTopButton" class="toolbar-button"></button>
+        <button
+            data-button="scrollBottomButton"
+            class="toolbar-button"
+        ></button>
+        <button
+            data-button="closeAllTabsButton"
+            class="toolbar-button"
+        ></button>
+        <button
+            data-button="closeOtherTabsButton"
+            class="toolbar-button"
+        ></button>
+        <button
+            data-button="toggleDesktopSiteButton"
+            class="toolbar-button"
+        ></button>
+        <button data-button="openWithButton" class="toolbar-button"></button>
+    </body>
 </html>

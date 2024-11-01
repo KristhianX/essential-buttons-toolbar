@@ -8,6 +8,7 @@ let iframeHidden
 let unhideIcon
 let dragging
 let toolbarIframe
+let iframeDocument
 let toolbarDiv
 let menuDiv
 let menuButtonFlag
@@ -16,6 +17,14 @@ let isThrottled
 let prevScrollPos
 const settings = {}
 const isPrivate = browser.extension.inIncognitoContext
+const buttonsToDisable = [
+    'duplicateTabButton',
+    'newTabButton',
+    'settingsButton',
+    'undoCloseTabButton',
+    'closeAllTabsButton',
+    'closeOtherTabsButton',
+];
 
 //
 //  Get settings
@@ -55,7 +64,7 @@ function getSettingsValues() {
 function appendToolbar() {
     return new Promise((resolve, reject) => {
         let retryCount = 0
-        const maxRetries = 5
+        const maxRetries = 8
         const initialDelay = 100
         const backoffFactor = 2
         function tryAppend() {
@@ -96,23 +105,34 @@ function appendToolbarAndResolve(resolve) {
         toolbarIframe.style =
             'display: block !important; position: fixed; z-index: 2147483647; margin: 0; padding: 0; min-height: unset; max-height: unset; min-width: unset; max-width: unset; border: 0; background: transparent; color-scheme: light; border-radius: 0'
         document.body.insertAdjacentElement('afterend', toolbarIframe)
-        function handleToolbarLoad() {
-            const iframeDocument = toolbarIframe.contentWindow.document
-            toolbarDiv = iframeDocument.createElement('div')
-            menuDiv = iframeDocument.createElement('div')
-            iframeDocument.body.appendChild(toolbarDiv)
-            iframeDocument.body.appendChild(menuDiv)
-            styleToolbarDivs()
-            toolbarIframe.removeEventListener('load', handleToolbarLoad)
-            resolve()
+        function applyColorSchemeToIframe() {
+            const prefersDarkScheme = window.matchMedia(
+                '(prefers-color-scheme: dark)'
+            ).matches
+            toolbarIframe.style.colorScheme = prefersDarkScheme
+                ? 'dark'
+                : 'light'
         }
-        toolbarIframe.addEventListener('load', handleToolbarLoad)
+        window
+            .matchMedia('(prefers-color-scheme: dark)')
+            .addEventListener('change', applyColorSchemeToIframe)
+        toolbarIframe.addEventListener('load', () => {
+            iframeDocument =
+                toolbarIframe.contentDocument ||
+                toolbarIframe.contentWindow.document
+            toolbarDiv = iframeDocument.getElementById('toolbar')
+            menuDiv = iframeDocument.getElementById('menu')
+            applyColorSchemeToIframe()
+            if (toolbarDiv && menuDiv) {
+                styleToolbarDivs()
+            }
+            resolve()
+        })
     }
 }
 
 function styleToolbarDivs() {
-    toolbarDiv.style = `height: 100%; display: flex; background-color: rgba(43, 42, 51, ${settings.toolbarTransparency})`
-    menuDiv.style = 'height: 50%; display: none; background-color: #2b2a33'
+    toolbarDiv.style.opacity = settings.toolbarTransparency
     if (settings.defaultPosition === 'top') {
         toolbarDiv.style.top = '0'
         menuDiv.style.bottom = '0'
@@ -427,9 +447,9 @@ const buttonElements = {
             setTimeout(() => {
                 this.style.background = 'transparent'
                 closeMenu()
-                window.scrollTo({ 
-                    top: document.documentElement.scrollHeight, 
-                    behavior: 'smooth' 
+                window.scrollTo({
+                    top: document.documentElement.scrollHeight,
+                    behavior: 'smooth',
                 })
             }, 100)
         },
@@ -508,100 +528,88 @@ const buttonElements = {
     // Add more buttons
 }
 
-function createButtons() {
-    if (iframeHidden) return
+function toggleButtonVisibility() {
+    if (iframeHidden) return;
     settings.buttonOrder.forEach((buttonId) => {
-        if (buttonElements[buttonId] && settings.checkboxStates[buttonId]) {
-            let button
-            const img = document.createElement('img')
+        const button = iframeDocument.querySelector(`[data-button="${buttonId}"]`);      
+        if (button && settings.checkboxStates[buttonId]) {
+            if (isPrivate && buttonsToDisable.includes(buttonId)) return;
+            console.log(`Button ${buttonId} is enabled and visible.`);
+            button.style.display = "flex";
+
+            // Verify SVG selection and theme toggling
+            const svgs = button.querySelectorAll('svg');
+            svgs.forEach(svg => {
+                console.log(`Button ${buttonId}: Checking theme class - ${svg.classList}`);
+                if (svg.classList.contains(settings.iconTheme)) {
+                    svg.style.display = "inline";
+                    console.log(`Displaying SVG for theme: ${settings.iconTheme}`);
+                } else {
+                    svg.style.display = "none";
+                }
+            });
+
             switch (buttonId) {
                 case 'duplicateTabButton':
-                    button = document.createElement('a')
-                    img.src = browser.runtime.getURL(
-                        `icons/${settings.iconTheme}/${buttonId}.svg`
-                    )
-                    button.href = currentUrl
+                    button.href = currentUrl;
+                    console.log(`Setting href for ${buttonId} to ${currentUrl}`);
                     button.addEventListener('touchstart', function () {
                         if (currentUrl !== window.location.href) {
-                            currentUrl = window.location.href
-                            button.href = currentUrl
+                            currentUrl = window.location.href;
+                            button.href = currentUrl;
                         }
-                    })
-                    break
+                    });
+                    break;
+
                 case 'moveToolbarButton':
-                    button = document.createElement('button')
-                    if (settings.defaultPosition === 'bottom') {
-                        img.src = browser.runtime.getURL(
-                            `icons/${settings.iconTheme}/chevronUp.svg`
-                        )
-                    } else {
-                        img.src = browser.runtime.getURL(
-                            `icons/${settings.iconTheme}/chevronDown.svg`
-                        )
-                    }
-                    break
+                    const chevronSvg = button.querySelector(`.feather-${settings.defaultPosition === 'bottom' ? 'chevron-up' : 'chevron-down'}`);
+                    svgs.forEach(svg => svg.style.display = "none");
+                    chevronSvg.style.display = "inline";
+                    console.log(`Displaying chevron icon for position: ${settings.defaultPosition}`);
+                    break;
+
                 case 'toggleDesktopSiteButton':
-                    button = document.createElement('button')
-                    browser.storage.local
-                        .get('isDesktopSite')
-                        .then((result) => {
-                            if (!result.isDesktopSite) {
-                                img.src = browser.runtime.getURL(
-                                    `icons/${settings.iconTheme}/toggleDesktopSiteButton.svg`
-                                )
-                            } else {
-                                img.src = browser.runtime.getURL(
-                                    `icons/${settings.iconTheme}/smartphone.svg`
-                                )
-                            }
-                        })
-                    break
+                    browser.storage.local.get('isDesktopSite').then((result) => {
+                        const iconName = result.isDesktopSite ? 'smartphone' : 'toggleDesktopSiteButton';
+                        const targetSvg = button.querySelector(`.feather-${iconName}`);
+                        svgs.forEach(svg => svg.style.display = "none");
+                        targetSvg.style.display = "inline";
+                        console.log(`Toggled desktop site button icon to: ${iconName}`);
+                    });
+                    break;
+
                 default:
-                    button = document.createElement('button')
-                    img.src = browser.runtime.getURL(
-                        `icons/${settings.iconTheme}/${buttonId}.svg`
-                    )
-                    break
+                    console.log(`Standard button: ${buttonId} set with theme icons.`);
+                    break;
             }
             if (button) {
-                button.appendChild(img)
-                button.addEventListener(
-                    'click',
-                    buttonElements[buttonId].behavior
-                )
+                button.addEventListener('click', buttonElements[buttonId].behavior) 
                 buttonElements[buttonId].element = button
             }
+        } else {
+            console.log(`Button ${buttonId} not found or not enabled.`);
         }
-    })
+    });
 }
 
 function appendButtons() {
-    if (iframeHidden) return
-    const buttonsToDisable = [
-        'duplicateTabButton',
-        'newTabButton',
-        'settingsButton',
-        'undoCloseTabButton',
-        'closeAllTabsButton',
-        'closeOtherTabsButton',
-    ]
-    let buttonsAppended = 0
+    if (iframeHidden) return;
+    let buttonsAppended = 0;
     settings.buttonOrder.forEach((buttonId) => {
-        if (buttonElements[buttonId] && settings.checkboxStates[buttonId]) {
+        const button = iframeDocument.querySelector(`[data-button="${buttonId}"]`);
+        if (button && settings.checkboxStates[buttonId]) {
             if (isPrivate && buttonsToDisable.includes(buttonId)) {
-                buttonsAppended++
-                return // Skip appending this button
+                buttonsAppended++;
+                return;
             }
-
-            const buttonToAppend = buttonElements[buttonId].element
             if (buttonsAppended < settings.buttonsInToolbarDiv) {
-                toolbarDiv.appendChild(buttonToAppend)
-                buttonsAppended++
+                toolbarDiv.appendChild(button);
             } else {
-                menuDiv.appendChild(buttonToAppend)
+                menuDiv.appendChild(button);
             }
+            buttonsAppended++;
         }
-    })
+    });
 }
 
 //
@@ -721,7 +729,7 @@ async function initializeToolbar() {
         await appendToolbar()
         updateToolbarHeight()
         window.addEventListener('load', checkExistenceAndHeight)
-        createButtons()
+        toggleButtonVisibility()
         appendButtons()
         hideOnScroll()
         window.visualViewport.addEventListener('resize', updateToolbarHeight)

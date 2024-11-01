@@ -1,5 +1,18 @@
 :root {
+    --toolbar-background: #2b2a33;
+    --border-color: #45444c;
+    --icon-color: #fbfbfe;
+    color-scheme: dark;
     height: 100%;
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --toolbar-background: #f9f9fb;
+        --border-color: #f4f4f6;
+        --icon-color: #15141a;
+        color-scheme: light;
+    }
 }
 
 body {
@@ -7,22 +20,34 @@ body {
     height: 100%;
 }
 
-button,
-a {
+#toolbar {
+    height: 100%;
+    display: flex;
+    background-color: var(--toolbar-background);
+}
+
+#menu {
+    height: 50%;
+    display: none;
+    background-color: var(--toolbar-background);
+}
+
+.toolbar-button {
     height: 100%;
     aspect-ratio: 1;
     cursor: pointer;
     border: none;
     border-radius: 20%;
     background: transparent;
-    display: flex;
+    display: none;
     padding: 0;
 }
 
-img {
+.toolbar-button svg {
     height: 50%;
     aspect-ratio: 1;
     margin: auto;
+    display: none;
 }
 
 div {
@@ -33,5 +58,5 @@ div {
     width: fit-content;
     position: absolute;
     border-style: solid;
-    border-color: #38373f;
+    border-color: var(--border-color);
 }

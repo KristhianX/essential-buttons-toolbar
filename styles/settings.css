@@ -2,33 +2,6 @@
     box-sizing: border-box;
 }
 
-/* :root {
-    --background-color: #212132;
-    --box-background: #2b2a33;
-    --text-color: lavender;
-    --primary-color: cornflowerblue;
-    --secondary-color: tomato;
-    --link-color: lightsteelblue;
-}
-
-@media (prefers-color-scheme: light) {
-    :root {
-        --background-color: #c7c7da;
-        --box-background: #f9f9fb;
-        --text-color: #18171e;
-        --primary-color: steelblue;
-        --secondary-color: crimson;
-        --link-color: midnightblue;
-    }
-}
-
-:root {
-    background: var(--background-color);
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    padding-bottom: 100px;
-} */
-
 :root {
     --background-color: #1e1e30;       /* Darker, with a subtle hint of blue for depth */
     --box-background: #2a2939;         /* A bit deeper to match background tones */
