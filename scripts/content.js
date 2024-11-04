@@ -736,12 +736,13 @@ function checkExistenceAndHeight() {
 }
 
 async function initializeToolbar() {
+    const problematicUrls = ['https://gaming.amazon.com'];
     removeToolbar()
     await getSettingsValues()
-    const isCurrentPageExcluded = settings.excludedUrls?.some((excludedUrl) => {
-        const pattern = new RegExp('^' + excludedUrl.replace(/\*/g, '.*') + '$')
-        return pattern.test(currentUrl)
-    })
+    const isCurrentPageExcluded = [...(settings.excludedUrls || []), ...problematicUrls].some((excludedUrl) => {
+        const pattern = new RegExp('^' + excludedUrl.replace(/\*/g, '.*') + '$');
+        return pattern.test(currentUrl);
+    });
     if (!isCurrentPageExcluded) {
         await appendToolbar()
         updateToolbarHeight()

@@ -629,7 +629,9 @@ function generateCreditsContainer() {
         creditContainer.appendChild(authorLink)
         creditContainer.appendChild(document.createTextNode(' on '))
         creditContainer.appendChild(photoLink)
+        creditContainer.id = 'credit-container'
         creditContainer.style.display = 'block'
+        document.body.appendChild(creditContainer)
     } else {
         console.error('No credit information found in local storage')
     }
