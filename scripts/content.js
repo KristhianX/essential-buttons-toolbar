@@ -24,7 +24,7 @@ const buttonsToDisable = [
     'undoCloseTabButton',
     'closeAllTabsButton',
     'closeOtherTabsButton',
-];
+]
 
 //
 //  Get settings
@@ -100,10 +100,10 @@ function appendToolbarAndResolve(resolve) {
         resolve()
     } else {
         toolbarIframe = document.createElement('iframe')
+        toolbarIframe.style =
+            'display: block !important; height: 0; position: fixed; z-index: 2147483647; margin: 0; padding: 0; min-height: unset; max-height: unset; min-width: unset; max-width: unset; border: 0; background: transparent; color-scheme: light; border-radius: 0'
         toolbarIframe.src = browser.runtime.getURL('pages/toolbar.html')
         toolbarIframe.setAttribute('id', 'essBtnsToolbar')
-        toolbarIframe.style =
-            'display: block !important; position: fixed; z-index: 2147483647; margin: 0; padding: 0; min-height: unset; max-height: unset; min-width: unset; max-width: unset; border: 0; background: transparent; color-scheme: light; border-radius: 0'
         document.body.insertAdjacentElement('afterend', toolbarIframe)
         function applyColorSchemeToIframe() {
             const prefersDarkScheme = window.matchMedia(
@@ -332,7 +332,12 @@ const buttonElements = {
         behavior: function () {
             this.style.background = '#6495edcc'
             setTimeout(() => {
-                const imgElement = this.querySelector('img')
+                const chevronUp = this.querySelector(
+                    `svg.chevron-up.${settings.iconTheme}`
+                )
+                const chevronDown = this.querySelector(
+                    `svg.chevron-down.${settings.iconTheme}`
+                )
                 closeMenu()
                 if (toolbarIframe.style.bottom === '0px') {
                     toolbarIframe.style.bottom = 'unset'
@@ -343,9 +348,8 @@ const buttonElements = {
                     menuDiv.style.bottom = '0'
                     toolbarDiv.style.borderWidth = '0 0 2px'
                     menuDiv.style.borderWidth = '0 0 2px'
-                    imgElement.src = browser.runtime.getURL(
-                        'icons/' + settings.iconTheme + '/chevronDown.svg'
-                    )
+                    if (chevronDown) chevronDown.style.display = 'flex'
+                    if (chevronUp) chevronUp.style.display = 'none'
                 } else {
                     toolbarIframe.style.top = 'unset'
                     toolbarIframe.style.bottom = '0px'
@@ -355,9 +359,8 @@ const buttonElements = {
                     menuDiv.style.bottom = 'unset'
                     toolbarDiv.style.borderWidth = '2px 0 0'
                     menuDiv.style.borderWidth = '2px 0 0'
-                    imgElement.src = browser.runtime.getURL(
-                        'icons/' + settings.iconTheme + '/chevronUp.svg'
-                    )
+                    if (chevronUp) chevronUp.style.display = 'flex'
+                    if (chevronDown) chevronDown.style.display = 'none'
                 }
                 this.style.background = 'transparent'
             }, 100)
@@ -529,87 +532,101 @@ const buttonElements = {
 }
 
 function toggleButtonVisibility() {
-    if (iframeHidden) return;
+    if (iframeHidden) return
+    const fragment = document.createDocumentFragment()
     settings.buttonOrder.forEach((buttonId) => {
-        const button = iframeDocument.querySelector(`[data-button="${buttonId}"]`);      
+        const button = iframeDocument.querySelector(
+            `[data-button="${buttonId}"]`
+        )
         if (button && settings.checkboxStates[buttonId]) {
-            if (isPrivate && buttonsToDisable.includes(buttonId)) return;
-            console.log(`Button ${buttonId} is enabled and visible.`);
-            button.style.display = "flex";
-
-            // Verify SVG selection and theme toggling
-            const svgs = button.querySelectorAll('svg');
-            svgs.forEach(svg => {
-                console.log(`Button ${buttonId}: Checking theme class - ${svg.classList}`);
-                if (svg.classList.contains(settings.iconTheme)) {
-                    svg.style.display = "inline";
-                    console.log(`Displaying SVG for theme: ${settings.iconTheme}`);
-                } else {
-                    svg.style.display = "none";
-                }
-            });
-
+            if (isPrivate && buttonsToDisable.includes(buttonId)) return
+            const svgs = button.querySelectorAll('svg')
             switch (buttonId) {
                 case 'duplicateTabButton':
-                    button.href = currentUrl;
-                    console.log(`Setting href for ${buttonId} to ${currentUrl}`);
+                    showSVG(svgs, settings.iconTheme)
+                    button.href = currentUrl
                     button.addEventListener('touchstart', function () {
                         if (currentUrl !== window.location.href) {
-                            currentUrl = window.location.href;
-                            button.href = currentUrl;
+                            currentUrl = window.location.href
+                            button.href = currentUrl
                         }
-                    });
-                    break;
-
+                    })
+                    break
                 case 'moveToolbarButton':
-                    const chevronSvg = button.querySelector(`.feather-${settings.defaultPosition === 'bottom' ? 'chevron-up' : 'chevron-down'}`);
-                    svgs.forEach(svg => svg.style.display = "none");
-                    chevronSvg.style.display = "inline";
-                    console.log(`Displaying chevron icon for position: ${settings.defaultPosition}`);
-                    break;
-
+                    const chevronClass =
+                        settings.defaultPosition === 'bottom'
+                            ? 'chevron-up'
+                            : 'chevron-down'
+                    showSVG(svgs, settings.iconTheme, chevronClass)
+                    break
                 case 'toggleDesktopSiteButton':
-                    browser.storage.local.get('isDesktopSite').then((result) => {
-                        const iconName = result.isDesktopSite ? 'smartphone' : 'toggleDesktopSiteButton';
-                        const targetSvg = button.querySelector(`.feather-${iconName}`);
-                        svgs.forEach(svg => svg.style.display = "none");
-                        targetSvg.style.display = "inline";
-                        console.log(`Toggled desktop site button icon to: ${iconName}`);
-                    });
-                    break;
-
+                    browser.storage.local
+                        .get('isDesktopSite')
+                        .then((result) => {
+                            const isDesktopSite = result.isDesktopSite
+                            const toggleClass = isDesktopSite
+                                ? 'smartphone'
+                                : 'toggleDesktopSiteButton'
+                            showSVG(svgs, settings.iconTheme, toggleClass)
+                        })
+                    break
                 default:
-                    console.log(`Standard button: ${buttonId} set with theme icons.`);
-                    break;
+                    showSVG(svgs, settings.iconTheme)
+                    break
             }
-            if (button) {
-                button.addEventListener('click', buttonElements[buttonId].behavior) 
+            button.style.display = 'flex'
+            fragment.appendChild(button)
+            if (buttonElements[buttonId] && buttonElements[buttonId].behavior) {
+                button.removeEventListener(
+                    'click',
+                    buttonElements[buttonId].behavior
+                )
+                button.addEventListener(
+                    'click',
+                    buttonElements[buttonId].behavior
+                )
                 buttonElements[buttonId].element = button
             }
-        } else {
-            console.log(`Button ${buttonId} not found or not enabled.`);
         }
-    });
+    })
+    iframeDocument.body.appendChild(fragment)
+}
+
+function showSVG(svgs, theme, additionalClass) {
+    svgs.forEach((svg) => {
+        if (
+            svg.classList.contains(theme) &&
+            (!additionalClass || svg.classList.contains(additionalClass))
+        ) {
+            svg.style.display = 'flex'
+        }
+    })
 }
 
 function appendButtons() {
-    if (iframeHidden) return;
-    let buttonsAppended = 0;
+    if (iframeHidden) return
+    let buttonsAppended = 0
+    const toolbarFragment = document.createDocumentFragment()
+    const menuFragment = document.createDocumentFragment()
     settings.buttonOrder.forEach((buttonId) => {
-        const button = iframeDocument.querySelector(`[data-button="${buttonId}"]`);
+        const button = iframeDocument.querySelector(
+            `[data-button="${buttonId}"]`
+        )
         if (button && settings.checkboxStates[buttonId]) {
             if (isPrivate && buttonsToDisable.includes(buttonId)) {
-                buttonsAppended++;
-                return;
+                buttonsAppended++
+                return
             }
             if (buttonsAppended < settings.buttonsInToolbarDiv) {
-                toolbarDiv.appendChild(button);
+                toolbarFragment.appendChild(button)
             } else {
-                menuDiv.appendChild(button);
+                menuFragment.appendChild(button)
             }
-            buttonsAppended++;
+            buttonsAppended++
         }
-    });
+    })
+    toolbarDiv.appendChild(toolbarFragment)
+    menuDiv.appendChild(menuFragment)
 }
 
 //

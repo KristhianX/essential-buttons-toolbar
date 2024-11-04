@@ -5,8 +5,8 @@ const settingsURL = browser.runtime.getURL('pages/settings.html')
 const blankURL = browser.runtime.getURL('pages/blank.html')
 const homepageURL = browser.runtime.getURL('pages/homepage.html')
 const defaultVariables = {
-    homepageURL: homepageURL,
-    newTabURL: homepageURL,
+    homepageURL: 'https://web.tabliss.io/',
+    newTabURL: 'https://web.tabliss.io/',
     toolbarHeight: 42,
     toolbarTransparency: 0.8,
     defaultPosition: 'bottom',
@@ -128,7 +128,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 if (!updatedEventTriggered) {
                     browser.tabs.create({ url: message.url })
                 }
-            }, 300)
+            }, 1000)
             updatedEventTriggered = false
             break
         case 'updateTab':

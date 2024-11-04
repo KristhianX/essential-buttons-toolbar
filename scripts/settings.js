@@ -33,8 +33,8 @@ browser.storage.local
             customUrlInput.value = window.location.href
         }
         if (result.installedOrUpdated === true) {
+            headerInfo.style.display = 'none'
             addonInfo.style.display = 'block'
-            //headerInfo.style.display = 'none'
             browser.storage.local.set({ installedOrUpdated: false })
         }
         if (result.disableUpdatesMsg) {
@@ -47,11 +47,7 @@ browser.storage.local
 // Load the values from storage
 //
 function loadValues() {
-    // Remove existing .drag-able and li elements
-    const dragableElements = document.querySelectorAll('.drag-able')
-    dragableElements.forEach((element) => {
-        element.remove()
-    })
+    // Remove existing li elements
     const liElements = excludedUrlsList.querySelectorAll('li')
     liElements.forEach((li) => {
         li.remove()
@@ -84,7 +80,7 @@ function loadValues() {
             defaultPositionSelect.value = result.defaultPosition
             iconThemeSelect.value = result.iconTheme
             hideMethodSelect.value = result.hideMethod
-            // Create and append the button elements based on the order
+            // Display and append the button elements based on the order
             if (result.buttonOrder && result.checkboxStates) {
                 let buttonsAppended = 0
                 result.buttonOrder.forEach((buttonId) => {
@@ -92,23 +88,28 @@ function loadValues() {
                         (button) => button.id === buttonId
                     )
                     if (buttonData) {
-                        const buttonElement = createButtonElement(
-                            buttonData,
-                            result.iconTheme,
-                            result.defaultPosition
-                        )
-                        // Append buttons based on the buttonsInToolbarDiv value
-                        if (
-                            result.checkboxStates[buttonId] &&
-                            buttonsAppended < result.buttonsInToolbarDiv
-                        ) {
-                            toolbarContainer.appendChild(buttonElement)
-                            buttonsAppended++
-                        } else if (result.checkboxStates[buttonId]) {
-                            menuContainer.appendChild(buttonElement)
-                        } else {
-                            availableContainer.appendChild(buttonElement)
-                        }
+                            const buttonElement = updateButtonIcon(
+                                buttonData,
+                                result.iconTheme,
+                                result.defaultPosition
+                            )
+                            if (buttonElement) {
+                                if (
+                                    result.checkboxStates[buttonId] &&
+                                    buttonsAppended < result.buttonsInToolbarDiv
+                                ) {
+                                    toolbarContainer.appendChild(buttonElement)
+                                    buttonsAppended++
+                                } else if (result.checkboxStates[buttonId]) {
+                                    menuContainer.appendChild(buttonElement)
+                                } else {
+                                    availableContainer.appendChild(
+                                        buttonElement
+                                    )
+                                }
+                            }
+                            buttonElement.style.display = 'inline-flex'
+                            buttonElement.classList.add('drag-able')
                     }
                 })
             }
@@ -180,10 +181,10 @@ buttonsSettingsCloseButton.addEventListener('click', () => {
 infoCardCloseButton.addEventListener('click', closeButtonInfo)
 addonInfoCloseButton.addEventListener('click', () => {
     addonInfo.style.display = 'none'
-    //headerInfo.style.display = 'inline-flex'
+    headerInfo.style.display = 'inline-flex'
 })
 headerInfo.addEventListener('click', () => {
-    //headerInfo.style.display = 'none'
+    headerInfo.style.display = 'none'
     addonInfo.style.display = 'block'
 })
 
@@ -202,16 +203,23 @@ function createTab(tabId, tabText) {
 
 function showTab(tabId) {
     addonInfo.style.display = 'none'
+    headerInfo.style.display = 'inline-flex'
     statusMessage.style.display = 'none'
     generalSettings.style.display = tabId === 'generalTab' ? 'block' : 'none'
     buttonsSettings.style.display = tabId === 'buttonsTab' ? 'block' : 'none'
     excludeSettings.style.display = tabId === 'excludeTab' ? 'block' : 'none'
     generalTab.style.borderColor =
-        tabId === 'generalTab' ? 'cornflowerblue' : '#2b2a33'
+        tabId === 'generalTab'
+            ? 'var(--primary-color)'
+            : 'var(--background-color)'
     buttonsTab.style.borderColor =
-        tabId === 'buttonsTab' ? 'cornflowerblue' : '#2b2a33'
+        tabId === 'buttonsTab'
+            ? 'var(--primary-color)'
+            : 'var(--background-color)'
     excludeTab.style.borderColor =
-        tabId === 'excludeTab' ? 'cornflowerblue' : '#2b2a33'
+        tabId === 'excludeTab'
+            ? 'var(--primary-color)'
+            : 'var(--background-color)'
 }
 
 createTab('generalTab', 'General')
@@ -255,28 +263,29 @@ const buttonsData = [
     { id: 'openWithButton', label: 'Open with' },
 ]
 
-function createButtonElement(buttonData, iconTheme, defaultPosition) {
-    const div = document.createElement('div')
-    div.classList.add('is-idle')
-    div.classList.add('drag-able')
-    div.setAttribute('id', buttonData.id)
-    const divIcon = document.createElement('img')
+function updateButtonIcon(buttonData, iconTheme, defaultPosition) {
+    const div = document.querySelector(`#${buttonData.id}`)
+    const svgs = div.querySelectorAll('svg')
     if (buttonData.id === 'moveToolbarButton') {
-        if (defaultPosition === 'bottom') {
-            divIcon.src = browser.runtime.getURL(
-                'icons/' + iconTheme + '/chevronUp.svg'
-            )
-        } else {
-            divIcon.src = browser.runtime.getURL(
-                'icons/' + iconTheme + '/chevronDown.svg'
-            )
-        }
+        svgs.forEach((svg) => {
+            const chevronClass =
+                defaultPosition === 'bottom'
+                    ? 'chevron-up'
+                    : 'chevron-down'
+            if (
+                svg.classList.contains(iconTheme) &&
+                svg.classList.contains(chevronClass)
+            ) {
+                svg.style.display = 'block'
+            }
+        })
     } else {
-        divIcon.src = browser.runtime.getURL(
-            'icons/' + iconTheme + '/' + buttonData.id + '.svg'
-        )
+        svgs.forEach((svg) => {
+            if (svg.classList.contains(iconTheme)) {
+                svg.style.display = 'block'
+            }
+        })
     }
-    div.appendChild(divIcon)
     return div
 }
 
@@ -412,10 +421,10 @@ generalSaveButton.addEventListener('click', () => {
         })
         .then(() => {
             statusMessage.style.display = 'block'
-            statusMessage.style.color = 'cornflowerblue'
+            statusMessage.style.color = 'var(--primary-color)'
             sendMessageToTabs()
             setTimeout(function () {
-                statusMessage.style.color = 'lavender'
+                statusMessage.style.color = 'var(--text-color)'
             }, 1000)
         })
 })
@@ -427,6 +436,9 @@ generalResetButton.addEventListener('click', () => {
     if (confirmed) {
         browser.runtime.sendMessage({ action: 'resetSettings' }, (response) => {
             if (response.success) {
+                document.querySelectorAll('.is-idle svg').forEach(svg => {
+                    svg.style.display = 'none';
+                });                
                 loadValues()
                 sendMessageToTabs()
             }
@@ -445,11 +457,11 @@ buttonsSaveButton.addEventListener('click', () => {
         })
         .then(() => {
             statusMessage.style.display = 'block'
-            statusMessage.style.color = 'cornflowerblue'
+            statusMessage.style.color = 'var(--primary-color)'
             sendMessageToTabs()
 
             setTimeout(function () {
-                statusMessage.style.color = 'lavender'
+                statusMessage.style.color = 'var(--text-color)'
             }, 1000)
         })
 })

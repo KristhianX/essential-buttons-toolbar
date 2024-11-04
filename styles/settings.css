@@ -54,7 +54,7 @@ body {
     display: inline-flex;
 }
 
-#headerInfo img {
+#headerInfo svg {
     width: 24px;
     height: 24px;
     margin: auto;
@@ -112,10 +112,26 @@ label {
 }
 
 .close-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     float: right;
     cursor: pointer;
     font-size: 20px;
-    color: var(--secondary-color);
+    background: var(--secondary-color);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+
+}
+
+.close-button::before {
+    content: "\00d7";
+    display: inline-block;
+    width: 16px;
+    color: var(--text-color);
 }
 
 input[type='checkbox']:checked {
@@ -246,7 +262,7 @@ li button {
 }
 
 #generalTab {
-    border-color: var(--box-background);
+    border-color: var(--primary-color);
     border-radius: 4px 0 0 4px;
 }
 
@@ -308,8 +324,11 @@ li button {
     padding: 0 10px 10px;
 }
 
+.is-idle {
+    display: none;
+}
+
 .drag-able {
-    display: inline-flex;
     height: 100%;
     aspect-ratio: 1;
     border-radius: 20%;
@@ -321,11 +340,12 @@ li button {
     margin: 10px 10px 0 0;
 }
 
-.drag-able img {
+.drag-able svg {
     height: 50%;
     aspect-ratio: 1;
     margin: auto;
     pointer-events: none;
+    display: none;
 }
 
 .is-draggable {

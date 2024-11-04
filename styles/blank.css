@@ -1,4 +1,14 @@
 :root {
-    background: #2b2a33;
+    --background-color: #1e1e30;       /* Darker, with a subtle hint of blue for depth */
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --background-color: #e0e0f3;    /* Softer, with a subtle lavender tint */
+    }
+}
+
+:root {
+    background: var(--background-color);
     height: 120vh;
 }
