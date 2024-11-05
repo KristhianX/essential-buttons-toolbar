@@ -2,6 +2,7 @@
     --toolbar-background: #2b2a33;
     --border-color: #45444c;
     --icon-color: #fbfbfe;
+    --primary-color: 100, 149, 237;
     color-scheme: dark;
     height: 100%;
 }
@@ -11,6 +12,7 @@
         --toolbar-background: #f9f9fb;
         --border-color: #f4f4f6;
         --icon-color: #15141a;
+        --primary-color: 70, 130, 180;
         color-scheme: light;
     }
 }
@@ -59,4 +61,8 @@ div {
     position: absolute;
     border-style: solid;
     border-color: var(--border-color);
+}
+
+.pressed {
+    background: rgba(var(--primary-color), .8);
 }

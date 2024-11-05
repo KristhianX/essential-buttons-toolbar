@@ -37,6 +37,7 @@ function getSettingsValues() {
             'toolbarHeight',
             'toolbarTransparency',
             'defaultPosition',
+            'theme',
             'iconTheme',
             'hideMethod',
             'excludedUrls',
@@ -106,12 +107,18 @@ function appendToolbarAndResolve(resolve) {
         toolbarIframe.setAttribute('id', 'essBtnsToolbar')
         document.body.insertAdjacentElement('afterend', toolbarIframe)
         function applyColorSchemeToIframe() {
-            const prefersDarkScheme = window.matchMedia(
-                '(prefers-color-scheme: dark)'
-            ).matches
-            toolbarIframe.style.colorScheme = prefersDarkScheme
-                ? 'dark'
-                : 'light'
+            if (settings.theme === 'light') {
+                toolbarIframe.style.colorScheme = 'light'
+            } else if (settings.theme === 'dark') {
+                toolbarIframe.style.colorScheme = 'dark'
+            } else {
+                const prefersDarkScheme = window.matchMedia(
+                    '(prefers-color-scheme: dark)'
+                ).matches
+                toolbarIframe.style.colorScheme = prefersDarkScheme
+                    ? 'dark'
+                    : 'light'
+            }
         }
         window
             .matchMedia('(prefers-color-scheme: dark)')
@@ -194,7 +201,7 @@ function closeMenu() {
         const currentToolbarHeight =
             toolbarIframe.getBoundingClientRect().height
         toolbarIframe.style.height = currentToolbarHeight / 2 + 'px'
-        menuButtonFlag.style.background = 'transparent'
+        menuButtonFlag.classList.remove('pressed')
     }
 }
 
@@ -249,9 +256,9 @@ const buttonElements = {
     homeButton: {
         behavior: function () {
             window.stop()
-            this.style.background = '#6495EDcc'
+            this.classList.add('pressed')
             setTimeout(() => {
-                this.style.background = 'transparent'
+                this.classList.remove('pressed')
                 closeMenu()
                 browser.runtime.sendMessage({
                     action: 'updateTab',
@@ -264,9 +271,9 @@ const buttonElements = {
         behavior: function (e) {
             e.preventDefault()
             let updatedUrl = window.location.href
-            this.style.background = '#6495edcc'
+            this.classList.add('pressed')
             setTimeout(() => {
-                this.style.background = 'transparent'
+                this.classList.remove('pressed')
                 closeMenu()
                 browser.runtime.sendMessage({
                     action: 'duplicateTab',
@@ -278,7 +285,7 @@ const buttonElements = {
     menuButton: {
         behavior: function () {
             if (menuDivHidden) {
-                this.style.background = '#6495edcc'
+                this.classList.add('pressed')
                 menuDivHidden = false
                 const currentToolbarHeight =
                     toolbarIframe.getBoundingClientRect().height
@@ -294,9 +301,9 @@ const buttonElements = {
     closeTabButton: {
         behavior: function () {
             window.stop()
-            this.style.background = '#6495edcc'
+            this.classList.add('pressed')
             setTimeout(() => {
-                this.style.background = 'transparent'
+                this.classList.remove('pressed')
                 browser.runtime.sendMessage({
                     action: 'closeTab',
                     url: settings.homepageURL,
@@ -306,9 +313,9 @@ const buttonElements = {
     },
     newTabButton: {
         behavior: function () {
-            this.style.background = '#6495edcc'
+            this.classList.add('pressed')
             setTimeout(() => {
-                this.style.background = 'transparent'
+                this.classList.remove('pressed')
                 closeMenu()
                 browser.runtime.sendMessage({
                     action: 'createTab',
@@ -319,9 +326,9 @@ const buttonElements = {
     },
     hideButton: {
         behavior: function () {
-            this.style.background = '#6495edcc'
+            this.classList.add('pressed')
             setTimeout(() => {
-                this.style.background = 'transparent'
+                this.classList.remove('pressed')
                 iframeHidden = true
                 closeMenu()
                 initializeToolbar()
@@ -330,7 +337,7 @@ const buttonElements = {
     },
     moveToolbarButton: {
         behavior: function () {
-            this.style.background = '#6495edcc'
+            this.classList.add('pressed')
             setTimeout(() => {
                 const chevronUp = this.querySelector(
                     `svg.chevron-up.${settings.iconTheme}`
@@ -362,13 +369,13 @@ const buttonElements = {
                     if (chevronUp) chevronUp.style.display = 'flex'
                     if (chevronDown) chevronDown.style.display = 'none'
                 }
-                this.style.background = 'transparent'
+                this.classList.remove('pressed')
             }, 100)
         },
     },
     // devToolsButton: {
     //     behavior: function () {
-    //         this.style.background = '#6495edcc'
+    //         this.classList.add('pressed')
     //         const bookmarkletCode = "(function () { var script = document.createElement('script'); script.src='https://cdn.jsdelivr.net/npm/eruda'; document.body.append(script); script.onload = function () { eruda.init(); } })();"
     //         const bookmarkletAnchor = document.createElement('a')
     //         bookmarkletAnchor.href = 'javascript:' + bookmarkletCode
@@ -376,7 +383,7 @@ const buttonElements = {
     //         bookmarkletAnchor.click()
     //         document.body.removeChild(bookmarkletAnchor)
     //         setTimeout(() => {
-    //             this.style.background = 'transparent'
+    //             this.classList.remove('pressed')
     //             //closeMenu()
     //         }, 100)
     //     },
@@ -384,9 +391,9 @@ const buttonElements = {
     goBackButton: {
         behavior: function () {
             window.stop()
-            this.style.background = '#6495edcc'
+            this.classList.add('pressed')
             setTimeout(() => {
-                this.style.background = 'transparent'
+                this.classList.remove('pressed')
                 closeMenu()
                 browser.runtime.sendMessage({ action: 'goBack' })
             }, 100)
@@ -395,9 +402,9 @@ const buttonElements = {
     goForwardButton: {
         behavior: function () {
             window.stop()
-            this.style.background = '#6495edcc'
+            this.classList.add('pressed')
             setTimeout(() => {
-                this.style.background = 'transparent'
+                this.classList.remove('pressed')
                 closeMenu()
                 browser.runtime.sendMessage({ action: 'goForward' })
             }, 100)
@@ -406,9 +413,9 @@ const buttonElements = {
     reloadButton: {
         behavior: function () {
             window.stop()
-            this.style.background = '#6495edcc'
+            this.classList.add('pressed')
             setTimeout(() => {
-                this.style.background = 'transparent'
+                this.classList.remove('pressed')
                 closeMenu()
                 browser.runtime.sendMessage({ action: 'reload' })
             }, 100)
@@ -416,9 +423,9 @@ const buttonElements = {
     },
     settingsButton: {
         behavior: function () {
-            this.style.background = '#6495edcc'
+            this.classList.add('pressed')
             setTimeout(() => {
-                this.style.background = 'transparent'
+                this.classList.remove('pressed')
                 closeMenu()
                 browser.runtime.sendMessage({ action: 'openSettings' })
             }, 100)
@@ -426,9 +433,9 @@ const buttonElements = {
     },
     undoCloseTabButton: {
         behavior: function () {
-            this.style.background = '#6495edcc'
+            this.classList.add('pressed')
             setTimeout(() => {
-                this.style.background = 'transparent'
+                this.classList.remove('pressed')
                 closeMenu()
                 browser.runtime.sendMessage({ action: 'undoCloseTab' })
             }, 100)
@@ -436,9 +443,9 @@ const buttonElements = {
     },
     scrollTopButton: {
         behavior: function () {
-            this.style.background = '#6495edcc'
+            this.classList.add('pressed')
             setTimeout(() => {
-                this.style.background = 'transparent'
+                this.classList.remove('pressed')
                 closeMenu()
                 window.scrollTo({ top: 0, behavior: 'smooth' })
             }, 100)
@@ -446,9 +453,9 @@ const buttonElements = {
     },
     scrollBottomButton: {
         behavior: function () {
-            this.style.background = '#6495edcc'
+            this.classList.add('pressed')
             setTimeout(() => {
-                this.style.background = 'transparent'
+                this.classList.remove('pressed')
                 closeMenu()
                 window.scrollTo({
                     top: document.documentElement.scrollHeight,
@@ -460,9 +467,9 @@ const buttonElements = {
     closeAllTabsButton: {
         behavior: function () {
             window.stop()
-            this.style.background = '#6495edcc'
+            this.classList.add('pressed')
             setTimeout(() => {
-                this.style.background = 'transparent'
+                this.classList.remove('pressed')
                 closeMenu()
                 browser.runtime.sendMessage({
                     action: 'closeAllTabs',
@@ -473,9 +480,9 @@ const buttonElements = {
     },
     closeOtherTabsButton: {
         behavior: function () {
-            this.style.background = '#6495edcc'
+            this.classList.add('pressed')
             setTimeout(() => {
-                this.style.background = 'transparent'
+                this.classList.remove('pressed')
                 closeMenu()
                 browser.runtime.sendMessage({ action: 'closeOtherTabs' })
             }, 100)
@@ -484,9 +491,9 @@ const buttonElements = {
     toggleDesktopSiteButton: {
         behavior: function () {
             window.stop()
-            this.style.background = '#6495edcc'
+            this.classList.add('pressed')
             setTimeout(() => {
-                this.style.background = 'transparent'
+                this.classList.remove('pressed')
                 closeMenu()
                 browser.storage.local.get('isDesktopSite').then((result) => {
                     if (!result.isDesktopSite) {
@@ -513,13 +520,13 @@ const buttonElements = {
     openWithButton: {
         behavior: function () {
             window.stop()
-            this.style.background = '#6495edcc'
+            this.classList.add('pressed')
             const currentUrl = window.location.href
             const scheme = currentUrl.split(':').shift()
             const shortUrl = currentUrl.split(':').pop()
             const intentUrl = `intent:${shortUrl}#Intent;action=android.intent.action.VIEW;scheme=${scheme};end`
             setTimeout(() => {
-                this.style.background = 'transparent'
+                this.classList.remove('pressed')
                 closeMenu()
                 browser.runtime.sendMessage({
                     action: 'updateTab',
@@ -736,13 +743,16 @@ function checkExistenceAndHeight() {
 }
 
 async function initializeToolbar() {
-    const problematicUrls = ['https://gaming.amazon.com'];
+    const problematicUrls = ['https://gaming.amazon.com']
     removeToolbar()
     await getSettingsValues()
-    const isCurrentPageExcluded = [...(settings.excludedUrls || []), ...problematicUrls].some((excludedUrl) => {
-        const pattern = new RegExp('^' + excludedUrl.replace(/\*/g, '.*') + '$');
-        return pattern.test(currentUrl);
-    });
+    const isCurrentPageExcluded = [
+        ...(settings.excludedUrls || []),
+        ...problematicUrls,
+    ].some((excludedUrl) => {
+        const pattern = new RegExp('^' + excludedUrl.replace(/\*/g, '.*') + '$')
+        return pattern.test(currentUrl)
+    })
     if (!isCurrentPageExcluded) {
         await appendToolbar()
         updateToolbarHeight()

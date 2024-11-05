@@ -3,23 +3,41 @@
 }
 
 :root {
-    --background-color: #1e1e30;       /* Darker, with a subtle hint of blue for depth */
-    --box-background: #2a2939;         /* A bit deeper to match background tones */
-    --text-color: #dcdce4;             /* Soft off-white for smoother readability */
-    --primary-color: #6495ed;          /* Lighter blue that pairs well with dark tones */
-    --secondary-color: #ff6347;        /* Slightly warmer tomato color for accents */
-    --link-color: #87a2d6;             /* Calmer blue tone for links */
+    --background-color: #1e1e30;
+    --box-background: #2a2939;
+    --text-color: #dcdce4;
+    --primary-color: #6495ed;
+    --secondary-color: #ff6347;
+    --link-color: #87a2d6;
 }
 
 @media (prefers-color-scheme: light) {
     :root {
-        --background-color: #e0e0f3;    /* Softer, with a subtle lavender tint */
-        --box-background: #f2f2f9;      /* Lightened for a cleaner, airy feel */
-        --text-color: #18171f;          /* Deepened for better readability on light */
-        --primary-color: #4682b4;       /* More muted blue for a refined look */
-        --secondary-color: #dc143c;     /* Slightly cooler crimson for accents */
-        --link-color: #4169e1;          /* Royal blue for clarity in links */
+        --background-color: #e0e0f3;
+        --box-background: #f2f2f9;
+        --text-color: #18171f;
+        --primary-color: #4682b4;
+        --secondary-color: #dc143c;
+        --link-color: #4169e1;
     }
+}
+
+.dark-theme {
+    --background-color: #1e1e30;
+    --box-background: #2a2939;
+    --text-color: #dcdce4;
+    --primary-color: #6495ed;
+    --secondary-color: #ff6347;
+    --link-color: #87a2d6;
+}
+
+.light-theme {
+    --background-color: #e0e0f3;
+    --box-background: #f2f2f9;
+    --text-color: #18171f;
+    --primary-color: #4682b4;
+    --secondary-color: #dc143c;
+    --link-color: #4169e1;
 }
 
 :root {
@@ -124,11 +142,10 @@ label {
     height: 24px;
     border-radius: 50%;
     cursor: pointer;
-
 }
 
 .close-button::before {
-    content: "\00d7";
+    content: '\00d7';
     display: inline-block;
     width: 16px;
     color: var(--text-color);

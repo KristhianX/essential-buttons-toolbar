@@ -18,6 +18,17 @@ let pointerStartY
 let pointerDeltaX
 let pointerDeltaY
 
+function overrideTheme(theme) {
+    document.documentElement.classList.toggle('dark-theme', theme === 'dark');
+    document.documentElement.classList.toggle('light-theme', theme === 'light');
+}
+
+function getTheme() {
+    browser.storage.sync.get('theme').then((result) => {
+        overrideTheme(result.theme)
+    })
+}
+
 function getTopSites() {
     return browser.storage.local
         .get('topSites')
@@ -667,6 +678,7 @@ function createPreferencesPrompt() {
 }
 
 setWallpaperFromLocal()
+getTheme()
 
 addTopSiteButton.addEventListener('click', createPrompt)
 removeTopSitesButton.addEventListener('click', removeTopSiteElements)

@@ -11,6 +11,7 @@ const toolbarTransparencyRangeInput = document.getElementById(
     'toolbarTransparency'
 )
 const defaultPositionSelect = document.getElementById('defaultPosition')
+const themeSelect =document.getElementById('theme')
 const iconThemeSelect = document.getElementById('iconTheme')
 const hideMethodSelect = document.getElementById('hideMethod')
 const customUrlInput = document.getElementById('customUrl')
@@ -58,6 +59,7 @@ function loadValues() {
             'newTabURL',
             'toolbarHeight',
             'defaultPosition',
+            'theme',
             'iconTheme',
             'hideMethod',
             'excludedUrls',
@@ -78,8 +80,10 @@ function loadValues() {
             currentValueTransparency.textContent = result.toolbarTransparency
             toolbarTransparencyRangeInput.value = result.toolbarTransparency
             defaultPositionSelect.value = result.defaultPosition
+            themeSelect.value = result.theme
             iconThemeSelect.value = result.iconTheme
             hideMethodSelect.value = result.hideMethod
+            overrideTheme(result.theme)
             // Display and append the button elements based on the order
             if (result.buttonOrder && result.checkboxStates) {
                 let buttonsAppended = 0
@@ -407,6 +411,7 @@ generalSaveButton.addEventListener('click', () => {
     const toolbarHeight = toolbarHeightRangeInput.value
     const toolbarTransparency = toolbarTransparencyRangeInput.value
     const defaultPosition = defaultPositionSelect.value
+    const theme = themeSelect.value
     const iconTheme = iconThemeSelect.value
     const hideMethod = hideMethodSelect.value
     browser.storage.sync
@@ -416,10 +421,12 @@ generalSaveButton.addEventListener('click', () => {
             toolbarHeight: toolbarHeight,
             toolbarTransparency: toolbarTransparency,
             defaultPosition: defaultPosition,
+            theme: theme,
             iconTheme: iconTheme,
             hideMethod: hideMethod,
         })
         .then(() => {
+            overrideTheme(theme)
             statusMessage.style.display = 'block'
             statusMessage.style.color = 'var(--primary-color)'
             sendMessageToTabs()
@@ -475,6 +482,11 @@ function sendMessageToTabs() {
             }
         }
     )
+}
+
+function overrideTheme(theme) {
+    document.documentElement.classList.toggle('dark-theme', theme === 'dark');
+    document.documentElement.classList.toggle('light-theme', theme === 'light');
 }
 
 loadValues()
