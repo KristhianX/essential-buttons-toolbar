@@ -15,6 +15,7 @@ let menuButtonFlag
 let hideMethodInUse
 let isThrottled
 let prevScrollPos
+let cachedScrollableElement = null
 const settings = {}
 const isPrivate = browser.extension.inIncognitoContext
 const buttonsToDisable = [
@@ -447,7 +448,7 @@ const buttonElements = {
             setTimeout(() => {
                 this.classList.remove('pressed')
                 closeMenu()
-                window.scrollTo({ top: 0, behavior: 'smooth' })
+                getScrollableElement().scrollTo({ top: 0, behavior: 'smooth' })
             }, 100)
         },
     },
@@ -457,8 +458,9 @@ const buttonElements = {
             setTimeout(() => {
                 this.classList.remove('pressed')
                 closeMenu()
-                window.scrollTo({
-                    top: document.documentElement.scrollHeight,
+                const element = getScrollableElement()
+                element.scrollTo({
+                    top: element.scrollHeight,
                     behavior: 'smooth',
                 })
             }, 100)
@@ -634,6 +636,34 @@ function appendButtons() {
     })
     toolbarDiv.appendChild(toolbarFragment)
     menuDiv.appendChild(menuFragment)
+}
+
+function findScrollableElement() {
+    const candidates = document.querySelectorAll('main, div, section')
+    const viewportWidth = document.documentElement.clientWidth
+    const viewportHeight = document.documentElement.clientHeight
+    if (document.documentElement.scrollHeight > viewportHeight) {
+        return document.documentElement
+    }
+    if (document.body.scrollHeight > document.body.clientHeight) {
+        return document.body
+    }
+    for (const el of candidates) {
+        if (
+            el.scrollHeight > viewportHeight &&
+            el.clientWidth > viewportWidth * 0.8
+        ) {
+            return el
+        }
+    }
+    return document.documentElement
+}
+
+function getScrollableElement() {
+    if (!cachedScrollableElement) {
+        cachedScrollableElement = findScrollableElement()
+    }
+    return cachedScrollableElement
 }
 
 //
