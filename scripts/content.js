@@ -642,11 +642,9 @@ function findScrollableElement() {
     const viewportWidth = document.documentElement.clientWidth
     const viewportHeight = document.documentElement.clientHeight
     if (document.documentElement.scrollHeight > viewportHeight) {
-        console.log('documentElement detected.')
         return document.documentElement
     }
     if (document.body.scrollHeight > document.body.clientHeight) {
-        console.log('document.body detected.')
         return document.body
     }
     for (const el of candidates) {
@@ -654,11 +652,9 @@ function findScrollableElement() {
             el.scrollHeight > viewportHeight * 0.95 &&
             el.clientWidth > viewportWidth * 0.8 && getComputedStyle(el).overflowY !== 'hidden'
         ) {
-            console.log(`el id=${el.id} class=${el.className}.`)
             return el
         }
     }
-    console.log('nothing detected.')
     return document.documentElement
 }
 

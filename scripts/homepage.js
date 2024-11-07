@@ -502,7 +502,6 @@ function applyNewItemsOrder() {
 function saveWallpaperToLocal(wallpaperBlob) {
     const reader = new FileReader()
     reader.onloadend = () => {
-        console.log('Saving wallpaper data to local storage')
         browser.storage.local
             .set({ wallpaperData: reader.result })
             .catch((error) => {
@@ -519,31 +518,24 @@ function saveWallpaperToLocal(wallpaperBlob) {
 }
 
 function setWallpaperFromLocal() {
-    console.log('Attempting to set wallpaper from local storage')
     browser.storage.local
         .get(['wallpaperData', 'wallpaperSetDate'])
         .then((result) => {
-            console.log('Local storage wallpaper data retrieved:', result)
             if (
                 result.wallpaperData &&
                 result.wallpaperSetDate === getCurrentDate()
             ) {
-                console.log('Setting background from local storage data')
                 backgroundContainer.style.backgroundImage = `url('${result.wallpaperData}')`
 
                 // Check if credit info is in localStorage
                 if (!localStorage.getItem('creditInfo')) {
                     // If not, set a default credit or fetch new wallpaper
-                    console.log(
-                        'No credit info found in local storage, fetching new wallpaper'
-                    )
                     getWallpaper('landscape')
                 } else {
                     // Generate credits container if info exists
                     generateCreditsContainer()
                 }
             } else {
-                console.log('Fetching new wallpaper')
                 getWallpaper('landscape')
                 browser.storage.local
                     .set({
@@ -571,8 +563,6 @@ async function getWallpaper(query) {
     )}`
 
     try {
-        console.log('Fetching wallpaper data from API:', apiUrl)
-
         // Fetch wallpaper data
         const response = await fetch(apiUrl)
         if (!response.ok) {
@@ -582,18 +572,15 @@ async function getWallpaper(query) {
         }
 
         const data = await response.json()
-        console.log('Received data:', data)
 
         // Check if data contains necessary fields
         if (!data || !data.imageUrl) {
-            console.error('No image found in the response data')
             return
         }
 
         const { imageUrl, photoUrl, authorUrl, authorName } = data
 
         // Fetch the wallpaper image blob
-        console.log('Fetching wallpaper image from:', imageUrl)
         const imageResponse = await fetch(imageUrl)
         if (!imageResponse.ok) {
             throw new Error(`Image fetch failed: ${imageResponse.statusText}`)
@@ -602,23 +589,17 @@ async function getWallpaper(query) {
         const wallpaperBlob = await imageResponse.blob()
 
         // Save the wallpaper locally
-        console.log('Saving wallpaper locally...')
         saveWallpaperToLocal(wallpaperBlob)
 
         const objectUrl = URL.createObjectURL(wallpaperBlob)
         backgroundContainer.style.backgroundImage = `url('${objectUrl}')`
-        console.log('Wallpaper applied to background')
 
         // Store credit information in local storage
         const creditInfo = { authorUrl, authorName, photoUrl }
-        console.log('Storing credit information:', creditInfo)
         localStorage.setItem('creditInfo', JSON.stringify(creditInfo))
 
         // Generate credits container
         generateCreditsContainer()
-        console.log('Credits container generated')
-    } catch (error) {
-        console.error('Error fetching wallpaper:', error)
     }
 }
 
@@ -626,7 +607,6 @@ async function getWallpaper(query) {
 function generateCreditsContainer() {
     const creditInfo = JSON.parse(localStorage.getItem('creditInfo'))
     if (creditInfo) {
-        console.log('Generating credits container with:', creditInfo)
         const creditContainer = document.createElement('div')
         const authorLink = document.createElement('a')
         authorLink.href = creditInfo.authorUrl
@@ -649,14 +629,11 @@ function generateCreditsContainer() {
 }
 
 function removeWallpaperFromLocal() {
-    console.log('Removing wallpaper from local storage')
     browser.storage.local
         .remove('wallpaperData')
         .then(() => {
-            console.log('Local wallpaper data removed, fetching new wallpaper')
             getWallpaper('landscape')
         })
-        .catch((error) => console.error('Error removing wallpaper:', error))
 }
 
 //
