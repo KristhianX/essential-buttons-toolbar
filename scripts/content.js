@@ -152,7 +152,7 @@ function styleToolbarDivs() {
         menuDiv.style.borderWidth = '2px 0 0'
     }
     if (isPrivate) {
-        toolbarDiv.style.backgroundColor = `rgba(109, 65, 148, ${settings.toolbarTransparency})`
+        toolbarDiv.style.backgroundColor = `rgba(var(--private-background), ${settings.toolbarTransparency})`
     }
 }
 

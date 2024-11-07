@@ -600,6 +600,8 @@ async function getWallpaper(query) {
 
         // Generate credits container
         generateCreditsContainer()
+    } catch (error) {
+        console.error('Error fetching wallpaper:', error)
     }
 }
 

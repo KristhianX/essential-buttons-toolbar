@@ -1,5 +1,6 @@
 :root {
     --toolbar-background: #2b2a33;
+    --private-background: 50, 28, 100;
     --border-color: #45444c;
     --icon-color: #fbfbfe;
     --primary-color: 100, 149, 237;
@@ -10,6 +11,7 @@
 @media (prefers-color-scheme: light) {
     :root {
         --toolbar-background: #f9f9fb;
+        --private-background: 207, 174, 233;
         --border-color: #f4f4f6;
         --icon-color: #15141a;
         --primary-color: 70, 130, 180;
