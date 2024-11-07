@@ -15,7 +15,6 @@ let menuButtonFlag
 let hideMethodInUse
 let isThrottled
 let prevScrollPos
-let cachedScrollableElement = null
 const settings = {}
 const isPrivate = browser.extension.inIncognitoContext
 const buttonsToDisable = [
@@ -448,7 +447,7 @@ const buttonElements = {
             setTimeout(() => {
                 this.classList.remove('pressed')
                 closeMenu()
-                getScrollableElement().scrollTo({ top: 0, behavior: 'smooth' })
+                findScrollableElement().scrollTo({ top: 0, behavior: 'smooth' })
             }, 100)
         },
     },
@@ -458,7 +457,7 @@ const buttonElements = {
             setTimeout(() => {
                 this.classList.remove('pressed')
                 closeMenu()
-                const element = getScrollableElement()
+                const element = findScrollableElement()
                 element.scrollTo({
                     top: element.scrollHeight,
                     behavior: 'smooth',
@@ -643,27 +642,24 @@ function findScrollableElement() {
     const viewportWidth = document.documentElement.clientWidth
     const viewportHeight = document.documentElement.clientHeight
     if (document.documentElement.scrollHeight > viewportHeight) {
+        console.log('documentElement detected.')
         return document.documentElement
     }
     if (document.body.scrollHeight > document.body.clientHeight) {
+        console.log('document.body detected.')
         return document.body
     }
     for (const el of candidates) {
         if (
-            el.scrollHeight > viewportHeight &&
-            el.clientWidth > viewportWidth * 0.8
+            el.scrollHeight > viewportHeight * 0.95 &&
+            el.clientWidth > viewportWidth * 0.8 && getComputedStyle(el).overflowY !== 'hidden'
         ) {
+            console.log(`el id=${el.id} class=${el.className}.`)
             return el
         }
     }
+    console.log('nothing detected.')
     return document.documentElement
-}
-
-function getScrollableElement() {
-    if (!cachedScrollableElement) {
-        cachedScrollableElement = findScrollableElement()
-    }
-    return cachedScrollableElement
 }
 
 //
