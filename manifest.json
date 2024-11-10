@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Essential Buttons Toolbar",
-    "version": "1.8.1",
+    "version": "1.8.2",
     "permissions": [
         "*://*/*",
         "activeTab",
@@ -10,7 +10,7 @@
         "webRequest",
         "webRequestBlocking"
     ],
-    "description": "Adds a toolbar with essential buttons: Homepage, Duplicate Tab, New tab, Close tab and more.",
+    "description": "Inserts a toolbar with essential buttons: Homepage, Duplicate Tab, New tab, Close tab and more.",
     "icons": {
         "48": "icons/home.svg"
     },
