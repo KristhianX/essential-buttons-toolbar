@@ -36,6 +36,7 @@ function getSettingsValues() {
             'newTabURL',
             'toolbarHeight',
             'toolbarTransparency',
+            'topBottomMargin',
             'defaultPosition',
             'theme',
             'iconTheme',
@@ -45,9 +46,9 @@ function getSettingsValues() {
             'buttonOrder',
             'buttonsInToolbarDiv',
         ]
-        browser.storage.sync.get(keys).then((result) => {
+        browser.storage.sync.get(keys).then((result) => {            
             const nonExcludedKeys = keys.filter((key) => key !== 'excludedUrls')
-            const isEmpty = nonExcludedKeys.some((key) => !result[key])
+            const isEmpty = nonExcludedKeys.some((key) => result[key] === undefined || result[key] === null);
             if (isEmpty) {
                 return getSettingsValues()
             }
@@ -176,6 +177,10 @@ function updateToolbarHeight() {
         settings.defaultPosition === 'top'
             ? (toolbarIframe.style.top = '0px')
             : (toolbarIframe.style.bottom = '0px')
+        if (settings.topBottomMargin !== 0) {
+            const margin = Math.floor(settings.topBottomMargin / window.visualViewport.scale)
+            toolbarIframe.style.margin = `${margin}px 0`
+        }
     }
 }
 

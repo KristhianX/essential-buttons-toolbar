@@ -39,9 +39,7 @@
             <div>
                 <h3>New in this version</h3>
                 <p style="text-align: left; padding: 0 10px">
-                    <b
-                        >- Behavior improvements.</b
-                    >
+                    <b>- Behavior improvements.</b>
                     <br />
                     Improving the 'scroll top' and 'scroll bottom' buttons.
                     <br />
@@ -165,6 +163,16 @@
                 step="0.1"
             />
             <br />
+            <label for="topBottomMargin">Top/Bottom margin:</label>
+            <span class="currentValue" id="currentValueTBMargin"></span>
+            <input
+                type="range"
+                id="topBottomMargin"
+                min="0"
+                max="100"
+                step="2"
+            />
+            <br />
             <label for="defaultPosition">Toolbar position:</label>
             <select id="defaultPosition">
                 <option value="top">Top</option>
@@ -218,9 +226,10 @@
                     ></label
                 >
                 <div class="message-box" id="buttonsSettingsInfo">
-                    <span class="close-button" id="buttonsSettingsCloseButton"
-                        ></span
-                    >
+                    <span
+                        class="close-button"
+                        id="buttonsSettingsCloseButton"
+                    ></span>
                     <p>
                         Drag and drop the buttons to your desired position.
                         <br /><br />
@@ -850,10 +859,7 @@
                             />
                         </svg>
                     </div>
-                    <div
-                        id="toggleDesktopSiteButton"
-                        class="is-idle"
-                    >
+                    <div id="toggleDesktopSiteButton" class="is-idle">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="24"

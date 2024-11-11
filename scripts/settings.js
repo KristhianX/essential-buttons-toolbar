@@ -10,6 +10,7 @@ const toolbarHeightRangeInput = document.getElementById('toolbarHeight')
 const toolbarTransparencyRangeInput = document.getElementById(
     'toolbarTransparency'
 )
+const topBottomMarginRangeInput = document.getElementById('topBottomMargin')
 const defaultPositionSelect = document.getElementById('defaultPosition')
 const themeSelect =document.getElementById('theme')
 const iconThemeSelect = document.getElementById('iconTheme')
@@ -58,6 +59,7 @@ function loadValues() {
             'homepageURL',
             'newTabURL',
             'toolbarHeight',
+            'topBottomMargin',
             'defaultPosition',
             'theme',
             'iconTheme',
@@ -79,6 +81,8 @@ function loadValues() {
                 result.toolbarHeight / window.visualViewport.scale + 'px'
             currentValueTransparency.textContent = result.toolbarTransparency
             toolbarTransparencyRangeInput.value = result.toolbarTransparency
+            currentValueTBMargin.textContent = result.topBottomMargin
+            topBottomMarginRangeInput.value = result.topBottomMargin
             defaultPositionSelect.value = result.defaultPosition
             themeSelect.value = result.theme
             iconThemeSelect.value = result.iconTheme
@@ -241,6 +245,11 @@ toolbarHeightRangeInput.addEventListener('input', function () {
 toolbarTransparencyRangeInput.addEventListener('input', function () {
     const currentValue = toolbarTransparencyRangeInput.value
     currentValueTransparency.textContent = currentValue
+})
+
+topBottomMarginRangeInput.addEventListener('input', function () {
+    const currentValue = topBottomMarginRangeInput.value
+    currentValueTBMargin.textContent = currentValue
 })
 
 //
@@ -410,6 +419,7 @@ generalSaveButton.addEventListener('click', () => {
     const newTabURL = newTabURLInput.value
     const toolbarHeight = toolbarHeightRangeInput.value
     const toolbarTransparency = toolbarTransparencyRangeInput.value
+    const topBottomMargin = topBottomMarginRangeInput.value
     const defaultPosition = defaultPositionSelect.value
     const theme = themeSelect.value
     const iconTheme = iconThemeSelect.value
@@ -420,6 +430,7 @@ generalSaveButton.addEventListener('click', () => {
             newTabURL: newTabURL,
             toolbarHeight: toolbarHeight,
             toolbarTransparency: toolbarTransparency,
+            topBottomMargin: topBottomMargin,
             defaultPosition: defaultPosition,
             theme: theme,
             iconTheme: iconTheme,
