@@ -21,19 +21,15 @@
 
 body {
     margin: 0;
-    height: 100%;
+    /* height: 100%; */
 }
 
 #toolbar {
-    height: 100%;
     display: flex;
-    background-color: var(--toolbar-background);
 }
 
 #menu {
-    height: 50%;
     display: none;
-    background-color: var(--toolbar-background);
 }
 
 .toolbar-button {
@@ -55,14 +51,25 @@ body {
 }
 
 div {
-    padding: 0 4%;
     box-sizing: border-box;
     justify-content: space-between;
-    min-width: 100%;
-    width: fit-content;
     position: absolute;
     border-style: solid;
     border-color: var(--border-color);
+    background-color: var(--toolbar-background);
+}
+
+.horizontal {
+    padding: 0 4%;
+    min-width: 100%;
+    width: fit-content;
+}
+
+.vertical {
+    padding: 20px 0;
+    min-height: 100%;
+    height: fit-content;
+    flex-direction: column;
 }
 
 .pressed {

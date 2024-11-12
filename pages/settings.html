@@ -39,15 +39,26 @@
             <div>
                 <h3>New in this version</h3>
                 <p style="text-align: left; padding: 0 10px">
-                    <b>- Added top/bottom margin option.</b>
+                    <b>- Added 'Gap from the edge' option.</b>
                     <br />
-                    Set the toolbar's distance from the top or bottom of the page.
+                    Set the toolbar's distance from the edge of the page.
                     <br />
                     For more details, please see
                     <a
                         href="https://github.com/KristhianX/essential-buttons-toolbar/issues/39"
                         target="_blank"
                         >this issue.</a
+                    >
+                    <br /><br />
+                    <b>- Added 'Left' and 'Right' to 'Toolbar position' option.</b>
+                    <br />
+                    Now you can also place the toolbar vertically on the left or right side of the page.
+                    <br />
+                    For more details, please see
+                    <a
+                        href="https://github.com/KristhianX/essential-buttons-toolbar/issues/40"
+                        target="_blank"
+                        >this request.</a
                     >
                     <br /><br />
                     Thank you all for the support! Enjoy the update!
@@ -163,7 +174,7 @@
                 step="0.1"
             />
             <br />
-            <label for="topBottomMargin">Top/Bottom margin:</label>
+            <label for="topBottomMargin">Gap from the edge:</label>
             <span class="currentValue" id="currentValueTBMargin"></span>
             <input
                 type="range"
@@ -177,6 +188,8 @@
             <select id="defaultPosition">
                 <option value="top">Top</option>
                 <option value="bottom">Bottom</option>
+                <option value="left">Left</option>
+                <option value="right">Right</option>
             </select>
             <label for="theme">Theme:</label>
             <select id="theme">

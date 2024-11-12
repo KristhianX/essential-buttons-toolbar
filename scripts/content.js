@@ -46,9 +46,11 @@ function getSettingsValues() {
             'buttonOrder',
             'buttonsInToolbarDiv',
         ]
-        browser.storage.sync.get(keys).then((result) => {            
+        browser.storage.sync.get(keys).then((result) => {
             const nonExcludedKeys = keys.filter((key) => key !== 'excludedUrls')
-            const isEmpty = nonExcludedKeys.some((key) => result[key] === undefined || result[key] === null);
+            const isEmpty = nonExcludedKeys.some(
+                (key) => result[key] === undefined || result[key] === null
+            )
             if (isEmpty) {
                 return getSettingsValues()
             }
@@ -142,15 +144,41 @@ function appendToolbarAndResolve(resolve) {
 function styleToolbarDivs() {
     toolbarDiv.style.opacity = settings.toolbarTransparency
     if (settings.defaultPosition === 'top') {
+        toolbarDiv.classList.add('horizontal')
+        menuDiv.classList.add('horizontal')
+        toolbarDiv.style.height = '100%'
+        menuDiv.style.height = '50%'
         toolbarDiv.style.top = '0'
         menuDiv.style.bottom = '0'
         toolbarDiv.style.borderWidth = '0 0 2px'
         menuDiv.style.borderWidth = '0 0 2px'
-    } else {
+    } else if (settings.defaultPosition === 'bottom') {
+        toolbarDiv.classList.add('horizontal')
+        menuDiv.classList.add('horizontal')
+        toolbarDiv.style.height = '100%'
+        menuDiv.style.height = '50%'
         toolbarDiv.style.bottom = '0'
         menuDiv.style.top = '0'
         toolbarDiv.style.borderWidth = '2px 0 0'
         menuDiv.style.borderWidth = '2px 0 0'
+    } else if (settings.defaultPosition === 'left') {
+        toolbarDiv.classList.add('vertical')
+        menuDiv.classList.add('vertical')
+        toolbarDiv.style.width = '100%'
+        menuDiv.style.width = '50%'
+        toolbarDiv.style.left = '0'
+        menuDiv.style.right = '0'
+        toolbarDiv.style.borderWidth = '0 2px 0 0'
+        menuDiv.style.borderWidth = '0 2px 0 0'
+    } else {
+        toolbarDiv.classList.add('vertical')
+        menuDiv.classList.add('vertical')
+        toolbarDiv.style.width = '100%'
+        menuDiv.style.width = '50%'
+        toolbarDiv.style.right = '0'
+        menuDiv.style.left = '0'
+        toolbarDiv.style.borderWidth = '0 0 0 2px'
+        menuDiv.style.borderWidth = '0 0 0 2px'
     }
     if (isPrivate) {
         toolbarDiv.style.backgroundColor = `rgba(var(--private-background), ${settings.toolbarTransparency})`
@@ -171,15 +199,35 @@ function updateToolbarHeight() {
                   visualViewport.height - calculatedHeight * 2.5
               }px`)
     } else {
-        toolbarIframe.style.height = `${calculatedHeight}px`
-        toolbarIframe.style.width = '100%'
-        toolbarIframe.style.left = '0'
-        settings.defaultPosition === 'top'
-            ? (toolbarIframe.style.top = '0px')
-            : (toolbarIframe.style.bottom = '0px')
-        if (settings.topBottomMargin !== 0) {
-            const margin = Math.floor(settings.topBottomMargin / window.visualViewport.scale)
-            toolbarIframe.style.margin = `${margin}px 0`
+        if (
+            settings.defaultPosition === 'top' ||
+            settings.defaultPosition === 'bottom'
+        ) {
+            toolbarIframe.style.height = `${calculatedHeight}px`
+            toolbarIframe.style.width = '100%'
+            toolbarIframe.style.left = '0'
+            settings.defaultPosition === 'top'
+                ? (toolbarIframe.style.top = '0px')
+                : (toolbarIframe.style.bottom = '0px')
+            if (settings.topBottomMargin !== 0) {
+                const margin = Math.floor(
+                    settings.topBottomMargin / window.visualViewport.scale
+                )
+                toolbarIframe.style.margin = `${margin}px 0`
+            }
+        } else {
+            toolbarIframe.style.width = `${calculatedHeight}px`
+            toolbarIframe.style.height = '100%'
+            toolbarIframe.style.top = '0'
+            settings.defaultPosition === 'left'
+                ? (toolbarIframe.style.left = '0px')
+                : (toolbarIframe.style.right = '0px')
+            if (settings.topBottomMargin !== 0) {
+                const margin = Math.floor(
+                    settings.topBottomMargin / window.visualViewport.scale
+                )
+                toolbarIframe.style.margin = `0 ${margin}px`
+            }
         }
     }
 }
@@ -202,10 +250,17 @@ function closeMenu() {
     if (!menuDivHidden) {
         menuDivHidden = true
         menuDiv.style.display = 'none'
-        toolbarDiv.style.height = '100%'
-        const currentToolbarHeight =
-            toolbarIframe.getBoundingClientRect().height
-        toolbarIframe.style.height = currentToolbarHeight / 2 + 'px'
+        if (menuDiv.classList.contains('horizontal')) {
+            toolbarDiv.style.height = '100%'
+            const currentToolbarHeight =
+                toolbarIframe.getBoundingClientRect().height
+            toolbarIframe.style.height = currentToolbarHeight / 2 + 'px'
+        } else {
+            toolbarDiv.style.width = '100%'
+            const currentToolbarWidth =
+                toolbarIframe.getBoundingClientRect().width
+            toolbarIframe.style.width = currentToolbarWidth / 2 + 'px'
+        }
         menuButtonFlag.classList.remove('pressed')
     }
 }
@@ -292,10 +347,17 @@ const buttonElements = {
             if (menuDivHidden) {
                 this.classList.add('pressed')
                 menuDivHidden = false
-                const currentToolbarHeight =
-                    toolbarIframe.getBoundingClientRect().height
-                toolbarIframe.style.height = currentToolbarHeight * 2 + 'px'
-                toolbarDiv.style.height = '50%'
+                if (menuDiv.classList.contains('horizontal')) {
+                    const currentToolbarHeight =
+                        toolbarIframe.getBoundingClientRect().height
+                    toolbarIframe.style.height = currentToolbarHeight * 2 + 'px'
+                    toolbarDiv.style.height = '50%'
+                } else {
+                    const currentToolbarWidth =
+                        toolbarIframe.getBoundingClientRect().width
+                    toolbarIframe.style.width = currentToolbarWidth * 2 + 'px'
+                    toolbarDiv.style.width = '50%'
+                }
                 menuDiv.style.display = 'flex'
                 menuButtonFlag = this
             } else {
@@ -347,11 +409,11 @@ const buttonElements = {
                 const chevronUp = this.querySelector(
                     `svg.chevron-up.${settings.iconTheme}`
                 )
-                const chevronDown = this.querySelector(
-                    `svg.chevron-down.${settings.iconTheme}`
-                )
                 closeMenu()
-                if (toolbarIframe.style.bottom === '0px') {
+                if (
+                    toolbarIframe.style.bottom === '0px' &&
+                    toolbarDiv.classList.contains('horizontal')
+                ) {
                     toolbarIframe.style.bottom = 'unset'
                     toolbarIframe.style.top = '0px'
                     toolbarDiv.style.bottom = 'unset'
@@ -360,9 +422,11 @@ const buttonElements = {
                     menuDiv.style.bottom = '0'
                     toolbarDiv.style.borderWidth = '0 0 2px'
                     menuDiv.style.borderWidth = '0 0 2px'
-                    if (chevronDown) chevronDown.style.display = 'flex'
-                    if (chevronUp) chevronUp.style.display = 'none'
-                } else {
+                    if (chevronUp) chevronUp.style.transform = 'rotate(180deg)'
+                } else if (
+                    toolbarIframe.style.top === '0px' &&
+                    toolbarDiv.classList.contains('horizontal')
+                ) {
                     toolbarIframe.style.top = 'unset'
                     toolbarIframe.style.bottom = '0px'
                     toolbarDiv.style.bottom = '0'
@@ -371,8 +435,30 @@ const buttonElements = {
                     menuDiv.style.bottom = 'unset'
                     toolbarDiv.style.borderWidth = '2px 0 0'
                     menuDiv.style.borderWidth = '2px 0 0'
-                    if (chevronUp) chevronUp.style.display = 'flex'
-                    if (chevronDown) chevronDown.style.display = 'none'
+                    if (chevronUp) chevronUp.style.transform = 'rotate(0deg)'
+                } else if (
+                    toolbarIframe.style.left === '0px' &&
+                    toolbarDiv.classList.contains('vertical')
+                ) {
+                    toolbarIframe.style.left = 'unset'
+                    toolbarIframe.style.right = '0px'
+                    toolbarDiv.style.right = '0'
+                    toolbarDiv.style.left = 'unset'
+                    menuDiv.style.left = '0'
+                    menuDiv.style.right = 'unset'
+                    toolbarDiv.style.borderWidth = '0 0 0 2px'
+                    menuDiv.style.borderWidth = '0 0 0 2px'
+                    if (chevronUp) chevronUp.style.transform = 'rotate(270deg)'
+                } else {
+                    toolbarIframe.style.right = 'unset'
+                    toolbarIframe.style.left = '0px'
+                    toolbarDiv.style.left = '0'
+                    toolbarDiv.style.right = 'unset'
+                    menuDiv.style.right = '0'
+                    menuDiv.style.left = 'unset'
+                    toolbarDiv.style.borderWidth = '0 2px 0 0'
+                    menuDiv.style.borderWidth = '0 2px 0 0'
+                    if (chevronUp) chevronUp.style.transform = 'rotate(90deg)'
                 }
                 this.classList.remove('pressed')
             }, 100)
@@ -566,11 +652,17 @@ function toggleButtonVisibility() {
                     })
                     break
                 case 'moveToolbarButton':
-                    const chevronClass =
-                        settings.defaultPosition === 'bottom'
-                            ? 'chevron-up'
-                            : 'chevron-down'
-                    showSVG(svgs, settings.iconTheme, chevronClass)
+                    showSVG(svgs, settings.iconTheme)
+                    const chevronUp = button.querySelector(
+                        `svg.chevron-up.${settings.iconTheme}`
+                    )
+                    if (settings.defaultPosition === 'top') {
+                        chevronUp.style.transform = 'rotate(180deg)'
+                    } else if (settings.defaultPosition === 'left') {
+                        chevronUp.style.transform = 'rotate(90deg)'
+                    } else if (settings.defaultPosition === 'right') {
+                        chevronUp.style.transform = 'rotate(270deg)'
+                    }
                     break
                 case 'toggleDesktopSiteButton':
                     browser.storage.local
@@ -655,7 +747,8 @@ function findScrollableElement() {
     for (const el of candidates) {
         if (
             el.scrollHeight > viewportHeight * 0.95 &&
-            el.clientWidth > viewportWidth * 0.8 && getComputedStyle(el).overflowY !== 'hidden'
+            el.clientWidth > viewportWidth * 0.8 &&
+            getComputedStyle(el).overflowY !== 'hidden'
         ) {
             return el
         }
