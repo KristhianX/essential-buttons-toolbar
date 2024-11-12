@@ -50,9 +50,13 @@
                         >this issue.</a
                     >
                     <br /><br />
-                    <b>- Added 'Left' and 'Right' to 'Toolbar position' option.</b>
+                    <b
+                        >- Added 'Left' and 'Right' to 'Toolbar position'
+                        option.</b
+                    >
                     <br />
-                    Now you can also place the toolbar vertically on the left or right side of the page.
+                    Now you can also place the toolbar vertically on the left or
+                    right side of the page.
                     <br />
                     For more details, please see
                     <a
@@ -60,6 +64,13 @@
                         target="_blank"
                         >this request.</a
                     >
+                    <br /><br />
+                    <b>- Added 'Toolbar Width/Height' option.</b>
+                    <br />
+                    Now you can adjust the percentage of the page that the
+                    toolbar will occupy. The default is 100%, and with other
+                    values, the toolbar will be centered horizontally or
+                    vertically depending on its position.
                     <br /><br />
                     Thank you all for the support! Enjoy the update!
                     <br /><br />
@@ -154,7 +165,7 @@
             <label for="newTabURL">New tab URL:</label>
             <input type="text" id="newTabURL" />
             <br />
-            <label for="toolbarHeight">Toolbar height:</label>
+            <label for="toolbarHeight"></label>
             <span class="currentValue" id="currentValueHeight"></span>
             <input
                 type="range"
@@ -163,6 +174,10 @@
                 max="100"
                 step="2"
             />
+            <br />
+            <label for="toolbarWidth"></label>
+            <span class="currentValue" id="currentValueWidth"></span>
+            <input type="range" id="toolbarWidth" min="20" max="100" step="2" />
             <br />
             <label for="toolbarTransparency">Toolbar transparency:</label>
             <span class="currentValue" id="currentValueTransparency"></span>
@@ -174,7 +189,7 @@
                 step="0.1"
             />
             <br />
-            <label for="topBottomMargin">Gap from the edge:</label>
+            <label for="topBottomMargin">Gap from the edge (px):</label>
             <span class="currentValue" id="currentValueTBMargin"></span>
             <input
                 type="range"

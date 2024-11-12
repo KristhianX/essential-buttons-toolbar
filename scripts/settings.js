@@ -7,6 +7,7 @@ const homepageURL = browser.runtime.getURL('pages/homepage.html')
 const homepageURLInput = document.getElementById('homepageURL')
 const newTabURLInput = document.getElementById('newTabURL')
 const toolbarHeightRangeInput = document.getElementById('toolbarHeight')
+const toolbarWidthRangeInput = document.getElementById('toolbarWidth')
 const toolbarTransparencyRangeInput = document.getElementById(
     'toolbarTransparency'
 )
@@ -59,6 +60,7 @@ function loadValues() {
             'homepageURL',
             'newTabURL',
             'toolbarHeight',
+            'toolbarWidth',
             'topBottomMargin',
             'defaultPosition',
             'theme',
@@ -75,10 +77,14 @@ function loadValues() {
             newTabURLInput.value = result.newTabURL
             currentValueHeight.textContent = result.toolbarHeight
             toolbarHeightRangeInput.value = result.toolbarHeight
+            currentValueWidth.textContent = result.toolbarWidth
+            toolbarWidthRangeInput.value = result.toolbarWidth
             toolbarContainer.style.height =
                 result.toolbarHeight / window.visualViewport.scale + 'px'
             menuContainer.style.height =
                 result.toolbarHeight / window.visualViewport.scale + 'px'
+            toolbarContainer.style.width = result.toolbarWidth + '%'
+            menuContainer.style.width = result.toolbarWidth + '%'
             currentValueTransparency.textContent = result.toolbarTransparency
             toolbarTransparencyRangeInput.value = result.toolbarTransparency
             currentValueTBMargin.textContent = result.topBottomMargin
@@ -88,6 +94,7 @@ function loadValues() {
             iconThemeSelect.value = result.iconTheme
             hideMethodSelect.value = result.hideMethod
             overrideTheme(result.theme)
+            updateLabels(result.defaultPosition)
             // Display and append the button elements based on the order
             if (result.buttonOrder && result.checkboxStates) {
                 let buttonsAppended = 0
@@ -129,6 +136,16 @@ function loadValues() {
                 })
             }
         })
+}
+
+function updateLabels(position) {
+    if (position === 'top' || position === 'bottom') {
+        document.querySelector('label[for="toolbarHeight"]').textContent = "Toolbar Height (px):";
+        document.querySelector('label[for="toolbarWidth"]').textContent = "Toolbar Width (%):";
+    } else {
+        document.querySelector('label[for="toolbarHeight"]').textContent = "Toolbar Width (px):";
+        document.querySelector('label[for="toolbarWidth"]').textContent = "Toolbar Height (%):";        
+    }
 }
 
 //
@@ -242,6 +259,11 @@ toolbarHeightRangeInput.addEventListener('input', function () {
     currentValueHeight.textContent = currentValue
 })
 
+toolbarWidthRangeInput.addEventListener('input', function () {
+    const currentValue = toolbarWidthRangeInput.value
+    currentValueWidth.textContent = currentValue
+})
+
 toolbarTransparencyRangeInput.addEventListener('input', function () {
     const currentValue = toolbarTransparencyRangeInput.value
     currentValueTransparency.textContent = currentValue
@@ -250,6 +272,10 @@ toolbarTransparencyRangeInput.addEventListener('input', function () {
 topBottomMarginRangeInput.addEventListener('input', function () {
     const currentValue = topBottomMarginRangeInput.value
     currentValueTBMargin.textContent = currentValue
+})
+
+defaultPositionSelect.addEventListener('input', function () {
+    updateLabels(defaultPositionSelect.value)
 })
 
 //
@@ -418,6 +444,7 @@ generalSaveButton.addEventListener('click', () => {
     const homepageURL = homepageURLInput.value
     const newTabURL = newTabURLInput.value
     const toolbarHeight = toolbarHeightRangeInput.value
+    const toolbarWidth = toolbarWidthRangeInput.value
     const toolbarTransparency = toolbarTransparencyRangeInput.value
     const topBottomMargin = topBottomMarginRangeInput.value
     const defaultPosition = defaultPositionSelect.value
@@ -429,6 +456,7 @@ generalSaveButton.addEventListener('click', () => {
             homepageURL: homepageURL,
             newTabURL: newTabURL,
             toolbarHeight: toolbarHeight,
+            toolbarWidth: toolbarWidth,
             toolbarTransparency: toolbarTransparency,
             topBottomMargin: topBottomMargin,
             defaultPosition: defaultPosition,

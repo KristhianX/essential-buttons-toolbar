@@ -35,6 +35,7 @@ function getSettingsValues() {
             'homepageURL',
             'newTabURL',
             'toolbarHeight',
+            'toolbarWidth',
             'toolbarTransparency',
             'topBottomMargin',
             'defaultPosition',
@@ -150,8 +151,13 @@ function styleToolbarDivs() {
         menuDiv.style.height = '50%'
         toolbarDiv.style.top = '0'
         menuDiv.style.bottom = '0'
-        toolbarDiv.style.borderWidth = '0 0 2px'
-        menuDiv.style.borderWidth = '0 0 2px'
+        if (Number(settings.toolbarWidth) === 100) {
+            toolbarDiv.style.borderWidth = '0 0 2px'
+            menuDiv.style.borderWidth = '0 0 2px'
+        } else {
+            toolbarDiv.style.borderWidth = '0 2px 2px'
+            menuDiv.style.borderWidth = '0 2px 2px'
+        }
     } else if (settings.defaultPosition === 'bottom') {
         toolbarDiv.classList.add('horizontal')
         menuDiv.classList.add('horizontal')
@@ -159,8 +165,13 @@ function styleToolbarDivs() {
         menuDiv.style.height = '50%'
         toolbarDiv.style.bottom = '0'
         menuDiv.style.top = '0'
-        toolbarDiv.style.borderWidth = '2px 0 0'
-        menuDiv.style.borderWidth = '2px 0 0'
+        if (Number(settings.toolbarWidth) === 100) {
+            toolbarDiv.style.borderWidth = '2px 0 0'
+            menuDiv.style.borderWidth = '2px 0 0'
+        } else {
+            toolbarDiv.style.borderWidth = '2px 2px 0'
+            menuDiv.style.borderWidth = '2px 2px 0'
+        }
     } else if (settings.defaultPosition === 'left') {
         toolbarDiv.classList.add('vertical')
         menuDiv.classList.add('vertical')
@@ -168,8 +179,13 @@ function styleToolbarDivs() {
         menuDiv.style.width = '50%'
         toolbarDiv.style.left = '0'
         menuDiv.style.right = '0'
-        toolbarDiv.style.borderWidth = '0 2px 0 0'
-        menuDiv.style.borderWidth = '0 2px 0 0'
+        if (Number(settings.toolbarWidth) === 100) {
+            toolbarDiv.style.borderWidth = '0 2px 0 0'
+            menuDiv.style.borderWidth = '0 2px 0 0'
+        } else {
+            toolbarDiv.style.borderWidth = '2px 2px 2px 0'
+            menuDiv.style.borderWidth = '2px 2px 2px 0'
+        }
     } else {
         toolbarDiv.classList.add('vertical')
         menuDiv.classList.add('vertical')
@@ -177,8 +193,13 @@ function styleToolbarDivs() {
         menuDiv.style.width = '50%'
         toolbarDiv.style.right = '0'
         menuDiv.style.left = '0'
-        toolbarDiv.style.borderWidth = '0 0 0 2px'
-        menuDiv.style.borderWidth = '0 0 0 2px'
+        if (Number(settings.toolbarWidth) === 100) {
+            toolbarDiv.style.borderWidth = '0 0 0 2px'
+            menuDiv.style.borderWidth = '0 0 0 2px'
+        } else {
+            toolbarDiv.style.borderWidth = '2px 0 2px 2px'
+            menuDiv.style.borderWidth = '2px 0 2px 2px'
+        }
     }
     if (isPrivate) {
         toolbarDiv.style.backgroundColor = `rgba(var(--private-background), ${settings.toolbarTransparency})`
@@ -187,6 +208,7 @@ function styleToolbarDivs() {
 
 function updateToolbarHeight() {
     const calculatedHeight = calculateToolbarHeight()
+    const calculatedWidth = calculateToolbarWidth()
     if (iframeHidden) {
         unhideIcon.style.height = `${calculatedHeight}px`
         unhideIcon.style.width = `${calculatedHeight}px`
@@ -204,12 +226,17 @@ function updateToolbarHeight() {
             settings.defaultPosition === 'bottom'
         ) {
             toolbarIframe.style.height = `${calculatedHeight}px`
-            toolbarIframe.style.width = '100%'
-            toolbarIframe.style.left = '0'
+            toolbarIframe.style.width = `${calculatedWidth}%`
+            if (Number(settings.toolbarWidth) !== 100) {
+                toolbarIframe.style.left = '50%'
+                toolbarIframe.style.transform = 'translateX(-50%)'
+            } else {
+                toolbarIframe.style.left = '0'
+            }
             settings.defaultPosition === 'top'
                 ? (toolbarIframe.style.top = '0px')
                 : (toolbarIframe.style.bottom = '0px')
-            if (settings.topBottomMargin !== 0) {
+            if (Number(settings.topBottomMargin) !== 0) {
                 const margin = Math.floor(
                     settings.topBottomMargin / window.visualViewport.scale
                 )
@@ -217,12 +244,17 @@ function updateToolbarHeight() {
             }
         } else {
             toolbarIframe.style.width = `${calculatedHeight}px`
-            toolbarIframe.style.height = '100%'
-            toolbarIframe.style.top = '0'
+            toolbarIframe.style.height = `${calculatedWidth}%`
+            if (Number(settings.toolbarWidth) !== 100) {
+                toolbarIframe.style.top = '50%'
+                toolbarIframe.style.transform = 'translateY(-50%)'
+            } else {
+                toolbarIframe.style.top = '0'
+            }
             settings.defaultPosition === 'left'
                 ? (toolbarIframe.style.left = '0px')
                 : (toolbarIframe.style.right = '0px')
-            if (settings.topBottomMargin !== 0) {
+            if (Number(settings.topBottomMargin) !== 0) {
                 const margin = Math.floor(
                     settings.topBottomMargin / window.visualViewport.scale
                 )
@@ -244,6 +276,12 @@ function calculateToolbarHeight() {
                   (settings.toolbarHeight / window.visualViewport.scale) * 2
               ))
     }
+}
+
+function calculateToolbarWidth() {
+    return (calculatedWidth = Math.floor(
+        settings.toolbarWidth / window.visualViewport.scale
+    ))
 }
 
 function closeMenu() {
@@ -420,8 +458,13 @@ const buttonElements = {
                     toolbarDiv.style.top = '0'
                     menuDiv.style.top = 'unset'
                     menuDiv.style.bottom = '0'
-                    toolbarDiv.style.borderWidth = '0 0 2px'
-                    menuDiv.style.borderWidth = '0 0 2px'
+                    if (Number(settings.toolbarWidth) === 100) {
+                        toolbarDiv.style.borderWidth = '0 0 2px'
+                        menuDiv.style.borderWidth = '0 0 2px'
+                    } else {
+                        toolbarDiv.style.borderWidth = '0 2px 2px'
+                        menuDiv.style.borderWidth = '0 2px 2px'
+                    }
                     if (chevronUp) chevronUp.style.transform = 'rotate(180deg)'
                 } else if (
                     toolbarIframe.style.top === '0px' &&
@@ -433,8 +476,13 @@ const buttonElements = {
                     toolbarDiv.style.top = 'unset'
                     menuDiv.style.top = '0'
                     menuDiv.style.bottom = 'unset'
-                    toolbarDiv.style.borderWidth = '2px 0 0'
-                    menuDiv.style.borderWidth = '2px 0 0'
+                    if (Number(settings.toolbarWidth) === 100) {
+                        toolbarDiv.style.borderWidth = '2px 0 0'
+                        menuDiv.style.borderWidth = '2px 0 0'
+                    } else {
+                        toolbarDiv.style.borderWidth = '2px 2px 0'
+                        menuDiv.style.borderWidth = '2px 2px 0'
+                    }
                     if (chevronUp) chevronUp.style.transform = 'rotate(0deg)'
                 } else if (
                     toolbarIframe.style.left === '0px' &&
@@ -446,8 +494,13 @@ const buttonElements = {
                     toolbarDiv.style.left = 'unset'
                     menuDiv.style.left = '0'
                     menuDiv.style.right = 'unset'
-                    toolbarDiv.style.borderWidth = '0 0 0 2px'
-                    menuDiv.style.borderWidth = '0 0 0 2px'
+                    if (Number(settings.toolbarWidth) === 100) {
+                        toolbarDiv.style.borderWidth = '0 0 0 2px'
+                        menuDiv.style.borderWidth = '0 0 0 2px'
+                    } else {
+                        toolbarDiv.style.borderWidth = '2px 0 2px 2px'
+                        menuDiv.style.borderWidth = '2px 0 2px 2px'
+                    }
                     if (chevronUp) chevronUp.style.transform = 'rotate(270deg)'
                 } else {
                     toolbarIframe.style.right = 'unset'
@@ -456,8 +509,13 @@ const buttonElements = {
                     toolbarDiv.style.right = 'unset'
                     menuDiv.style.right = '0'
                     menuDiv.style.left = 'unset'
-                    toolbarDiv.style.borderWidth = '0 2px 0 0'
-                    menuDiv.style.borderWidth = '0 2px 0 0'
+                    if (Number(settings.toolbarWidth) === 100) {
+                        toolbarDiv.style.borderWidth = '0 2px 0 0'
+                        menuDiv.style.borderWidth = '0 2px 0 0'
+                    } else {
+                        toolbarDiv.style.borderWidth = '2px 2px 2px 0'
+                        menuDiv.style.borderWidth = '2px 2px 2px 0'
+                    }
                     if (chevronUp) chevronUp.style.transform = 'rotate(90deg)'
                 }
                 this.classList.remove('pressed')
