@@ -11,6 +11,7 @@ let toolbarIframe
 let iframeDocument
 let toolbarDiv
 let menuDiv
+let toolbarButtons
 let menuButtonFlag
 let hideMethodInUse
 let isThrottled
@@ -133,6 +134,7 @@ function appendToolbarAndResolve(resolve) {
                 toolbarIframe.contentWindow.document
             toolbarDiv = iframeDocument.getElementById('toolbar')
             menuDiv = iframeDocument.getElementById('menu')
+            toolbarButtons = iframeDocument.querySelectorAll('.toolbar-button')
             applyColorSchemeToIframe()
             if (toolbarDiv && menuDiv) {
                 styleToolbarDivs()
@@ -145,12 +147,16 @@ function appendToolbarAndResolve(resolve) {
 function styleToolbarDivs() {
     toolbarDiv.style.opacity = settings.toolbarTransparency
     if (settings.defaultPosition === 'top') {
+        toolbarIframe.style.width = `${settings.toolbarWidth}vw`
         toolbarDiv.classList.add('horizontal')
         menuDiv.classList.add('horizontal')
         toolbarDiv.style.height = '100%'
         menuDiv.style.height = '50%'
         toolbarDiv.style.top = '0'
         menuDiv.style.bottom = '0'
+        toolbarButtons.forEach((toolbarButton) => {
+            toolbarButton.style.height = '100%'
+        })
         if (Number(settings.toolbarWidth) === 100) {
             toolbarDiv.style.borderWidth = '0 0 2px'
             menuDiv.style.borderWidth = '0 0 2px'
@@ -159,12 +165,16 @@ function styleToolbarDivs() {
             menuDiv.style.borderWidth = '0 2px 2px'
         }
     } else if (settings.defaultPosition === 'bottom') {
+        toolbarIframe.style.width = `${settings.toolbarWidth}vw`
         toolbarDiv.classList.add('horizontal')
         menuDiv.classList.add('horizontal')
         toolbarDiv.style.height = '100%'
         menuDiv.style.height = '50%'
         toolbarDiv.style.bottom = '0'
         menuDiv.style.top = '0'
+        toolbarButtons.forEach((toolbarButton) => {
+            toolbarButton.style.height = '100%'
+        })
         if (Number(settings.toolbarWidth) === 100) {
             toolbarDiv.style.borderWidth = '2px 0 0'
             menuDiv.style.borderWidth = '2px 0 0'
@@ -173,12 +183,16 @@ function styleToolbarDivs() {
             menuDiv.style.borderWidth = '2px 2px 0'
         }
     } else if (settings.defaultPosition === 'left') {
+        toolbarIframe.style.height = `${settings.toolbarWidth}vh`
         toolbarDiv.classList.add('vertical')
         menuDiv.classList.add('vertical')
         toolbarDiv.style.width = '100%'
         menuDiv.style.width = '50%'
         toolbarDiv.style.left = '0'
         menuDiv.style.right = '0'
+        toolbarButtons.forEach((toolbarButton) => {
+            toolbarButton.style.width = '100%'
+        })
         if (Number(settings.toolbarWidth) === 100) {
             toolbarDiv.style.borderWidth = '0 2px 0 0'
             menuDiv.style.borderWidth = '0 2px 0 0'
@@ -187,12 +201,16 @@ function styleToolbarDivs() {
             menuDiv.style.borderWidth = '2px 2px 2px 0'
         }
     } else {
+        toolbarIframe.style.height = `${settings.toolbarWidth}vh`
         toolbarDiv.classList.add('vertical')
         menuDiv.classList.add('vertical')
         toolbarDiv.style.width = '100%'
         menuDiv.style.width = '50%'
         toolbarDiv.style.right = '0'
         menuDiv.style.left = '0'
+        toolbarButtons.forEach((toolbarButton) => {
+            toolbarButton.style.width = '100%'
+        })
         if (Number(settings.toolbarWidth) === 100) {
             toolbarDiv.style.borderWidth = '0 0 0 2px'
             menuDiv.style.borderWidth = '0 0 0 2px'
@@ -208,7 +226,7 @@ function styleToolbarDivs() {
 
 function updateToolbarHeight() {
     const calculatedHeight = calculateToolbarHeight()
-    const calculatedWidth = calculateToolbarWidth()
+    // const calculatedWidth = calculateToolbarWidth()
     if (iframeHidden) {
         unhideIcon.style.height = `${calculatedHeight}px`
         unhideIcon.style.width = `${calculatedHeight}px`
@@ -226,7 +244,7 @@ function updateToolbarHeight() {
             settings.defaultPosition === 'bottom'
         ) {
             toolbarIframe.style.height = `${calculatedHeight}px`
-            toolbarIframe.style.width = `${calculatedWidth}%`
+            // toolbarIframe.style.width = `${calculatedWidth}%`
             if (Number(settings.toolbarWidth) !== 100) {
                 toolbarIframe.style.left = '50%'
                 toolbarIframe.style.transform = 'translateX(-50%)'
@@ -244,7 +262,7 @@ function updateToolbarHeight() {
             }
         } else {
             toolbarIframe.style.width = `${calculatedHeight}px`
-            toolbarIframe.style.height = `${calculatedWidth}%`
+            // toolbarIframe.style.height = `${calculatedWidth}%`
             if (Number(settings.toolbarWidth) !== 100) {
                 toolbarIframe.style.top = '50%'
                 toolbarIframe.style.transform = 'translateY(-50%)'
@@ -278,11 +296,11 @@ function calculateToolbarHeight() {
     }
 }
 
-function calculateToolbarWidth() {
-    return (calculatedWidth = Math.floor(
-        settings.toolbarWidth / window.visualViewport.scale
-    ))
-}
+// function calculateToolbarWidth() {
+//     return (calculatedWidth = Math.floor(
+//         settings.toolbarWidth / window.visualViewport.scale
+//     ))
+// }
 
 function closeMenu() {
     if (!menuDivHidden) {
@@ -892,6 +910,7 @@ function removeToolbar() {
     const targetElement =
         document.getElementById('essUnhideIcon') ||
         document.getElementById('essBtnsToolbar')
+    closeMenu()
     if (targetElement) {
         targetElement.remove()
         window.removeEventListener('load', checkExistenceAndHeight)

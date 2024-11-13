@@ -16,6 +16,7 @@ const defaultPositionSelect = document.getElementById('defaultPosition')
 const themeSelect =document.getElementById('theme')
 const iconThemeSelect = document.getElementById('iconTheme')
 const hideMethodSelect = document.getElementById('hideMethod')
+const previewButtons = document.querySelectorAll('.preview-button')
 const customUrlInput = document.getElementById('customUrl')
 const excludedUrlsList = document.getElementById('excludedUrls')
 const version = browser.runtime.getManifest().version
@@ -79,12 +80,11 @@ function loadValues() {
             toolbarHeightRangeInput.value = result.toolbarHeight
             currentValueWidth.textContent = result.toolbarWidth
             toolbarWidthRangeInput.value = result.toolbarWidth
-            toolbarContainer.style.height =
-                result.toolbarHeight / window.visualViewport.scale + 'px'
-            menuContainer.style.height =
-                result.toolbarHeight / window.visualViewport.scale + 'px'
-            toolbarContainer.style.width = result.toolbarWidth + '%'
-            menuContainer.style.width = result.toolbarWidth + '%'
+            previewButtons.forEach((previewButton) => {
+                previewButton.style.height = result.toolbarHeight / window.visualViewport.scale - 3 + 'px'
+            })
+            toolbarContainer.style.width = result.toolbarWidth + 'vw'
+            menuContainer.style.width = result.toolbarWidth + 'vw'
             currentValueTransparency.textContent = result.toolbarTransparency
             toolbarTransparencyRangeInput.value = result.toolbarTransparency
             currentValueTBMargin.textContent = result.topBottomMargin

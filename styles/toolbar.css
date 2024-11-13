@@ -33,7 +33,6 @@ body {
 }
 
 .toolbar-button {
-    height: 100%;
     aspect-ratio: 1;
     cursor: pointer;
     border: none;
@@ -54,6 +53,7 @@ div {
     box-sizing: border-box;
     justify-content: space-between;
     position: absolute;
+    overflow: auto;
     border-style: solid;
     border-color: var(--border-color);
     background-color: var(--toolbar-background);

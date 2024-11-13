@@ -322,10 +322,12 @@ li button {
 #toolbarContainer,
 #menuContainer {
     width: 100%;
+    height: auto;
     background: var(--box-background);
     margin: 5px auto 0;
     padding: 0 4%;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     border-top: var(--box-background);
     border-style: solid;
