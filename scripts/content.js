@@ -824,7 +824,8 @@ function findScrollableElement() {
         if (
             el.scrollHeight > viewportHeight * 0.95 &&
             el.clientWidth > viewportWidth * 0.8 &&
-            getComputedStyle(el).overflowY !== 'hidden'
+            (getComputedStyle(el).overflowY === 'auto' ||
+                getComputedStyle(el).overflowY === 'scroll')
         ) {
             return el
         }
