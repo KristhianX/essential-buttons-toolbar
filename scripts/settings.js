@@ -81,7 +81,7 @@ function loadValues() {
             currentValueWidth.textContent = result.toolbarWidth
             toolbarWidthRangeInput.value = result.toolbarWidth
             previewButtons.forEach((previewButton) => {
-                previewButton.style.height = result.toolbarHeight / window.visualViewport.scale - 3 + 'px'
+                previewButton.style.height = result.toolbarHeight / window.visualViewport.scale - 4 + 'px'
             })
             toolbarContainer.style.width = result.toolbarWidth + 'vw'
             menuContainer.style.width = result.toolbarWidth + 'vw'

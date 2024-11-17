@@ -54,6 +54,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    color: var(--text-color);
 }
 
 #background-container {
@@ -106,6 +107,13 @@ h3 {
 
 a {
     color: var(--link-color);
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 .main-container {
@@ -177,6 +185,10 @@ a {
     height: 60px;
 }
 
+.top-site-group a:active {
+    background-color: var(--primary-color);
+}
+
 .top-site-group a img {
     display: block;
     margin: 5px auto;
@@ -229,6 +241,11 @@ a {
     transform: translate(-50%, -50%);
     background: var(--background-color);
     z-index: 2;
+}
+
+#unsplash-settings,
+#custom-bg-settings {
+    display: none;
 }
 
 #top-site-preview {
@@ -292,6 +309,7 @@ a {
 
 .favicon-options label {
     position: relative;
+    margin: 5px;
     cursor: pointer;
     display: block;
     line-height: 1.4;
@@ -364,7 +382,7 @@ button {
 #remove-top-sites-button,
 #move-top-sites-button,
 #homepage-preferences-button {
-    height: 40px;
+    height: 32px;
     aspect-ratio: 1;
     display: inline-flex;
     justify-content: center;
@@ -372,6 +390,13 @@ button {
     border-radius: 20%;
     margin: 0;
     padding: 0;
+}
+
+#homepage-preferences-button {
+    position: absolute;
+    background: rgba(var(--box-background), 0.8);
+    top: 20px;
+    right: 20px;
 }
 
 #add-top-site-button svg,
@@ -384,16 +409,23 @@ button {
     pointer-events: none;
 }
 
-.top-site-prompt button {
+#homepage-preferences-button:active {
+    background: var(--primary-color);
+}
+
+.top-site-prompt button,
+.preferences-prompt button {
     display: inline;
     margin: 0 auto 5px;
 }
 
-#top-site-submit {
+#top-site-submit,
+#preferences-save {
     float: right;
 }
 
-#top-site-cancel {
+#top-site-cancel,
+#preferences-close {
     border-color: var(--secondary-color);
 }
 
@@ -410,6 +442,24 @@ input[type='text'] {
     outline: none;
 }
 
+select {
+    display: block;
+    width: 120px;
+    padding: 8px;
+    font-size: 14px;
+    margin-top: 4px;
+    background: rgb(var(--box-background));
+    color: var(--text-color);
+    border-radius: 4px;
+    outline: none;
+    border: none;
+}
+
+#unsplash-query,
+#custom-bg-url {
+    margin-top: 4px;
+}
+
 #main-overlay {
     display: none;
     position: fixed;
@@ -423,8 +473,4 @@ input[type='text'] {
 
 .dragging {
     z-index: 2;
-}
-
-#homepage-preferences-button {
-    display: none;
 }

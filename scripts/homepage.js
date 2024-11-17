@@ -9,6 +9,7 @@ const homepagePreferencesButton = document.querySelector(
 )
 let topSitesList = []
 let addTopSitePrompt
+let preferencesPrompt
 let lastGroup
 let removeTopSitesMode
 let moveTopSitesMode
@@ -17,15 +18,23 @@ let pointerStartX
 let pointerStartY
 let pointerDeltaX
 let pointerDeltaY
+const homepageSettings = {}
 
 function overrideTheme(theme) {
-    document.documentElement.classList.toggle('dark-theme', theme === 'dark');
-    document.documentElement.classList.toggle('light-theme', theme === 'light');
+    document.documentElement.classList.toggle('dark-theme', theme === 'dark')
+    document.documentElement.classList.toggle('light-theme', theme === 'light')
 }
 
-function getTheme() {
-    browser.storage.sync.get('theme').then((result) => {
-        overrideTheme(result.theme)
+function getSettings() {
+    const keys = [
+        'theme',
+        'iconTheme',
+        'homepageBg'
+    ]
+    browser.storage.sync.get(keys).then((result) => {
+        keys.forEach((key) => {
+            homepageSettings[key] = result[key]
+        })
     })
 }
 
@@ -185,9 +194,9 @@ function createPrompt() {
             Get favicon from Google
         </label>
         </div>
-        <input type="text" placeholder="Name" id="top-site-name" required>
-        <input type="text" placeholder="URL (https://www.example.com)" id="top-site-url" required>
-        <input type="text" placeholder="Favicon URL (optional)" id="top-site-favicon-url">
+        <input type="text" placeholder="Name" id="top-site-name" required />
+        <input type="text" placeholder="URL (https://www.example.com)" id="top-site-url" required />
+        <input type="text" placeholder="Favicon URL (optional)" id="top-site-favicon-url" />
         <button id="top-site-submit" type="button">Add</button>
         <button id="top-site-cancel" type="button">Cancel</button>
         `
@@ -498,7 +507,6 @@ function applyNewItemsOrder() {
 //
 // Wallpaper changer
 //
-
 function saveWallpaperToLocal(wallpaperBlob) {
     const reader = new FileReader()
     reader.onloadend = () => {
@@ -514,7 +522,7 @@ function saveWallpaperToLocal(wallpaperBlob) {
     reader.onerror = (error) => {
         console.error('Error reading wallpaper blob as Base64:', error)
     }
-    reader.readAsDataURL(wallpaperBlob) // Converts to Base64
+    reader.readAsDataURL(wallpaperBlob)
 }
 
 function setWallpaperFromLocal() {
@@ -526,13 +534,9 @@ function setWallpaperFromLocal() {
                 result.wallpaperSetDate === getCurrentDate()
             ) {
                 backgroundContainer.style.backgroundImage = `url('${result.wallpaperData}')`
-
-                // Check if credit info is in localStorage
                 if (!localStorage.getItem('creditInfo')) {
-                    // If not, set a default credit or fetch new wallpaper
                     getWallpaper('landscape')
                 } else {
-                    // Generate credits container if info exists
                     generateCreditsContainer()
                 }
             } else {
@@ -561,51 +565,34 @@ async function getWallpaper(query) {
     const apiUrl = `https://essential-homepage-background.kristhianx.workers.dev/?query=${encodeURIComponent(
         query
     )}`
-
     try {
-        // Fetch wallpaper data
         const response = await fetch(apiUrl)
         if (!response.ok) {
             throw new Error(
                 `Network response was not ok: ${response.statusText}`
             )
         }
-
         const data = await response.json()
-
-        // Check if data contains necessary fields
         if (!data || !data.imageUrl) {
             return
         }
-
         const { imageUrl, photoUrl, authorUrl, authorName } = data
-
-        // Fetch the wallpaper image blob
         const imageResponse = await fetch(imageUrl)
         if (!imageResponse.ok) {
             throw new Error(`Image fetch failed: ${imageResponse.statusText}`)
         }
-
         const wallpaperBlob = await imageResponse.blob()
-
-        // Save the wallpaper locally
         saveWallpaperToLocal(wallpaperBlob)
-
         const objectUrl = URL.createObjectURL(wallpaperBlob)
         backgroundContainer.style.backgroundImage = `url('${objectUrl}')`
-
-        // Store credit information in local storage
         const creditInfo = { authorUrl, authorName, photoUrl }
         localStorage.setItem('creditInfo', JSON.stringify(creditInfo))
-
-        // Generate credits container
         generateCreditsContainer()
     } catch (error) {
         console.error('Error fetching wallpaper:', error)
     }
 }
 
-// Function to generate the credits container
 function generateCreditsContainer() {
     const creditInfo = JSON.parse(localStorage.getItem('creditInfo'))
     if (creditInfo) {
@@ -631,40 +618,74 @@ function generateCreditsContainer() {
 }
 
 function removeWallpaperFromLocal() {
-    browser.storage.local
-        .remove('wallpaperData')
-        .then(() => {
-            getWallpaper('landscape')
-        })
+    browser.storage.local.remove('wallpaperData').then(() => {
+        getWallpaper('landscape')
+    })
 }
 
 //
 // Preferences
 //
 function createPreferencesPrompt() {
-    homepagePreferencesButton.style.backgroundColor = 'var(--primary-color)'
     setTimeout(() => {
-        const preferencesPrompt = document.createElement('div')
+        preferencesPrompt = document.createElement('div')
         overlay.style.display = 'block'
         preferencesPrompt.classList.add('preferences-prompt')
         preferencesPrompt.innerHTML = `
-        <div class="preferences-prompt-text">
-            <h1>Preferences</h1>
-            <p>
-                <button class="preferences-prompt-button" onclick="removeTopSiteElements()">Remove Top Sites</button>
+        <h2>Preferences</h2>
+        <label for="selectBg">Background:</label>
+        <select id="selectBg">
+            <option value="unsplash">Unsplash</option>
+            <option value="custom">Custom</option>
+            <option value="none">None</option>
+        </select>
+        <div id="unsplash-settings">
+            <label for="unsplash-query">Search query:</label>
+            <input type="text" id="unsplash-query" />
+        </div>
+        <div id="custom-bg-settings">
+            <label for="custom-bg-url">URL:</label>
+            <input type="text" id="custom-bg-url" />
+        </div>
+        <button id="preferences-save" type="button">Save</button>
+        <button id="preferences-close" type="button">Close</button>
         `
+        document.body.appendChild(preferencesPrompt)
+        const selectBg = document.getElementById('selectBg')
+        const unsplashSettings = document.getElementById('unsplash-settings')
+        const customBgSettings = document.getElementById('custom-bg-settings')
+        selectBg.value = homepageSettings.homepageBg
+        selectBg.addEventListener('input', () => {
+            unsplashSettings.style.display = selectBg.value === 'unsplash' ? 'block' : 'none'
+            customBgSettings.style.display = selectBg.value === 'custom' ? 'block' : 'none'
+        })
+        preferencesPrompt
+            .querySelector('#preferences-close')
+            .addEventListener('click', () => {
+                preferencesPrompt.remove()
+                overlay.style.display = 'none'
+            })
     }, 100)
 }
 
-setWallpaperFromLocal()
-getTheme()
-
+//
+// Init and event listeners
+//
 addTopSiteButton.addEventListener('click', createPrompt)
 removeTopSitesButton.addEventListener('click', removeTopSiteElements)
 moveTopSitesButton.addEventListener('click', moveTopSitesElements)
 homepagePreferencesButton.addEventListener('click', createPreferencesPrompt)
 
-getTopSites().then(() => {
-    if (topSitesList.length === 0) return
-    createTopSitesButtons()
-})
+function initHomepage() {
+    overrideTheme(homepageSettings.theme)
+    getSettings()
+    if (homepageSettings.homepageBg === 'unsplash') {
+        setWallpaperFromLocal()
+    }
+    getTopSites().then(() => {
+        if (topSitesList.length === 0) return
+        createTopSitesButtons()
+    })
+}
+
+initHomepage()

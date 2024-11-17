@@ -15,6 +15,7 @@ const defaultVariables = {
     theme: 'auto',
     iconTheme: 'heroIcons',
     hideMethod: 'scroll',
+    homepageBg: 'none',
     buttonsInToolbarDiv: 6,
     buttonOrder: [
         'homeButton',
@@ -68,6 +69,7 @@ const settingsToCheck = [
     'theme',
     'iconTheme',
     'hideMethod',
+    'homepageBg',
     'buttonOrder',
     'checkboxStates',
     'buttonsInToolbarDiv',
