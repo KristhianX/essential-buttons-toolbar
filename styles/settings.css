@@ -200,8 +200,12 @@ select {
     border: none;
 }
 
+#generalFooter {
+    display: flex;
+}
+
 button {
-    display: block;
+    display: inline-flex;
     margin: 20px auto;
     padding: 6px 16px;
     color: var(--text-color);

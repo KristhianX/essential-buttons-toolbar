@@ -39,11 +39,7 @@
             <div>
                 <h3>New in this version</h3>
                 <p style="text-align: left; padding: 0 10px">
-                    <b>- Bug fixes.</b>
-                    <br />
-                    Fixed toolbar size inconsistency in desktop mode, resolved
-                    issues with toolbar buttons and icons, and improved toolbar
-                    behavior in cases of overflow.
+                    <b>- Some improvements.</b>
                     <br /><br />
                     Thank you all for the support! Enjoy the update!
                     <br /><br />
@@ -214,8 +210,12 @@
                 <option value="touch">Touchmove</option>
                 <option value="disable">Disable</option>
             </select>
-            <button id="generalSaveButton">Save</button>
-            <button id="generalResetButton">Reset</button>
+            <div id="generalFooter">
+                <button id="generalSaveButton">Save</button>
+                <button id="generalResetButton">Reset</button>
+                <button id="generalImportButton" style="display: none;">Import</button>
+                <button id="generalExportButton" style="display: none;">Export</button>
+            </div>
         </div>
         <div id="buttonsSettings">
             <div class="containers">

@@ -147,7 +147,7 @@ function appendToolbarAndResolve(resolve) {
 function styleToolbarDivs() {
     toolbarDiv.style.opacity = settings.toolbarTransparency
     if (settings.defaultPosition === 'top') {
-        toolbarIframe.style.width = `${settings.toolbarWidth}vw`
+        toolbarIframe.style.cssText += `width: ${settings.toolbarWidth}vw !important;`;
         toolbarDiv.classList.add('horizontal')
         menuDiv.classList.add('horizontal')
         toolbarDiv.style.height = '100%'
@@ -165,7 +165,7 @@ function styleToolbarDivs() {
             menuDiv.style.borderWidth = '0 2px 2px'
         }
     } else if (settings.defaultPosition === 'bottom') {
-        toolbarIframe.style.width = `${settings.toolbarWidth}vw`
+        toolbarIframe.style.cssText += `width: ${settings.toolbarWidth}vw !important;`;
         toolbarDiv.classList.add('horizontal')
         menuDiv.classList.add('horizontal')
         toolbarDiv.style.height = '100%'
@@ -183,7 +183,7 @@ function styleToolbarDivs() {
             menuDiv.style.borderWidth = '2px 2px 0'
         }
     } else if (settings.defaultPosition === 'left') {
-        toolbarIframe.style.height = `${settings.toolbarWidth}vh`
+        toolbarIframe.style.cssText += `height: ${settings.toolbarWidth}vh !important;`;
         toolbarDiv.classList.add('vertical')
         menuDiv.classList.add('vertical')
         toolbarDiv.style.width = '100%'
@@ -201,7 +201,7 @@ function styleToolbarDivs() {
             menuDiv.style.borderWidth = '2px 2px 2px 0'
         }
     } else {
-        toolbarIframe.style.height = `${settings.toolbarWidth}vh`
+        toolbarIframe.style.cssText += `height: ${settings.toolbarWidth}vh !important;`;
         toolbarDiv.classList.add('vertical')
         menuDiv.classList.add('vertical')
         toolbarDiv.style.width = '100%'
@@ -226,7 +226,6 @@ function styleToolbarDivs() {
 
 function updateToolbarHeight() {
     const calculatedHeight = calculateToolbarHeight()
-    // const calculatedWidth = calculateToolbarWidth()
     if (iframeHidden) {
         unhideIcon.style.height = `${calculatedHeight}px`
         unhideIcon.style.width = `${calculatedHeight}px`
@@ -243,8 +242,7 @@ function updateToolbarHeight() {
             settings.defaultPosition === 'top' ||
             settings.defaultPosition === 'bottom'
         ) {
-            toolbarIframe.style.height = `${calculatedHeight}px`
-            // toolbarIframe.style.width = `${calculatedWidth}%`
+            toolbarIframe.style.cssText += `height: ${calculatedHeight}px !important;`;
             if (Number(settings.toolbarWidth) !== 100) {
                 toolbarIframe.style.left = '50%'
                 toolbarIframe.style.transform = 'translateX(-50%)'
@@ -261,8 +259,7 @@ function updateToolbarHeight() {
                 toolbarIframe.style.margin = `${margin}px 0`
             }
         } else {
-            toolbarIframe.style.width = `${calculatedHeight}px`
-            // toolbarIframe.style.height = `${calculatedWidth}%`
+            toolbarIframe.style.cssText += `width: ${calculatedHeight}px !important;`;
             if (Number(settings.toolbarWidth) !== 100) {
                 toolbarIframe.style.top = '50%'
                 toolbarIframe.style.transform = 'translateY(-50%)'
