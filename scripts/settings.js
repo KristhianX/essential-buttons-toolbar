@@ -3,7 +3,11 @@
 //
 const settingsURL = browser.runtime.getURL('pages/settings.html')
 const blankURL = browser.runtime.getURL('pages/blank.html')
-const homepageURL = browser.runtime.getURL('pages/homepage.html')
+const divHomepageURL = document.getElementById('customHomepageURL')
+const divNewTabURL = document.getElementById('customNewTabURL')
+const essHomepageURL = browser.runtime.getURL('pages/homepage.html')
+const setHomepageSelect = document.getElementById('setHomepage')
+const setNewTabSelect = document.getElementById('setNewTab')
 const homepageURLInput = document.getElementById('homepageURL')
 const newTabURLInput = document.getElementById('newTabURL')
 const toolbarHeightRangeInput = document.getElementById('toolbarHeight')
@@ -58,6 +62,8 @@ function loadValues() {
     })
     browser.storage.sync
         .get([
+            'setHomepage',
+            'setNewTab',
             'homepageURL',
             'newTabURL',
             'toolbarHeight',
@@ -74,6 +80,8 @@ function loadValues() {
             'buttonsInToolbarDiv',
         ])
         .then((result) => {
+            setHomepageSelect.value = result.setHomepage
+            setNewTabSelect.value = result.setNewTab
             homepageURLInput.value = result.homepageURL
             newTabURLInput.value = result.newTabURL
             currentValueHeight.textContent = result.toolbarHeight
@@ -94,6 +102,7 @@ function loadValues() {
             iconThemeSelect.value = result.iconTheme
             hideMethodSelect.value = result.hideMethod
             overrideTheme(result.theme)
+            displayInputURL()
             updateLabels(result.defaultPosition)
             // Display and append the button elements based on the order
             if (result.buttonOrder && result.checkboxStates) {
@@ -136,6 +145,11 @@ function loadValues() {
                 })
             }
         })
+}
+
+function displayInputURL() {
+    divHomepageURL.style.display = setHomepageSelect.value === 'custom' ? 'block' : 'none'
+    divNewTabURL.style.display = setNewTabSelect.value === 'custom' ? 'block' : 'none'
 }
 
 function updateLabels(position) {
@@ -272,6 +286,14 @@ toolbarTransparencyRangeInput.addEventListener('input', function () {
 topBottomMarginRangeInput.addEventListener('input', function () {
     const currentValue = topBottomMarginRangeInput.value
     currentValueTBMargin.textContent = currentValue
+})
+
+setHomepageSelect.addEventListener('input', function () {
+    displayInputURL()
+})
+
+setNewTabSelect.addEventListener('input', function () {
+    displayInputURL()
 })
 
 defaultPositionSelect.addEventListener('input', function () {
@@ -441,8 +463,10 @@ excludedUrlsList.addEventListener('click', removeFromExcludedUrls)
 // Save the values to storage and reload
 //
 generalSaveButton.addEventListener('click', () => {
-    const homepageURL = homepageURLInput.value
-    const newTabURL = newTabURLInput.value
+    const setHomepage = setHomepageSelect.value
+    const setNewTab = setNewTabSelect.value
+    let defHomepageURL = homepageURLInput.value
+    let defNewTabURL = newTabURLInput.value
     const toolbarHeight = toolbarHeightRangeInput.value
     const toolbarWidth = toolbarWidthRangeInput.value
     const toolbarTransparency = toolbarTransparencyRangeInput.value
@@ -451,10 +475,22 @@ generalSaveButton.addEventListener('click', () => {
     const theme = themeSelect.value
     const iconTheme = iconThemeSelect.value
     const hideMethod = hideMethodSelect.value
+    if (setHomepage === 'homepage') {
+        defHomepageURL = essHomepageURL
+    } else if (setHomepage === 'blank') {
+        defHomepageURL = blankURL
+    }
+    if (setNewTab === 'homepage') {
+        defNewTabURL = essHomepageURL
+    } else if (setNewTab === 'blank') {
+        defNewTabURL = blankURL
+    }
     browser.storage.sync
         .set({
-            homepageURL: homepageURL,
-            newTabURL: newTabURL,
+            setHomepage: setHomepage,
+            setNewTab: setNewTab,
+            homepageURL: defHomepageURL,
+            newTabURL: defNewTabURL,
             toolbarHeight: toolbarHeight,
             toolbarWidth: toolbarWidth,
             toolbarTransparency: toolbarTransparency,
@@ -514,7 +550,7 @@ buttonsSaveButton.addEventListener('click', () => {
 
 function sendMessageToTabs() {
     browser.tabs.query(
-        { url: ['*://*/*', settingsURL, blankURL, homepageURL] },
+        { url: ['*://*/*', settingsURL, blankURL, essHomepageURL] },
         function (tabs) {
             for (const tab of tabs) {
                 browser.tabs.sendMessage(tab.id, { action: 'reloadToolbar' })

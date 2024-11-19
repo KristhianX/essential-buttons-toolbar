@@ -25,16 +25,33 @@ function overrideTheme(theme) {
     document.documentElement.classList.toggle('light-theme', theme === 'light')
 }
 
+function updateBgSettings() {
+    if (
+        homepageSettings.homepageBg === 'unsplash' ||
+        homepageSettings.homepageBg === 'custom'
+    ) {
+        removeWallpaperFromLocal()
+    }
+}
+
 function getSettings() {
     const keys = [
         'theme',
         'iconTheme',
-        'homepageBg'
+        'homepageBg',
+        'unsplashQuery',
+        'customBgURL',
     ]
     browser.storage.sync.get(keys).then((result) => {
         keys.forEach((key) => {
             homepageSettings[key] = result[key]
         })
+        if (
+            homepageSettings.homepageBg === 'unsplash' ||
+            homepageSettings.homepageBg === 'custom'
+        ) {
+            setWallpaperFromLocal()
+        }
     })
 }
 
@@ -535,12 +552,12 @@ function setWallpaperFromLocal() {
             ) {
                 backgroundContainer.style.backgroundImage = `url('${result.wallpaperData}')`
                 if (!localStorage.getItem('creditInfo')) {
-                    getWallpaper('landscape')
+                    getWallpaper(homepageSettings.unsplashQuery)
                 } else {
                     generateCreditsContainer()
                 }
             } else {
-                getWallpaper('landscape')
+                getWallpaper(homepageSettings.unsplashQuery)
                 browser.storage.local
                     .set({
                         wallpaperSetDate: getCurrentDate(),
@@ -619,7 +636,7 @@ function generateCreditsContainer() {
 
 function removeWallpaperFromLocal() {
     browser.storage.local.remove('wallpaperData').then(() => {
-        getWallpaper('landscape')
+        getWallpaper(homepageSettings.unsplashQuery)
     })
 }
 
@@ -627,6 +644,11 @@ function removeWallpaperFromLocal() {
 // Preferences
 //
 function createPreferencesPrompt() {
+    if (preferencesPrompt) {
+        preferencesPrompt.style.display = 'block'
+        overlay.style.display = 'block'
+        return
+    }
     setTimeout(() => {
         preferencesPrompt = document.createElement('div')
         overlay.style.display = 'block'
@@ -654,18 +676,45 @@ function createPreferencesPrompt() {
         const selectBg = document.getElementById('selectBg')
         const unsplashSettings = document.getElementById('unsplash-settings')
         const customBgSettings = document.getElementById('custom-bg-settings')
+        const unsplashQuery = document.getElementById('unsplash-query')
+        const customBgURL = document.getElementById('custom-bg-url')
         selectBg.value = homepageSettings.homepageBg
+        unsplashSettings.style.display =
+            selectBg.value === 'unsplash' ? 'block' : 'none'
+        customBgSettings.style.display =
+            selectBg.value === 'custom' ? 'block' : 'none'
+        unsplashQuery.value = homepageSettings.unsplashQuery
+        customBgURL.value = homepageSettings.customBgURL
         selectBg.addEventListener('input', () => {
-            unsplashSettings.style.display = selectBg.value === 'unsplash' ? 'block' : 'none'
-            customBgSettings.style.display = selectBg.value === 'custom' ? 'block' : 'none'
+            unsplashSettings.style.display =
+                selectBg.value === 'unsplash' ? 'block' : 'none'
+            customBgSettings.style.display =
+                selectBg.value === 'custom' ? 'block' : 'none'
         })
+        preferencesPrompt
+            .querySelector('#preferences-save')
+            .addEventListener('click', savePreferences)
         preferencesPrompt
             .querySelector('#preferences-close')
             .addEventListener('click', () => {
-                preferencesPrompt.remove()
+                preferencesPrompt.style.display = 'none'
                 overlay.style.display = 'none'
             })
     }, 100)
+}
+
+function savePreferences() {
+    const selectBg = document.getElementById('selectBg')
+    const unsplashQuery = document.getElementById('unsplash-query')
+    const customBgURL = document.getElementById('custom-bg-url')
+    browser.storage.sync.set({
+        homepageBg: selectBg.value,
+        unsplashQuery: unsplashQuery.value,
+        customBgURL: customBgURL.value,
+    })
+    updateBgSettings()
+    preferencesPrompt.style.display = 'none'
+    overlay.style.display = 'none'
 }
 
 //
@@ -679,9 +728,6 @@ homepagePreferencesButton.addEventListener('click', createPreferencesPrompt)
 function initHomepage() {
     overrideTheme(homepageSettings.theme)
     getSettings()
-    if (homepageSettings.homepageBg === 'unsplash') {
-        setWallpaperFromLocal()
-    }
     getTopSites().then(() => {
         if (topSitesList.length === 0) return
         createTopSitesButtons()

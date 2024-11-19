@@ -2,11 +2,13 @@
 // Define the default values
 //
 const settingsURL = browser.runtime.getURL('pages/settings.html')
-const blankURL = browser.runtime.getURL('pages/blank.html')
-const homepageURL = browser.runtime.getURL('pages/homepage.html')
+const essBlankURL = browser.runtime.getURL('pages/blank.html')
+const essHomepageURL = browser.runtime.getURL('pages/homepage.html')
 const defaultVariables = {
-    homepageURL: 'https://web.tabliss.io/',
-    newTabURL: 'https://web.tabliss.io/',
+    setHomepage: 'homepage',
+    setNewTab: 'homepage',
+    homepageURL: essHomepageURL,
+    newTabURL: essHomepageURL,
     toolbarHeight: 42,
     toolbarWidth: 100,
     toolbarTransparency: 0.8,
@@ -14,8 +16,10 @@ const defaultVariables = {
     defaultPosition: 'bottom',
     theme: 'auto',
     iconTheme: 'heroIcons',
-    hideMethod: 'scroll',
+    hideMethod: 'disable',
     homepageBg: 'none',
+    unsplashQuery: 'landscape',
+    customBgURL: 'example',
     buttonsInToolbarDiv: 6,
     buttonOrder: [
         'homeButton',
@@ -59,6 +63,8 @@ const defaultVariables = {
     },
 }
 const settingsToCheck = [
+    'setHomepage',
+    'setNewTab',
     'homepageURL',
     'newTabURL',
     'toolbarHeight',
@@ -70,6 +76,8 @@ const settingsToCheck = [
     'iconTheme',
     'hideMethod',
     'homepageBg',
+    'unsplashQuery',
+    'customBgURL',
     'buttonOrder',
     'checkboxStates',
     'buttonsInToolbarDiv',
@@ -230,7 +238,14 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 }
                 browser.tabs.reload(sender.tab.id, { bypassCache: true })
                 browser.tabs.query(
-                    { url: ['*://*/*', settingsURL, blankURL] },
+                    {
+                        url: [
+                            '*://*/*',
+                            settingsURL,
+                            essBlankURL,
+                            essHomepageURL,
+                        ],
+                    },
                     function (tabs) {
                         for (const tab of tabs) {
                             if (tab.id !== sender.tab.id) {
@@ -293,6 +308,24 @@ function setSettingsValues() {
                 ...Object.fromEntries(addedItems.map((item) => [item, false])),
             }
             browser.storage.sync.set({ checkboxStates: updatedCheckboxStates })
+        }
+        if (result.homepageURL) {
+            if (result.homepageURL === essBlankURL) {
+                browser.storage.sync.set({ setHomepage: 'blank' })
+            } else if (result.homepageURL === essHomepageURL) {
+                browser.storage.sync.set({ setHomepage: 'homepage' })
+            } else {
+                browser.storage.sync.set({ setHomepage: 'custom' })
+            }
+        }
+        if (result.newTabURL) {
+            if (result.newTabURL === essBlankURL) {
+                browser.storage.sync.set({ setNewTab: 'blank' })
+            } else if (result.newTabURL === essHomepageURL) {
+                browser.storage.sync.set({ setNewTab: 'homepage' })
+            } else {
+                browser.storage.sync.set({ setNewTab: 'custom' })
+            }
         }
     })
 }

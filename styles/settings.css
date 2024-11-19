@@ -189,7 +189,7 @@ input[type='range']::-moz-range-thumb {
 }
 
 select {
-    width: 120px;
+    width: 160px;
     padding: 8px;
     font-size: 14px;
     margin-top: 4px;
@@ -200,7 +200,7 @@ select {
     border: none;
 }
 
-#generalFooter {
+.tabFooter {
     display: flex;
 }
 
@@ -410,4 +410,9 @@ li button {
     color: var(--primary-color);
     width: fit-content;
     margin: 15px auto;
+}
+
+#customHomepageURL,
+#customNewTabURL {
+    display: none;
 }
