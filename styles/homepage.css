@@ -244,8 +244,14 @@ label {
 }
 
 #unsplash-settings,
-#custom-bg-settings {
+#custom-bg-settings,
+#file-bg-settings {
     display: none;
+}
+
+.prompt-footer {
+    display: flex;
+    margin-top: 10px;
 }
 
 #top-site-preview {
@@ -415,14 +421,14 @@ button {
 
 .top-site-prompt button,
 .preferences-prompt button {
-    display: inline;
+    display: inline-flex;
     margin: 0 auto 5px;
 }
 
-#top-site-submit,
+/* #top-site-submit,
 #preferences-save {
     float: right;
-}
+} */
 
 #top-site-cancel,
 #preferences-close {
@@ -440,6 +446,10 @@ input[type='text'] {
     border-radius: 4px;
     color: var(--text-color);
     outline: none;
+}
+
+input[type="file"] {
+    margin: 8px 0;
 }
 
 select {

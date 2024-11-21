@@ -19,7 +19,7 @@ const defaultVariables = {
     hideMethod: 'disable',
     homepageBg: 'none',
     unsplashQuery: 'landscape',
-    customBgURL: 'example',
+    customBgURL: 'https://w.wallhaven.cc/full/eo/wallhaven-eo5jko.png',
     buttonsInToolbarDiv: 6,
     buttonOrder: [
         'homeButton',
