@@ -2,6 +2,7 @@ const backgroundContainer = document.querySelector('#background-container')
 const overlay = document.querySelector('#main-overlay')
 const topSitesGrid = document.querySelector('.top-sites-grid')
 const addTopSiteButton = document.querySelector('#add-top-site-button')
+const editTopSitesButton = document.querySelector('#edit-top-sites-button')
 const removeTopSitesButton = document.querySelector('#remove-top-sites-button')
 const moveTopSitesButton = document.querySelector('#move-top-sites-button')
 const homepagePreferencesButton = document.querySelector(
@@ -12,6 +13,7 @@ let topSitesList = []
 let addTopSitePrompt
 let preferencesPrompt
 let lastGroup
+let editTopSitesMode
 let removeTopSitesMode
 let moveTopSitesMode
 let draggableItem
@@ -38,6 +40,7 @@ function getSettings() {
         keys.forEach((key) => {
             homepageSettings[key] = result[key]
         })
+        overrideTheme(homepageSettings.theme)
         if (homepageSettings.homepageBg === 'unsplash') {
             setWallpaperFromLocal()
         } else if (
@@ -75,12 +78,15 @@ async function createTopSitesGroup(groupNumber) {
         const group = document.createElement('div')
         const groupOverlay = document.createElement('div')
         const topSiteRemoveDiv = document.createElement('div')
+        const topSiteEditDiv = document.createElement('div')
         group.classList.add('top-site-group')
         group.setAttribute('id', `group-${groupNumber}`)
         groupOverlay.classList.add('top-site-group-overlay')
         topSiteRemoveDiv.classList.add('top-site-remove-div')
+        topSiteEditDiv.classList.add('top-site-edit-div')
         group.appendChild(groupOverlay)
         group.appendChild(topSiteRemoveDiv)
+        group.appendChild(topSiteEditDiv)
         topSitesGrid.appendChild(group)
     }
 }
@@ -179,12 +185,12 @@ async function createTopSiteElement(topSite) {
 }
 
 function createPrompt() {
-    addTopSiteButton.style.backgroundColor = 'var(--primary-color)'
-    setTimeout(() => {
-        addTopSitePrompt = document.createElement('div')
-        overlay.style.display = 'block'
-        addTopSitePrompt.classList.add('top-site-prompt')
-        addTopSitePrompt.innerHTML = `
+    //addTopSiteButton.style.backgroundColor = 'var(--primary-color)'
+    //setTimeout(() => {
+    addTopSitePrompt = document.createElement('div')
+    overlay.style.display = 'block'
+    addTopSitePrompt.classList.add('top-site-prompt')
+    addTopSitePrompt.innerHTML = `
         <h2>Add a new top site</h2>
         <h3>Preview</h3>
         <div id="top-site-preview">
@@ -213,37 +219,37 @@ function createPrompt() {
             <button id="top-site-submit" type="button">Save</button>
         </div>
         `
-        document.body.appendChild(addTopSitePrompt)
-        document
-            .getElementById('top-site-name')
-            .addEventListener('input', updatePreview)
-        document
-            .getElementById('top-site-url')
-            .addEventListener('input', updatePreview)
-        document
-            .getElementById('top-site-favicon-url')
-            .addEventListener('input', updatePreview)
-        document
-            .querySelector('input[name="favicon-option"][value="duckduckgo"]')
-            .addEventListener('change', updatePreview)
-        document
-            .querySelector('input[name="favicon-option"][value="google"]')
-            .addEventListener('change', updatePreview)
-        document
-            .querySelector('input[name="favicon-option"][value="custom"]')
-            .addEventListener('change', updatePreview)
-        addTopSitePrompt
-            .querySelector('#top-site-submit')
-            .addEventListener('click', addTopSite)
-        addTopSitePrompt
-            .querySelector('#top-site-cancel')
-            .addEventListener('click', () => {
-                addTopSitePrompt.remove()
-                overlay.style.display = 'none'
-                addTopSiteButton.style.background = 'none'
-            })
-        generatePlaceholder()
-    }, 100)
+    document.body.appendChild(addTopSitePrompt)
+    document
+        .getElementById('top-site-name')
+        .addEventListener('input', updatePreview)
+    document
+        .getElementById('top-site-url')
+        .addEventListener('input', updatePreview)
+    document
+        .getElementById('top-site-favicon-url')
+        .addEventListener('input', updatePreview)
+    document
+        .querySelector('input[name="favicon-option"][value="duckduckgo"]')
+        .addEventListener('change', updatePreview)
+    document
+        .querySelector('input[name="favicon-option"][value="google"]')
+        .addEventListener('change', updatePreview)
+    document
+        .querySelector('input[name="favicon-option"][value="custom"]')
+        .addEventListener('change', updatePreview)
+    addTopSitePrompt
+        .querySelector('#top-site-submit')
+        .addEventListener('click', addTopSite)
+    addTopSitePrompt
+        .querySelector('#top-site-cancel')
+        .addEventListener('click', () => {
+            addTopSitePrompt.remove()
+            overlay.style.display = 'none'
+            //addTopSiteButton.style.background = 'none'
+        })
+    generatePlaceholder()
+    //}, 100)
 }
 
 function updatePreview() {
@@ -321,16 +327,144 @@ async function addTopSite() {
     )
     groupNumber.appendChild(topSiteElement)
     overlay.style.display = 'none'
-    addTopSiteButton.style.background = 'none'
+    //addTopSiteButton.style.background = 'none'
 }
 
-function removeTopSiteElements() {
+function editTopSitesElements() {
+    const groupsOverlays = document.querySelectorAll('.top-site-group-overlay')
+    const topSiteEditDivs = document.querySelectorAll('.top-site-edit-div')
+    if (editTopSitesMode) {
+        editTopSitesMode = false
+        editTopSitesButton.style.background = 'none'
+        addTopSiteButton.style.display = 'inline-flex'
+        removeTopSitesButton.style.display = 'inline-flex'
+        moveTopSitesButton.style.display = 'inline-flex'
+        if (groupsOverlays.length === 0) return
+        for (const groupOverlay of groupsOverlays) {
+            groupOverlay.classList.remove('show')
+        }
+        for (const topSiteEditDiv of topSiteEditDivs) {
+            topSiteEditDiv.classList.remove('show')
+        }
+        document.body.removeEventListener('click', editTopSite)
+    } else {
+        editTopSitesMode = true
+        editTopSitesButton.style.backgroundColor = 'var(--primary-color)'
+        addTopSiteButton.style.display = 'none'
+        removeTopSitesButton.style.display = 'none'
+        moveTopSitesButton.style.display = 'none'
+        if (groupsOverlays.length === 0) return
+        for (const groupOverlay of groupsOverlays) {
+            groupOverlay.classList.add('show')
+        }
+        for (const topSiteEditDiv of topSiteEditDivs) {
+            topSiteEditDiv.classList.add('show')
+        }
+        document.body.addEventListener('click', editTopSite)
+    }
+}
+
+async function editTopSite(event) {
+    if (event.target.classList.contains('top-site-edit-div')) {
+        const groupNumber = event.target.parentElement.id.replace('group-', '')
+        const topSiteIndex = topSitesList.findIndex(
+            (site) => site.group == groupNumber
+        )
+
+        if (topSiteIndex !== -1) {
+            const topSite = topSitesList[topSiteIndex]
+
+            // Use `createPrompt` to show the edit dialog
+            createPrompt()
+
+            // Wait for the prompt to be created
+            setTimeout(() => {
+                const nameInput = document.getElementById('top-site-name')
+                const urlInput = document.getElementById('top-site-url')
+                const faviconUrlInput = document.getElementById(
+                    'top-site-favicon-url'
+                )
+
+                if (!nameInput || !urlInput || !faviconUrlInput) {
+                    console.error('Prompt inputs are missing.')
+                    return
+                }
+
+                // Pre-fill values in the dialog
+                nameInput.value = topSite.name
+                urlInput.value = topSite.url
+                faviconUrlInput.value = topSite.faviconUrl || ''
+                
+                updatePreview()
+
+                // Update the Save button to edit instead of adding
+                const saveButton = document.getElementById('top-site-submit')
+                saveButton.removeEventListener('click', addTopSite)
+                //saveButton.textContent = 'Save Changes'
+                saveButton.onclick = async () => {
+                    const updatedName = nameInput.value
+                    const updatedUrl = urlInput.value
+                    const updatedFaviconUrl = faviconUrlInput.value
+
+                    if (!updatedName || !updatedUrl) {
+                        alert('Name and URL are mandatory.')
+                        return
+                    }
+
+                    try {
+                        let dataUrl = topSite.faviconUrl
+                        if (updatedFaviconUrl) {
+                            dataUrl = await retrieveFavicon(updatedFaviconUrl)
+                        }
+
+                        // Update the top site object
+                        topSitesList[topSiteIndex] = {
+                            ...topSite,
+                            name: updatedName,
+                            url: updatedUrl,
+                            faviconUrl: dataUrl || '',
+                        }
+
+                        // Save updated list to storage
+                        await browser.storage.local.set({
+                            topSites: topSitesList,
+                        })
+
+                        // Update the existing DOM elements directly
+                        const groupElement = document.getElementById(
+                            `group-${groupNumber}`
+                        )
+                        const anchor = groupElement.querySelector('a')
+                        const img = groupElement.querySelector('img')
+                        const span = groupElement.querySelector('span')
+
+                        anchor.href = updatedUrl
+                        span.textContent = updatedName
+                        if (img) {
+                            img.src = dataUrl || updatedFaviconUrl || ''
+                            img.alt = updatedName
+                        }
+
+                        // Close the prompt
+                        addTopSitePrompt.remove()
+                        overlay.style.display = 'none'
+                    } catch (error) {
+                        console.error('Error updating top site:', error)
+                    }
+                }
+            }, 100) // Match the delay in `createPrompt`
+        }
+    }
+}
+
+function removeTopSitesElements() {
     const groupsOverlays = document.querySelectorAll('.top-site-group-overlay')
     const topSiteRemoveDivs = document.querySelectorAll('.top-site-remove-div')
     if (removeTopSitesMode) {
         removeTopSitesMode = false
         removeTopSitesButton.style.background = 'none'
         addTopSiteButton.style.display = 'inline-flex'
+        editTopSitesButton.style.display = 'inline-flex'
         moveTopSitesButton.style.display = 'inline-flex'
         if (groupsOverlays.length === 0) return
         for (const groupOverlay of groupsOverlays) {
@@ -343,6 +477,7 @@ function removeTopSiteElements() {
         removeTopSitesMode = true
         removeTopSitesButton.style.backgroundColor = 'var(--secondary-color)'
         addTopSiteButton.style.display = 'none'
+        editTopSitesButton.style.display = 'none'
         moveTopSitesButton.style.display = 'none'
         if (groupsOverlays.length === 0) return
         for (const groupOverlay of groupsOverlays) {
@@ -379,6 +514,7 @@ function moveTopSitesElements() {
         moveTopSitesMode = false
         moveTopSitesButton.style.background = 'none'
         addTopSiteButton.style.display = 'inline-flex'
+        editTopSitesButton.style.display = 'inline-flex'
         removeTopSitesButton.style.display = 'inline-flex'
         if (groupsOverlays.length === 0) return
         for (const groupOverlay of groupsOverlays) {
@@ -390,6 +526,7 @@ function moveTopSitesElements() {
         moveTopSitesMode = true
         moveTopSitesButton.style.backgroundColor = 'var(--primary-color)'
         addTopSiteButton.style.display = 'none'
+        editTopSitesButton.style.display = 'none'
         removeTopSitesButton.style.display = 'none'
         if (groupsOverlays.length === 0) return
         for (const groupOverlay of groupsOverlays) {
@@ -658,11 +795,7 @@ function generateCreditsContainer() {
 
 function removeWallpaperFromLocal() {
     if (creditContainer) creditContainer.remove()
-    //localStorage.removeItem('creditInfo')
     browser.storage.local.remove(['wallpaperData', 'wallpaperSetDate'])
-    //.then(() => {
-    //getWallpaper(homepageSettings.unsplashQuery)
-    //})
 }
 
 //
@@ -790,12 +923,12 @@ async function savePreferences() {
 // Init and event listeners
 //
 addTopSiteButton.addEventListener('click', createPrompt)
-removeTopSitesButton.addEventListener('click', removeTopSiteElements)
+editTopSitesButton.addEventListener('click', editTopSitesElements)
+removeTopSitesButton.addEventListener('click', removeTopSitesElements)
 moveTopSitesButton.addEventListener('click', moveTopSitesElements)
 homepagePreferencesButton.addEventListener('click', createPreferencesPrompt)
 
 function initHomepage() {
-    overrideTheme(homepageSettings.theme)
     getSettings()
     getTopSites().then(() => {
         if (topSitesList.length === 0) return
