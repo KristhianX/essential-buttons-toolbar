@@ -394,7 +394,7 @@ async function editTopSite(event) {
                 nameInput.value = topSite.name
                 urlInput.value = topSite.url
                 faviconUrlInput.value = topSite.faviconUrl || ''
-                
+
                 updatePreview()
 
                 // Update the Save button to edit instead of adding
@@ -415,6 +415,8 @@ async function editTopSite(event) {
                         let dataUrl = topSite.faviconUrl
                         if (updatedFaviconUrl) {
                             dataUrl = await retrieveFavicon(updatedFaviconUrl)
+                        } else {
+                            dataUrl = ''
                         }
 
                         // Update the top site object
@@ -440,9 +442,24 @@ async function editTopSite(event) {
 
                         anchor.href = updatedUrl
                         span.textContent = updatedName
-                        if (img) {
-                            img.src = dataUrl || updatedFaviconUrl || ''
-                            img.alt = updatedName
+                        if (img && dataUrl) {
+                            img.src = dataUrl
+                            img.style.display = 'block'
+                        } else if (!img && dataUrl) {
+                            const placeholderDiv = groupElement.querySelector('.placeholder-image')
+                            placeholderDiv.remove()
+                            const newImg = document.createElement('img')
+                            newImg.src = dataUrl
+                            anchor.appendChild(newImg)
+                        } else {
+                            img.remove()
+                            const placeholderImage =
+                                document.createElement('div')
+                            placeholderImage.className = 'placeholder-image'
+                            placeholderImage.textContent = updatedName
+                                .trim()[0]
+                                .toUpperCase()
+                            anchor.appendChild(placeholderImage)
                         }
 
                         // Close the prompt
