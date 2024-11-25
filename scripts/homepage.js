@@ -446,7 +446,8 @@ async function editTopSite(event) {
                             img.src = dataUrl
                             img.style.display = 'block'
                         } else if (!img && dataUrl) {
-                            const placeholderDiv = groupElement.querySelector('.placeholder-image')
+                            const placeholderDiv =
+                                groupElement.querySelector('.placeholder-image')
                             placeholderDiv.remove()
                             const newImg = document.createElement('img')
                             newImg.src = dataUrl
@@ -671,6 +672,60 @@ function applyNewItemsOrder() {
     }
 }
 
+function exportTopSites() {
+    getTopSites().then(() => {
+        const jsonContent = JSON.stringify(topSitesList, null, 2)
+        const blob = new Blob([jsonContent], { type: 'application/json' })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'essential_homepage-top_sites.json'
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+    })
+}
+
+function importTopSites(fileInput) {
+    const confirmOverwrite = confirm(
+        'Warning: Importing data will overwrite your existing top sites. Do you want to proceed?'
+    )
+    // If the user cancels, abort the import process
+    if (!confirmOverwrite) {
+        fileInput.value = ''
+        return
+    }
+    const file = fileInput.files[0]
+    if (file && file.type === 'application/json') {
+        const reader = new FileReader()
+        reader.onload = () => {
+            try {
+                const importedData = JSON.parse(reader.result)
+                if (Array.isArray(importedData)) {
+                    // Optional: Add validation logic for each object in the array
+                    browser.storage.local
+                        .set({ topSites: importedData })
+                        .then(() => {
+                            // Confirm success and reload the page
+                            alert(
+                                'Data imported successfully. The page will now reload.'
+                            )
+                            location.reload()
+                        })
+                } else {
+                    console.error('Invalid file format.')
+                }
+            } catch (e) {
+                console.error('Error parsing JSON:', e)
+            }
+        }
+        reader.readAsText(file)
+    } else {
+        console.error('Please upload a valid JSON file.')
+    }
+}
+
 //
 // Wallpaper changer
 //
@@ -849,6 +904,13 @@ function createPreferencesPrompt() {
             <label for="imageFileInput">Choose file:</label>
             <input type="file" id="imageFileInput" accept="image/*">
         </div>
+        <h2>Top Sites</h2>
+        <div id="importExportDiv">
+            <label for="exportTopSites">Export:</label>
+            <button id="exportTopSites">Download</button>
+            <label for="importTopSites">Import:</label>
+            <input type="file" id="importTopSites" accept="application/json" />
+        </div>
         <div class="prompt-footer">
             <button id="preferences-close" type="button">Close</button>
             <button id="preferences-save" type="button">Save</button>
@@ -879,6 +941,12 @@ function createPreferencesPrompt() {
                 selectBg.value === 'file' ? 'block' : 'none'
         })
         preferencesPrompt
+            .querySelector('#exportTopSites')
+            .addEventListener('click', exportTopSites)
+        preferencesPrompt
+            .querySelector('#importTopSites')
+            .addEventListener('change', (event) => importTopSites(event.target))
+        preferencesPrompt
             .querySelector('#preferences-save')
             .addEventListener('click', savePreferences)
         preferencesPrompt
@@ -904,6 +972,9 @@ async function savePreferences() {
     const currentValues = await browser.storage.sync.get(Object.keys(newValues)) // Await the result
     let hasChanged = false
     for (const key in newValues) {
+        if (key === 'selectedFileName' && !imageFileInput.files.length) {
+            continue
+        }
         if (currentValues[key] !== newValues[key]) {
             hasChanged = true
             break
@@ -911,7 +982,6 @@ async function savePreferences() {
     }
     if (hasChanged) {
         await browser.storage.sync.set(newValues) // Await optional if no further chaining required
-
         if (selectBg.value === 'unsplash') {
             removeWallpaperFromLocal()
             getWallpaper(unsplashQuery.value)

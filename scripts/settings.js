@@ -3,9 +3,9 @@
 //
 const settingsURL = browser.runtime.getURL('pages/settings.html')
 const blankURL = browser.runtime.getURL('pages/blank.html')
+const essHomepageURL = browser.runtime.getURL('pages/homepage.html')
 const divHomepageURL = document.getElementById('customHomepageURL')
 const divNewTabURL = document.getElementById('customNewTabURL')
-const essHomepageURL = browser.runtime.getURL('pages/homepage.html')
 const setHomepageSelect = document.getElementById('setHomepage')
 const setNewTabSelect = document.getElementById('setNewTab')
 const homepageURLInput = document.getElementById('homepageURL')

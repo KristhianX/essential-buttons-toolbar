@@ -147,7 +147,7 @@ function appendToolbarAndResolve(resolve) {
 function styleToolbarDivs() {
     toolbarDiv.style.opacity = settings.toolbarTransparency
     if (settings.defaultPosition === 'top') {
-        toolbarIframe.style.cssText += `width: ${settings.toolbarWidth}vw !important;`;
+        toolbarIframe.style.cssText += `width: ${settings.toolbarWidth}vw !important;`
         toolbarDiv.classList.add('horizontal')
         menuDiv.classList.add('horizontal')
         toolbarDiv.style.height = '100%'
@@ -165,7 +165,7 @@ function styleToolbarDivs() {
             menuDiv.style.borderWidth = '0 2px 2px'
         }
     } else if (settings.defaultPosition === 'bottom') {
-        toolbarIframe.style.cssText += `width: ${settings.toolbarWidth}vw !important;`;
+        toolbarIframe.style.cssText += `width: ${settings.toolbarWidth}vw !important;`
         toolbarDiv.classList.add('horizontal')
         menuDiv.classList.add('horizontal')
         toolbarDiv.style.height = '100%'
@@ -183,7 +183,7 @@ function styleToolbarDivs() {
             menuDiv.style.borderWidth = '2px 2px 0'
         }
     } else if (settings.defaultPosition === 'left') {
-        toolbarIframe.style.cssText += `height: ${settings.toolbarWidth}vh !important;`;
+        toolbarIframe.style.cssText += `height: ${settings.toolbarWidth}vh !important;`
         toolbarDiv.classList.add('vertical')
         menuDiv.classList.add('vertical')
         toolbarDiv.style.width = '100%'
@@ -201,7 +201,7 @@ function styleToolbarDivs() {
             menuDiv.style.borderWidth = '2px 2px 2px 0'
         }
     } else {
-        toolbarIframe.style.cssText += `height: ${settings.toolbarWidth}vh !important;`;
+        toolbarIframe.style.cssText += `height: ${settings.toolbarWidth}vh !important;`
         toolbarDiv.classList.add('vertical')
         menuDiv.classList.add('vertical')
         toolbarDiv.style.width = '100%'
@@ -242,7 +242,7 @@ function updateToolbarHeight() {
             settings.defaultPosition === 'top' ||
             settings.defaultPosition === 'bottom'
         ) {
-            toolbarIframe.style.cssText += `height: ${calculatedHeight}px !important;`;
+            toolbarIframe.style.cssText += `height: ${calculatedHeight}px !important;`
             if (Number(settings.toolbarWidth) !== 100) {
                 toolbarIframe.style.left = '50%'
                 toolbarIframe.style.transform = 'translateX(-50%)'
@@ -259,7 +259,7 @@ function updateToolbarHeight() {
                 toolbarIframe.style.margin = `${margin}px 0`
             }
         } else {
-            toolbarIframe.style.cssText += `width: ${calculatedHeight}px !important;`;
+            toolbarIframe.style.cssText += `width: ${calculatedHeight}px !important;`
             if (Number(settings.toolbarWidth) !== 100) {
                 toolbarIframe.style.top = '50%'
                 toolbarIframe.style.transform = 'translateY(-50%)'
@@ -292,12 +292,6 @@ function calculateToolbarHeight() {
               ))
     }
 }
-
-// function calculateToolbarWidth() {
-//     return (calculatedWidth = Math.floor(
-//         settings.toolbarWidth / window.visualViewport.scale
-//     ))
-// }
 
 function closeMenu() {
     if (!menuDivHidden) {

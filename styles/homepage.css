@@ -73,12 +73,15 @@ body {
     position: absolute;
     color: var(--text-color);
     font-size: 12px;
-    bottom: 48px;
+    bottom: 24px;
     left: 0;
     background: rgba(var(--box-background), 0.8);
     width: fit-content;
     text-align: center;
-    padding: 8px 12px;
+    padding-top: 8px;
+    padding-right: 12px;
+    padding-bottom: 8px;
+    padding-left: 12px;
     border-radius: 0 12px 12px 0;
     z-index: 1;
     display: none;
@@ -445,6 +448,10 @@ button {
 .preferences-prompt button {
     display: inline-flex;
     margin: 0 auto 5px;
+}
+
+#exportTopSites {
+    margin: 8px 0 0 0;
 }
 
 #top-site-cancel,
