@@ -21,6 +21,7 @@ let pointerStartX
 let pointerStartY
 let pointerDeltaX
 let pointerDeltaY
+let essHomepage = window.location.href
 const homepageSettings = {}
 
 function overrideTheme(theme) {
@@ -32,23 +33,18 @@ function getSettings() {
     const keys = [
         'theme',
         'iconTheme',
+        'defaultPosition',
+        'toolbarHeight',
+        'topBottomMargin',
+        'excludedUrls',
         'homepageBg',
         'unsplashQuery',
         'customBgURL',
     ]
-    browser.storage.sync.get(keys).then((result) => {
+    return browser.storage.sync.get(keys).then((result) => {
         keys.forEach((key) => {
             homepageSettings[key] = result[key]
         })
-        overrideTheme(homepageSettings.theme)
-        if (homepageSettings.homepageBg === 'unsplash') {
-            setWallpaperFromLocal()
-        } else if (
-            homepageSettings.homepageBg === 'custom' ||
-            homepageSettings.homepageBg === 'file'
-        ) {
-            setWallpaperFromLocal(true)
-        }
     })
 }
 
@@ -860,8 +856,26 @@ function generateCreditsContainer() {
         creditContainer.id = 'credit-container'
         creditContainer.style.display = 'block'
         document.body.appendChild(creditContainer)
+        adjustCreditsContainer()
     } else {
         console.error('No credit information found in local storage')
+    }
+}
+
+function adjustCreditsContainer() {
+    const isExcluded = testExclude()
+    if (!isExcluded) {
+        if (homepageSettings.defaultPosition === 'bottom') {
+            const calculatedBottom = Math.floor(
+                (Number(homepageSettings.toolbarHeight) + Number(homepageSettings.topBottomMargin) + 6) / window.visualViewport.scale
+            )
+            creditContainer.style.bottom = `${calculatedBottom}px`
+        } else if (homepageSettings.defaultPosition === 'left') {
+            const calculatedLeft = Math.floor(
+                (Number(homepageSettings.toolbarHeight) + Number(homepageSettings.topBottomMargin) + 6) / window.visualViewport.scale
+            )
+            creditContainer.style.paddingLeft = `${calculatedLeft}px`
+        }
     }
 }
 
@@ -1006,6 +1020,34 @@ async function savePreferences() {
     overlay.style.display = 'none'
 }
 
+function adjustPreferencesButton() {
+    const isExcluded = testExclude()
+    if (!isExcluded) {
+        if (homepageSettings.defaultPosition === 'top') {
+            const calculatedTop = Math.floor(
+                (Number(homepageSettings.toolbarHeight) + Number(homepageSettings.topBottomMargin) + 6) / window.visualViewport.scale
+            )
+            homepagePreferencesButton.style.top = `${calculatedTop}px`
+        } else if (homepageSettings.defaultPosition === 'right') {
+            const calculatedRight = Math.floor(
+                (Number(homepageSettings.toolbarHeight) + Number(homepageSettings.topBottomMargin) + 6) / window.visualViewport.scale
+            )
+            homepagePreferencesButton.style.right = `${calculatedRight}px`
+        }
+    }
+}
+
+function testExclude() {
+    return (isExcluded = [...(homepageSettings.excludedUrls || [])].some(
+        (excludedUrl) => {
+            const pattern = new RegExp(
+                '^' + excludedUrl.replace(/\*/g, '.*') + '$'
+            )
+            return pattern.test(essHomepage)
+        }
+    ))
+}
+
 //
 // Init and event listeners
 //
@@ -1016,7 +1058,18 @@ moveTopSitesButton.addEventListener('click', moveTopSitesElements)
 homepagePreferencesButton.addEventListener('click', createPreferencesPrompt)
 
 function initHomepage() {
-    getSettings()
+    getSettings().then(() => {
+        overrideTheme(homepageSettings.theme)
+        if (homepageSettings.homepageBg === 'unsplash') {
+            setWallpaperFromLocal()
+        } else if (
+            homepageSettings.homepageBg === 'custom' ||
+            homepageSettings.homepageBg === 'file'
+        ) {
+            setWallpaperFromLocal(true)
+        }
+        adjustPreferencesButton()
+    })
     getTopSites().then(() => {
         if (topSitesList.length === 0) return
         createTopSitesButtons()
