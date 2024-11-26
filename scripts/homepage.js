@@ -811,7 +811,16 @@ async function getWallpaper(query) {
             return
         }
         const { imageUrl, photoUrl, authorUrl, authorName } = data
-        const imageResponse = await fetch(imageUrl)
+
+        const optimizedWidth = Math.round(
+            window.screen.width * window.devicePixelRatio
+        )
+        const optimizedHeight = Math.round(
+            window.screen.height * window.devicePixelRatio
+        )
+        const optimizedImageUrl = `${imageUrl}&w=${optimizedWidth}&h=${optimizedHeight}&fit=crop`
+
+        const imageResponse = await fetch(optimizedImageUrl)
         if (!imageResponse.ok) {
             throw new Error(`Image fetch failed: ${imageResponse.statusText}`)
         }
@@ -849,12 +858,16 @@ function generateCreditsContainer() {
         photoLink.href = creditInfo.photoUrl
         photoLink.target = '_blank'
         photoLink.textContent = 'Unsplash'
+        const changeWallDiv = document.createElement('div')
+        changeWallDiv.id = 'changeWallButton'
+        changeWallDiv.addEventListener('click', changeUnsplashWall)
         creditContainer.appendChild(document.createTextNode('Photo by '))
         creditContainer.appendChild(authorLink)
         creditContainer.appendChild(document.createTextNode(' on '))
         creditContainer.appendChild(photoLink)
+        creditContainer.appendChild(changeWallDiv)
         creditContainer.id = 'credit-container'
-        creditContainer.style.display = 'block'
+        creditContainer.style.display = 'flex'
         document.body.appendChild(creditContainer)
         adjustCreditsContainer()
     } else {
@@ -867,16 +880,27 @@ function adjustCreditsContainer() {
     if (!isExcluded) {
         if (homepageSettings.defaultPosition === 'bottom') {
             const calculatedBottom = Math.floor(
-                (Number(homepageSettings.toolbarHeight) + Number(homepageSettings.topBottomMargin) + 6) / window.visualViewport.scale
+                (Number(homepageSettings.toolbarHeight) +
+                    Number(homepageSettings.topBottomMargin) +
+                    6) /
+                    window.visualViewport.scale
             )
             creditContainer.style.bottom = `${calculatedBottom}px`
         } else if (homepageSettings.defaultPosition === 'left') {
             const calculatedLeft = Math.floor(
-                (Number(homepageSettings.toolbarHeight) + Number(homepageSettings.topBottomMargin) + 6) / window.visualViewport.scale
+                (Number(homepageSettings.toolbarHeight) +
+                    Number(homepageSettings.topBottomMargin) +
+                    6) /
+                    window.visualViewport.scale
             )
             creditContainer.style.paddingLeft = `${calculatedLeft}px`
         }
     }
+}
+
+function changeUnsplashWall() {
+    removeWallpaperFromLocal()
+    getWallpaper(homepageSettings.unsplashQuery)
 }
 
 function removeWallpaperFromLocal() {
@@ -898,6 +922,7 @@ function createPreferencesPrompt() {
         overlay.style.display = 'block'
         preferencesPrompt.classList.add('preferences-prompt')
         preferencesPrompt.innerHTML = `
+        <span class="close-button" id="preferences-close"></span>
         <h2>Preferences</h2>
         <label for="selectBg">Background:</label>
         <select id="selectBg">
@@ -918,16 +943,15 @@ function createPreferencesPrompt() {
             <label for="imageFileInput">Choose file:</label>
             <input type="file" id="imageFileInput" accept="image/*">
         </div>
+        <div class="prompt-footer">
+            <button id="preferences-save" type="button">Apply</button>
+        </div>
         <h2>Top Sites</h2>
         <div id="importExportDiv">
             <label for="exportTopSites">Export:</label>
             <button id="exportTopSites">Download</button>
             <label for="importTopSites">Import:</label>
             <input type="file" id="importTopSites" accept="application/json" />
-        </div>
-        <div class="prompt-footer">
-            <button id="preferences-close" type="button">Close</button>
-            <button id="preferences-save" type="button">Save</button>
         </div>
         `
         document.body.appendChild(preferencesPrompt)
@@ -999,6 +1023,7 @@ async function savePreferences() {
         if (selectBg.value === 'unsplash') {
             removeWallpaperFromLocal()
             getWallpaper(unsplashQuery.value)
+            homepageSettings.unsplashQuery = unsplashQuery.value
         } else if (selectBg.value === 'custom') {
             removeWallpaperFromLocal()
             getWallpaperFromURL(customBgURL.value)
@@ -1016,8 +1041,6 @@ async function savePreferences() {
             if (creditContainer) creditContainer.remove()
         }
     }
-    preferencesPrompt.style.display = 'none'
-    overlay.style.display = 'none'
 }
 
 function adjustPreferencesButton() {
@@ -1025,12 +1048,18 @@ function adjustPreferencesButton() {
     if (!isExcluded) {
         if (homepageSettings.defaultPosition === 'top') {
             const calculatedTop = Math.floor(
-                (Number(homepageSettings.toolbarHeight) + Number(homepageSettings.topBottomMargin) + 6) / window.visualViewport.scale
+                (Number(homepageSettings.toolbarHeight) +
+                    Number(homepageSettings.topBottomMargin) +
+                    6) /
+                    window.visualViewport.scale
             )
             homepagePreferencesButton.style.top = `${calculatedTop}px`
         } else if (homepageSettings.defaultPosition === 'right') {
             const calculatedRight = Math.floor(
-                (Number(homepageSettings.toolbarHeight) + Number(homepageSettings.topBottomMargin) + 6) / window.visualViewport.scale
+                (Number(homepageSettings.toolbarHeight) +
+                    Number(homepageSettings.topBottomMargin) +
+                    6) /
+                    window.visualViewport.scale
             )
             homepagePreferencesButton.style.right = `${calculatedRight}px`
         }
