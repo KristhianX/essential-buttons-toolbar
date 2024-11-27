@@ -32,7 +32,6 @@ function overrideTheme(theme) {
 function getSettings() {
     const keys = [
         'theme',
-        'iconTheme',
         'defaultPosition',
         'toolbarHeight',
         'topBottomMargin',
@@ -668,14 +667,92 @@ function applyNewItemsOrder() {
     }
 }
 
-function exportTopSites() {
-    getTopSites().then(() => {
-        const jsonContent = JSON.stringify(topSitesList, null, 2)
+// function exportTopSites() {
+//     getTopSites().then(() => {
+//         const jsonContent = JSON.stringify(topSitesList, null, 2)
+//         const blob = new Blob([jsonContent], { type: 'application/json' })
+//         const url = URL.createObjectURL(blob)
+//         const a = document.createElement('a')
+//         a.href = url
+//         a.download = 'essential_homepage-top_sites.json'
+//         document.body.appendChild(a)
+//         a.click()
+//         document.body.removeChild(a)
+//         URL.revokeObjectURL(url)
+//     })
+// }
+
+// function importTopSites(fileInput) {
+//     const confirmOverwrite = confirm(
+//         'Warning: Importing data will overwrite your existing top sites. Do you want to proceed?'
+//     )
+//     // If the user cancels, abort the import process
+//     if (!confirmOverwrite) {
+//         fileInput.value = ''
+//         return
+//     }
+//     const file = fileInput.files[0]
+//     if (file && file.type === 'application/json') {
+//         const reader = new FileReader()
+//         reader.onload = () => {
+//             try {
+//                 const importedData = JSON.parse(reader.result)
+//                 if (Array.isArray(importedData)) {
+//                     // Optional: Add validation logic for each object in the array
+//                     browser.storage.local
+//                         .set({ topSites: importedData })
+//                         .then(() => {
+//                             // Confirm success and reload the page
+//                             alert(
+//                                 'Data imported successfully. The page will now reload.'
+//                             )
+//                             location.reload()
+//                         })
+//                 } else {
+//                     console.error('Invalid file format.')
+//                 }
+//             } catch (e) {
+//                 console.error('Error parsing JSON:', e)
+//             }
+//         }
+//         reader.readAsText(file)
+//     } else {
+//         console.error('Please upload a valid JSON file.')
+//     }
+// }
+
+function exportData(localKeys, syncKeys) {
+    const localStorage = browser.storage.local.get(localKeys)
+    const syncStorage = browser.storage.sync.get(syncKeys)
+
+    Promise.all([localStorage, syncStorage]).then(([localData, syncData]) => {
+        const exportData = []
+
+        // Process local storage data
+        Object.entries(localData).forEach(([key, value]) => {
+            exportData.push({
+                key,
+                type: 'local',
+                value,
+            })
+        })
+
+        // Process sync storage data
+        Object.entries(syncData).forEach(([key, value]) => {
+            exportData.push({
+                key,
+                type: 'sync',
+                value,
+            })
+        })
+
+        // Convert to JSON and download
+        const jsonContent = JSON.stringify(exportData, null, 2)
         const blob = new Blob([jsonContent], { type: 'application/json' })
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = 'essential_homepage-top_sites.json'
+        a.download = 'essential_homepage-storage_data.json'
         document.body.appendChild(a)
         a.click()
         document.body.removeChild(a)
@@ -683,35 +760,71 @@ function exportTopSites() {
     })
 }
 
-function importTopSites(fileInput) {
+function importData(fileInput, keysToImport) {
     const confirmOverwrite = confirm(
-        'Warning: Importing data will overwrite your existing top sites. Do you want to proceed?'
+        `Warning: Importing data will overwrite your existing data. Do you want to proceed?`
     )
-    // If the user cancels, abort the import process
     if (!confirmOverwrite) {
         fileInput.value = ''
         return
     }
+
     const file = fileInput.files[0]
     if (file && file.type === 'application/json') {
         const reader = new FileReader()
         reader.onload = () => {
             try {
                 const importedData = JSON.parse(reader.result)
-                if (Array.isArray(importedData)) {
-                    // Optional: Add validation logic for each object in the array
-                    browser.storage.local
-                        .set({ topSites: importedData })
-                        .then(() => {
-                            // Confirm success and reload the page
-                            alert(
-                                'Data imported successfully. The page will now reload.'
-                            )
-                            location.reload()
-                        })
-                } else {
-                    console.error('Invalid file format.')
+                const localData = {}
+                const syncData = {}
+
+                // Filter and categorize data by type
+                importedData.forEach((item) => {
+                    if (
+                        keysToImport.includes(item.key) &&
+                        ['local', 'sync'].includes(item.type)
+                    ) {
+                        if (item.type === 'local') {
+                            localData[item.key] = item.value
+                        } else if (item.type === 'sync') {
+                            syncData[item.key] = item.value
+                        }
+                    }
+                })
+
+                // Check if no valid keys were found
+                if (
+                    Object.keys(localData).length === 0 &&
+                    Object.keys(syncData).length === 0
+                ) {
+                    alert(
+                        'No matching keys found to import. Please check that you selected the correct JSON file.'
+                    )
+                    return
                 }
+
+                // Update local storage
+                if (Object.keys(localData).length > 0) {
+                    browser.storage.local
+                        .set(localData)
+                        .catch((error) =>
+                            console.error('Local storage error:', error)
+                        )
+                }
+
+                // Update sync storage
+                if (Object.keys(syncData).length > 0) {
+                    browser.storage.sync
+                        .set(syncData)
+                        .catch((error) =>
+                            console.error('Sync storage error:', error)
+                        )
+                }
+
+                alert(
+                    'Import completed successfully! The page will now reload.'
+                )
+                location.reload()
             } catch (e) {
                 console.error('Error parsing JSON:', e)
             }
@@ -946,12 +1059,12 @@ function createPreferencesPrompt() {
         <div class="prompt-footer">
             <button id="preferences-save" type="button">Apply</button>
         </div>
-        <h2>Top Sites</h2>
+        <h2>Backup and Restore</h2>
         <div id="importExportDiv">
-            <label for="exportTopSites">Export:</label>
-            <button id="exportTopSites">Download</button>
-            <label for="importTopSites">Import:</label>
-            <input type="file" id="importTopSites" accept="application/json" />
+            <label for="exportData">Export:</label>
+            <button id="exportData">Download</button>
+            <label for="importData">Import:</label>
+            <input type="file" id="importData" accept="application/json" />
         </div>
         `
         document.body.appendChild(preferencesPrompt)
@@ -979,11 +1092,19 @@ function createPreferencesPrompt() {
                 selectBg.value === 'file' ? 'block' : 'none'
         })
         preferencesPrompt
-            .querySelector('#exportTopSites')
-            .addEventListener('click', exportTopSites)
+            .querySelector('#exportData')
+            .addEventListener('click', () =>
+                exportData(
+                    ['topSites'],
+                    ['homepageBg', 'unsplashQuery', 'customBgURL']
+                )
+            )
         preferencesPrompt
-            .querySelector('#importTopSites')
-            .addEventListener('change', (event) => importTopSites(event.target))
+            .querySelector('#importData')
+            .addEventListener('change', (event) => {
+                const fileInput = event.target
+                importData(fileInput, ['topSites', 'homepageBg', 'unsplashQuery', 'customBgURL'])
+            })
         preferencesPrompt
             .querySelector('#preferences-save')
             .addEventListener('click', savePreferences)
