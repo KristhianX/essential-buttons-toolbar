@@ -3,45 +3,45 @@
 }
 
 :root {
-    --background-color: #1e1e30;
-    --box-background: 42, 41, 57;
+    --background-color: 43, 42, 51;
+    --box-background: 31, 31, 31;
     --text-color: #dcdce4;
     --primary-color: #6495ed;
-    --secondary-color: #ff6347;
+    --secondary-color: #ff674d;
     --link-color: #87a2d6;
 }
 
 @media (prefers-color-scheme: light) {
     :root {
-        --background-color: #e0e0f3;
-        --box-background: 242, 242, 249;
-        --text-color: #18171f;
-        --primary-color: #4682b4;
-        --secondary-color: #dc143c;
+        --background-color: 242, 242, 249;
+        --box-background: 227, 227, 242;
+        --text-color: #141414;
+        --primary-color: #6495ed;
+        --secondary-color: #ff674d;
         --link-color: #4169e1;
     }
 }
 
 .dark-theme {
-    --background-color: #1e1e30;
-    --box-background: 42, 41, 57;
+    --background-color: 43, 42, 51;
+    --box-background: 31, 31, 31;
     --text-color: #dcdce4;
     --primary-color: #6495ed;
-    --secondary-color: #ff6347;
+    --secondary-color: #ff674d;
     --link-color: #87a2d6;
 }
 
 .light-theme {
-    --background-color: #e0e0f3;
-    --box-background: 242, 242, 249;
-    --text-color: #18171f;
-    --primary-color: #4682b4;
-    --secondary-color: #dc143c;
-    --link-color: #4169e1;
+    --background-color: 242, 242, 249;
+    --box-background: 227, 227, 242;
+    --text-color: #141414;
+    --primary-color: #6495ed;
+    --secondary-color: #ff674d;
+    --link-color: #4169e1; 
 }
 
 :root {
-    background: var(--background-color);
+    background: rgb(var(--box-background));
     height: 100vh;
     overflow: hidden;
 }
@@ -75,7 +75,7 @@ body {
     font-size: 12px;
     bottom: 24px;
     left: 0;
-    background: rgba(var(--box-background), 0.7);
+    background: rgba(var(--background-color), 0.7);
     width: fit-content;
     text-align: center;
     padding-top: 8px;
@@ -92,22 +92,19 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
     position: relative;
     left: 5px;
     width: 24px;
     height: 24px;
     border-radius: 50%;
     cursor: pointer;
-    background: var(--link-color);
+    background: rgb(var(--box-background));
 }
 
-#changeWallButton::before {
-    content: '\21BB';
-    display: inline-block;
-    color: var(--text-color);
-    position: relative;
-    right: 1px;
+#changeWallButton svg {
+    height: 60%;
+    aspect-ratio: 1;
+    pointer-events: none;
 }
 
 h1,
@@ -160,7 +157,7 @@ label {
 #top-sites-header {
     width: fit-content;
     margin: 0 auto 15px;
-    background: rgba(var(--box-background), 0.7);
+    background: rgba(var(--background-color), 0.7);
     padding: 8px 12px;
     border-radius: 12px;
 }
@@ -207,7 +204,7 @@ label {
     display: flex;
     text-decoration: none;
     color: var(--text-color);
-    background-color: rgba(var(--box-background), 0.7);
+    background-color: rgba(var(--background-color), 0.7);
     border-radius: 8px;
     max-width: 60px;
     max-height: 60px;
@@ -229,7 +226,7 @@ label {
 .placeholder-image {
     height: 30px;
     width: 30px;
-    background: var(--background-color);
+    background: rgb(var(--box-background));
     color: var(--text-color);
     position: absolute;
     margin-top: 5px;
@@ -269,8 +266,8 @@ label {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: var(--background-color);
-    z-index: 2;
+    background: rgb(var(--box-background));
+    z-index: 3;
 }
 
 #unsplash-settings,
@@ -284,7 +281,7 @@ label {
 }
 
 #top-site-preview {
-    background: rgb(var(--box-background));
+    background: rgb(var(--background-color));
     width: 60px;
     height: 60px;
     margin: 5px auto 10px;
@@ -330,7 +327,7 @@ label {
 .favicon-options input[type='radio'] {
     width: 12px;
     height: 12px;
-    background-color: rgb(var(--box-background));
+    background-color: rgb(var(--background-color));
     border: 1px solid var(--primary-color);
     border-radius: 50%;
     transition: background-color 0.3s, border-color 0.3s;
@@ -366,8 +363,6 @@ label {
     align-items: center;
     justify-content: center;
     text-align: center;
-    font-size: 20px;
-    line-height: 24px;
     z-index: 2;
     position: absolute;
     top: 0px;
@@ -376,7 +371,6 @@ label {
     height: 24px;
     border-radius: 50%;
     cursor: pointer;
-    padding: 4px;
 }
 
 .top-site-remove-div {
@@ -387,19 +381,11 @@ label {
     background: var(--primary-color);
 }
 
-.top-site-edit-div::before {
-    content: '\270E';
-    display: inline-block;
-    width: 16px;
-    color: var(--text-color);
-    transform: rotate(90deg);
-}
-
-.top-site-remove-div::before {
-    content: '\00d7';
-    display: inline-block;
-    width: 16px;
-    color: var(--text-color);
+.top-site-edit-div svg,
+.top-site-remove-div svg {
+    height: 60%;
+    aspect-ratio: 1;
+    pointer-events: none;
 }
 
 .show {
@@ -423,7 +409,7 @@ button {
     width: fit-content;
     margin: 15px auto 0;
     gap: 10px;
-    background: rgba(var(--box-background), 0.7);
+    background: rgba(var(--background-color), 0.7);
     height: fit-content;
     padding: 0 8px 0;
     border-radius: 12px;
@@ -450,7 +436,7 @@ button {
 
 #homepage-preferences-button {
     position: absolute;
-    background: rgba(var(--box-background), 0.7);
+    background: rgba(var(--background-color), 0.7);
     top: 20px;
     right: 20px;
 }
@@ -480,22 +466,19 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
     float: right;
     cursor: pointer;
-    font-size: 20px;
-    background: var(--secondary-color);
+    background: rgb(var(--background-color));
     width: 24px;
     height: 24px;
     border-radius: 50%;
     cursor: pointer;
 }
 
-.close-button::before {
-    content: '\00d7';
-    display: inline-block;
-    width: 16px;
-    color: var(--text-color);
+.close-button svg {
+    height: 60%;
+    aspect-ratio: 1;
+    pointer-events: none;
 }
 
 .preferences-prompt h2 {
@@ -517,7 +500,7 @@ input[type='text'] {
     padding: 8px;
     font-size: 14px;
     margin-bottom: 10px;
-    background: rgb(var(--box-background));
+    background: rgb(var(--background-color));
     border: none;
     border-radius: 4px;
     color: var(--text-color);
@@ -545,7 +528,7 @@ select {
     padding: 8px;
     font-size: 14px;
     margin-top: 4px;
-    background: rgb(var(--box-background));
+    background: rgb(var(--background-color));
     color: var(--text-color);
     border-radius: 4px;
     outline: none;
@@ -565,7 +548,7 @@ select {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 1;
+    z-index: 2;
 }
 
 .dragging {

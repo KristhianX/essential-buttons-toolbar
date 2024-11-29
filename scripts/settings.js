@@ -17,7 +17,7 @@ const toolbarTransparencyRangeInput = document.getElementById(
 )
 const topBottomMarginRangeInput = document.getElementById('topBottomMargin')
 const defaultPositionSelect = document.getElementById('defaultPosition')
-const themeSelect =document.getElementById('theme')
+const themeSelect = document.getElementById('theme')
 const iconThemeSelect = document.getElementById('iconTheme')
 const hideMethodSelect = document.getElementById('hideMethod')
 const previewButtons = document.querySelectorAll('.preview-button')
@@ -89,7 +89,10 @@ function loadValues() {
             currentValueWidth.textContent = result.toolbarWidth
             toolbarWidthRangeInput.value = result.toolbarWidth
             previewButtons.forEach((previewButton) => {
-                previewButton.style.height = result.toolbarHeight / window.visualViewport.scale - 4 + 'px'
+                previewButton.style.height =
+                    result.toolbarHeight / window.visualViewport.scale -
+                    4 +
+                    'px'
             })
             toolbarContainer.style.width = result.toolbarWidth + 'vw'
             menuContainer.style.width = result.toolbarWidth + 'vw'
@@ -112,28 +115,26 @@ function loadValues() {
                         (button) => button.id === buttonId
                     )
                     if (buttonData) {
-                            const buttonElement = updateButtonIcon(
-                                buttonData,
-                                result.iconTheme,
-                                result.defaultPosition
-                            )
-                            if (buttonElement) {
-                                if (
-                                    result.checkboxStates[buttonId] &&
-                                    buttonsAppended < result.buttonsInToolbarDiv
-                                ) {
-                                    toolbarContainer.appendChild(buttonElement)
-                                    buttonsAppended++
-                                } else if (result.checkboxStates[buttonId]) {
-                                    menuContainer.appendChild(buttonElement)
-                                } else {
-                                    availableContainer.appendChild(
-                                        buttonElement
-                                    )
-                                }
+                        const buttonElement = updateButtonIcon(
+                            buttonData,
+                            result.iconTheme,
+                            result.defaultPosition
+                        )
+                        if (buttonElement) {
+                            if (
+                                result.checkboxStates[buttonId] &&
+                                buttonsAppended < result.buttonsInToolbarDiv
+                            ) {
+                                toolbarContainer.appendChild(buttonElement)
+                                buttonsAppended++
+                            } else if (result.checkboxStates[buttonId]) {
+                                menuContainer.appendChild(buttonElement)
+                            } else {
+                                availableContainer.appendChild(buttonElement)
                             }
-                            buttonElement.style.display = 'inline-flex'
-                            buttonElement.classList.add('drag-able')
+                        }
+                        buttonElement.style.display = 'inline-flex'
+                        buttonElement.classList.add('drag-able')
                     }
                 })
             }
@@ -148,17 +149,23 @@ function loadValues() {
 }
 
 function displayInputURL() {
-    divHomepageURL.style.display = setHomepageSelect.value === 'custom' ? 'block' : 'none'
-    divNewTabURL.style.display = setNewTabSelect.value === 'custom' ? 'block' : 'none'
+    divHomepageURL.style.display =
+        setHomepageSelect.value === 'custom' ? 'block' : 'none'
+    divNewTabURL.style.display =
+        setNewTabSelect.value === 'custom' ? 'block' : 'none'
 }
 
 function updateLabels(position) {
     if (position === 'top' || position === 'bottom') {
-        document.querySelector('label[for="toolbarHeight"]').textContent = "Toolbar Height (px):";
-        document.querySelector('label[for="toolbarWidth"]').textContent = "Toolbar Width (%):";
+        document.querySelector('label[for="toolbarHeight"]').textContent =
+            'Toolbar Height (px):'
+        document.querySelector('label[for="toolbarWidth"]').textContent =
+            'Toolbar Width (%):'
     } else {
-        document.querySelector('label[for="toolbarHeight"]').textContent = "Toolbar Width (px):";
-        document.querySelector('label[for="toolbarWidth"]').textContent = "Toolbar Height (%):";        
+        document.querySelector('label[for="toolbarHeight"]').textContent =
+            'Toolbar Width (px):'
+        document.querySelector('label[for="toolbarWidth"]').textContent =
+            'Toolbar Height (%):'
     }
 }
 
@@ -322,6 +329,7 @@ const buttonsData = [
     { id: 'closeOtherTabsButton', label: 'Close other tabs' },
     { id: 'toggleDesktopSiteButton', label: 'Toggle desktop site (global)' },
     { id: 'openWithButton', label: 'Open with' },
+    { id: 'copyLinkButton', label: 'Copy link' },
 ]
 
 function updateButtonIcon(buttonData, iconTheme, defaultPosition) {
@@ -330,9 +338,7 @@ function updateButtonIcon(buttonData, iconTheme, defaultPosition) {
     if (buttonData.id === 'moveToolbarButton') {
         svgs.forEach((svg) => {
             const chevronClass =
-                defaultPosition === 'bottom'
-                    ? 'chevron-up'
-                    : 'chevron-down'
+                defaultPosition === 'bottom' ? 'chevron-up' : 'chevron-down'
             if (
                 svg.classList.contains(iconTheme) &&
                 svg.classList.contains(chevronClass)
@@ -518,9 +524,9 @@ generalResetButton.addEventListener('click', () => {
     if (confirmed) {
         browser.runtime.sendMessage({ action: 'resetSettings' }, (response) => {
             if (response.success) {
-                document.querySelectorAll('.is-idle svg').forEach(svg => {
-                    svg.style.display = 'none';
-                });                
+                document.querySelectorAll('.is-idle svg').forEach((svg) => {
+                    svg.style.display = 'none'
+                })
                 loadValues()
                 sendMessageToTabs()
             }
@@ -560,8 +566,8 @@ function sendMessageToTabs() {
 }
 
 function overrideTheme(theme) {
-    document.documentElement.classList.toggle('dark-theme', theme === 'dark');
-    document.documentElement.classList.toggle('light-theme', theme === 'light');
+    document.documentElement.classList.toggle('dark-theme', theme === 'dark')
+    document.documentElement.classList.toggle('light-theme', theme === 'light')
 }
 
 loadValues()

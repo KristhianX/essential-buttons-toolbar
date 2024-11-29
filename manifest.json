@@ -8,7 +8,8 @@
         "tabs",
         "storage",
         "webRequest",
-        "webRequestBlocking"
+        "webRequestBlocking",
+        "clipboardWrite"
     ],
     "description": "Inserts a toolbar with essential buttons: Homepage, Duplicate Tab, New tab, Close tab and more.",
     "icons": {

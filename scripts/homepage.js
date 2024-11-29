@@ -73,7 +73,42 @@ async function createTopSitesGroup(groupNumber) {
         const group = document.createElement('div')
         const groupOverlay = document.createElement('div')
         const topSiteRemoveDiv = document.createElement('div')
+        topSiteRemoveDiv.innerHTML = `
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            background="transparent"
+            color="var(--icon-color)"
+            class="featherIcons feather feather-x"
+        >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+        `
         const topSiteEditDiv = document.createElement('div')
+        topSiteEditDiv.innerHTML = `
+        <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            width="24" 
+            height="24" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            stroke-width="2" 
+            stroke-linecap="round" 
+            stroke-linejoin="round" 
+            class="feather feather-edit-2"
+        >
+            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+        </svg>
+        `
         group.classList.add('top-site-group')
         group.setAttribute('id', `group-${groupNumber}`)
         groupOverlay.classList.add('top-site-group-overlay')
@@ -115,7 +150,7 @@ function generatePlaceholder() {
     const previewImage = document.getElementById('top-site-preview-image')
     faviconUrlInput.value = ''
     previewImage.style.content = 'none'
-    previewImage.style.background = 'var(--background-color)'
+    previewImage.style.background = 'rgb(var(--box-background))'
     previewImage.style.borderRadius = '50%'
     previewImage.textContent = nameInput
         ? nameInput.trim()[0].toUpperCase()
@@ -667,60 +702,6 @@ function applyNewItemsOrder() {
     }
 }
 
-// function exportTopSites() {
-//     getTopSites().then(() => {
-//         const jsonContent = JSON.stringify(topSitesList, null, 2)
-//         const blob = new Blob([jsonContent], { type: 'application/json' })
-//         const url = URL.createObjectURL(blob)
-//         const a = document.createElement('a')
-//         a.href = url
-//         a.download = 'essential_homepage-top_sites.json'
-//         document.body.appendChild(a)
-//         a.click()
-//         document.body.removeChild(a)
-//         URL.revokeObjectURL(url)
-//     })
-// }
-
-// function importTopSites(fileInput) {
-//     const confirmOverwrite = confirm(
-//         'Warning: Importing data will overwrite your existing top sites. Do you want to proceed?'
-//     )
-//     // If the user cancels, abort the import process
-//     if (!confirmOverwrite) {
-//         fileInput.value = ''
-//         return
-//     }
-//     const file = fileInput.files[0]
-//     if (file && file.type === 'application/json') {
-//         const reader = new FileReader()
-//         reader.onload = () => {
-//             try {
-//                 const importedData = JSON.parse(reader.result)
-//                 if (Array.isArray(importedData)) {
-//                     // Optional: Add validation logic for each object in the array
-//                     browser.storage.local
-//                         .set({ topSites: importedData })
-//                         .then(() => {
-//                             // Confirm success and reload the page
-//                             alert(
-//                                 'Data imported successfully. The page will now reload.'
-//                             )
-//                             location.reload()
-//                         })
-//                 } else {
-//                     console.error('Invalid file format.')
-//                 }
-//             } catch (e) {
-//                 console.error('Error parsing JSON:', e)
-//             }
-//         }
-//         reader.readAsText(file)
-//     } else {
-//         console.error('Please upload a valid JSON file.')
-//     }
-// }
-
 function exportData(localKeys, syncKeys) {
     const localStorage = browser.storage.local.get(localKeys)
     const syncStorage = browser.storage.sync.get(syncKeys)
@@ -973,6 +954,25 @@ function generateCreditsContainer() {
         photoLink.textContent = 'Unsplash'
         const changeWallDiv = document.createElement('div')
         changeWallDiv.id = 'changeWallButton'
+        changeWallDiv.innerHTML = `
+        <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            width="24" 
+            height="24" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            stroke-width="2" 
+            stroke-linecap="round" 
+            stroke-linejoin="round" 
+            background="transparent"
+            color="var(--icon-color)"
+            class="feather feather-rotate-cw"
+        >
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+        </svg>
+        `
         changeWallDiv.addEventListener('click', changeUnsplashWall)
         creditContainer.appendChild(document.createTextNode('Photo by '))
         creditContainer.appendChild(authorLink)
@@ -1035,7 +1035,25 @@ function createPreferencesPrompt() {
         overlay.style.display = 'block'
         preferencesPrompt.classList.add('preferences-prompt')
         preferencesPrompt.innerHTML = `
-        <span class="close-button" id="preferences-close"></span>
+        <span class="close-button" id="preferences-close">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                background="transparent"
+                color="var(--icon-color)"
+                class="featherIcons feather feather-x"
+            >
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </span>
         <h2>Preferences</h2>
         <label for="selectBg">Background:</label>
         <select id="selectBg">
@@ -1103,7 +1121,12 @@ function createPreferencesPrompt() {
             .querySelector('#importData')
             .addEventListener('change', (event) => {
                 const fileInput = event.target
-                importData(fileInput, ['topSites', 'homepageBg', 'unsplashQuery', 'customBgURL'])
+                importData(fileInput, [
+                    'topSites',
+                    'homepageBg',
+                    'unsplashQuery',
+                    'customBgURL',
+                ])
             })
         preferencesPrompt
             .querySelector('#preferences-save')

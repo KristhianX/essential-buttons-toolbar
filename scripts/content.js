@@ -694,6 +694,24 @@ const buttonElements = {
             }, 100)
         },
     },
+    copyLinkButton: {
+        behavior: function () {
+            this.classList.add('pressed')
+            const currentUrl = window.location.href
+            navigator.clipboard
+                .writeText(currentUrl)
+                .then(() => {
+                    //text copied notification
+                })
+                .catch((err) => {
+                    //error notification. Create function notify(text) 3s.
+                })
+            setTimeout(() => {
+                this.classList.remove('pressed')
+                closeMenu()
+            }, 100)
+        },
+    },
     // Add more buttons
 }
 
