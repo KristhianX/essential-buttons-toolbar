@@ -56,8 +56,76 @@
             <h2>Upgrade Complete!</h2>
             <div>
                 <h3>New in this version</h3>
-                <p style="text-align: left; padding: 0 10px">
-                    <b>- Some improvements.</b>
+                <br /><br />
+                <div
+                    style="
+                        text-align: left;
+                        padding: 0 10px;
+                        margin-bottom: 15px;
+                    "
+                >
+                    <b>- Added a new integrated homepage</b>
+                    <br /><br />
+                    <b>Essential Homepage</b> is a minimalistic,
+                    productivity-focused replacement for the Firefox homepage.
+                    Features include: <br /><br />
+
+                    - Adding, editing, moving, and removing 'Top Sites'
+                    (shortcuts).
+                    <br />
+                    - Automatically retrieving the icon for a Top Site from
+                    DuckDuckGo or Google based on the site’s URL. You can also
+                    specify a custom URL for the icon.
+                    <br />
+                    - No limit on the number of Top Sites you can create.
+                    <br />
+                    - Setting the page background from a URL, a local file, or
+                    retrieving a daily background from Unsplash based on a
+                    custom query.
+                    <br />
+                    - Importing and exporting Top Sites and preferences.
+                    <br /><br />
+                    <em
+                        >Special thanks to
+                        <a href="https://github.com/MilaMurry">@MilaMurry</a>
+                        for the suggestion and
+                        <a
+                            href="https://github.com/KristhianX/essential-buttons-toolbar/issues/6"
+                            >feature request.</a
+                        ></em
+                    >
+                    <br /><br />
+                    <b>- New 'Copy Link' Button</b>
+                    <br /><br />
+                    Copies the current tab's URL to the clipboard.
+                    <br /><br />
+                    <b>- Several style improvements</b>
+                    <br /><br />
+                    <b> Note </b>
+                    <br />
+                    This update includes optional features that utilize external
+                    services:
+                    <br /><br />
+                    <b>Getting backgrounds from Unsplash:</b>
+                    <br />
+                    Requests are forwarded through a Cloudflare Worker to fetch
+                    metadata. The background is then downloaded and saved to the
+                    add-on’s local storage from the retrieved photo URL.
+                    <br /><br />
+                    <b
+                        >Getting favicons for Top Sites from DuckDuckGo or
+                        Google:</b
+                    >
+                    <br />
+                    These services provide the favicon file for the requested
+                    URL. The favicon is downloaded and saved to the add-on’s
+                    local storage to avoid future requests for the same icon.
+                    <br /><br />
+                    All these services are disabled by default. Please ensure
+                    you trust them before enabling them. This add-on is not
+                    responsible for any data logged by these services. As
+                    always, this add-on does not access, log, or share your
+                    personal data.
                     <br /><br />
                     Thank you all for the support! Enjoy the update!
                     <br /><br />
@@ -65,7 +133,7 @@
                         href="https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/versions/"
                         >View Version History</a
                     >
-                </p>
+                </div>
             </div>
             <div>
                 <h3>About</h3>
