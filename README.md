@@ -1,8 +1,12 @@
-# Essential Buttons Toolbar.
-*Adds a toolbar with essential buttons to customise the Android Firefox: Homepage, Duplicate Tab, New tab, Close tab and more.*  
+# Essential Buttons Toolbar and Homepage.
+Adds a toolbar with essential buttons to customise the Android Firefox browser: Homepage, Duplicate Tab, New Tab, Close Tab, and more.  
 
-## Some screenshots.
-<img src="images/Screenshot_20240110-212734.png" width="200px"/> <img src="images/Screenshot_20240101-163355.png" width="200px"/> <img src="images/Screenshot_20240101-163308.png" width="200px"/> <img src="images/Screenshot_20240101-163042.png" width="200px"/>  
+## Installation instructions.
+The add-on is available on AMO (Mozilla Add-ons):  
+
+<a href="https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/">
+  <img src="https://raw.githubusercontent.com/KristhianX/essential-buttons-toolbar/main/images/get-the-addon-fx-apr-2020.svg" width="180" alt="store">
+</a>
 
 ## Why?  
 This add-on aims to fill basic missing functionality in Android Firefox. The main reason is to provide a normal home button.
@@ -15,53 +19,76 @@ Other buttons are being added to offer easier access or missing functionality.
 
 ## Features.  
 **Available buttons are:**  
-- **Homepage:** Opens the default homepage URL. Can be changed in options.
-- **Duplicate Tab:** Opens current URL in new tab. Long-press it to access the browser's default link options, such as opening in the background, copying the link, etc.
-- **Close tab:** Closes the current tab. If the current tab is the only open tab, it opens the homepage URL instead.
-- **Close other tabs:** Due to the current behavior of the tabs API on Android Firefox, it cannot close unloaded tabs. Closed tabs can be restored with the undo close tab(s) button.
-- **Close all tabs:** Due to the current behavior of the tabs API on Android Firefox, it cannot close unloaded tabs. As the close tab button, it opens your homepage URL when the last tab is closed. Closed tabs can be restored with the undo close tab(s) button.
-- **Undo Close Tab(s):** Opens in a new tab the most recently closed tab(s) by this add-on. Please note that, at the moment, it does not keep track of tabs closed by the browser or other add-ons.
-- **New tab:** Opens the default new tab page URL. Can be changed in options.
-- **Go back:** Navigate back in history.
-- **Go forward:** Navigate forward in history.
-- **Reload:** Reloads the current page.
-- **Scroll to the top.**
-- **Scroll to the bottom.**
-- **Toggle Desktop Site:** Modifies the user agent string to the one used in the desktop version of Firefox across all tabs, persisting through browser restarts.
-- **Move toolbar:** Moves the toolbar to the top of the page or to the bottom if it is at the top.
-- **Hide toolbar:** Hides the toolbar. Refresh the page to display it again.
-- **Menu:** Opens an additional bar. This feature is provided to improve organization. Buttons in the menu can be customized on the settings page.
-- **Settings:** Opens the settings page for this add-on in a new tab.
-
+- Homepage
+- Duplicate tab
+- Copy link
+- Close tab
+- Close other tabs
+- Close all tabs
+- Undo close tab(s)
+- New tab
+- Go back
+- Go forward
+- Reload
+- Scroll to the top
+- Scroll to the bottom
+- Toggle desktop site
+- Open with
+- Move toolbar
+- Hide toolbar
+- Menu
+- Settings
 
 **Other options include:**  
-- **Toolbar height:** The number of pixels. The default value is set to 42px.  
-- **Toolbar transparency:** Adjust it to your liking. 
-- **Toolbar default position:** Top or bottom.  
-- **Icon theme:** Feather Icons and Heroicons available.  
-- **Hide on scroll method:** Option to change the used method or to disable it.  
-- **Toolbar buttons:** Enable/disable the buttons and change their position.  
-- **Exclude URLs:** Specify which web addresses to exclude.  
-- **Live reload of settings changes:** No more need to refresh the pages to apply the new settings or the exclude rules.
-- **Integrated blank.html:** A blank page where the toolbar is accessible.  
+- Toolbar height
+- Toolbar width
+- Toolbar transparency
+- Toolbar position
+- Gap from the edge
+- Icon theme
+- Add-on theme
+- Hide on scroll method
+- Toolbar buttons
+- Exclude URLs
+- Live reload of settings changes
+- Integrated blank.html
+- Integrated homepage.html
 
-*This extension does not access, log, or share your data*. It is also *ad-free* and will always remain so.  
+## Default homepage.
+The default homepage URL used in this add-on is the integrated **Essential Homepage.**  
+
+Remember, you can choose any website, even 'about:blank' if you wish. Other good options are:
+- Tabliss:
+https://web.tabliss.io/
+- booky.io:
+https://booky.io/
+
+**Essential Homepage** is a minimalistic, productivity-focused replacement for the Firefox homepage. Features include:
+
+- Adding, editing, moving, and removing 'Top Sites' (shortcuts).  
+- Automatically retrieving the icon for a Top Site from DuckDuckGo or Google based on the site’s URL. You can also specify a custom URL for the icon.  
+- No limit on the number of Top Sites you can create.  
+- Setting the page background from a URL, a local file, or retrieving a daily background from Unsplash based on a custom query.  
+- Importing and exporting Top Sites and preferences.  
+
+## More info.
+
+This extension does not access, log, or share your data. It is also ad-free and will always remain so. For more details, including how it handles optional features and external services, please review the Privacy Policy:  
+https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/privacy/
 
 The icons used in this extension are from the elegant Feather Icons collection:  
 https://github.com/feathericons/feather  
 The beautiful Heroicons theme is also available:  
 https://github.com/tailwindlabs/heroicons  
 
-**Permissions:**  
-**Access browser tabs:** Allows the extension to check the number of open tabs, allowing the close button to open the home page if only one tab is open.  
-**Access your data for all websites:** Allows the extension to insert the toolbar on permitted websites.
+## Permissions
 
-## Installation instructions.
-The add-on is available on AMO (Mozilla Add-ons):  
-
-<a href="https://addons.mozilla.org/en-US/android/addon/essential-buttons-toolbar/">
-  <img src="https://raw.githubusercontent.com/KristhianX/essential-buttons-toolbar/main/images/get-the-addon-fx-apr-2020.svg" width="180" alt="store">
-</a>
+- Access browser tabs:  
+This permission is required to allow the add-on to manage tabs and to open the homepage URL if no tab becomes active.
+- Access your data for all websites:  
+This permission is required to insert the toolbar into websites.
+- Input data to the clipboard:  
+This permission is required to enable the 'Copy link' button to write the current URL to the clipboard.
 
 ## Version history.
 You can see the changelog here:  
@@ -85,33 +112,6 @@ While some users use the Firefox home button as a new tab button, I suggest that
 It is also very useful to change the settings in **Delete browsing data on quit.** You can uncheck all the options except for **Downloads.** Enabling this option will display a **Quit** option at the bottom of the Firefox menu. Closing the browser in this way is ideal, as the next time you open the browser, it will load the pages you had opened.
 
 <img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231027-212100.png?raw=true" width="200px"/>
-
-## Default homepage.
-The default homepage URL used in this add-on is the beautiful and awesome Tabliss.  
-https://tabliss.io/  
-Their Firefox add-on has the recommended tag.  
-https://addons.mozilla.org/es/firefox/addon/tabliss/  
-However, it does not work for Android Firefox due to the current restrictions in the functionality of mobile add-ons.  
-Nevertheless, we can use its web version.  
-https://web.tabliss.io/  
-
-Here is a list of the pros and cons of this web homepage:  
-
-**Pros:**  
-- Beautiful and customizable.
-- Open-source.
-- Option for persistent storage, making it available offline.
-- Responsive design that adapts very well to phone screens.
-
-<img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231021-210418.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231021-210327.png?raw=true" width="200px"/> <img src="https://github.com/KristhianX/essential-buttons-toolbar/blob/main/images/Screenshot_20231021-210343.png?raw=true" width="200px"/>  
-
-**Cons:**  
-- Last updated two years ago.
-- The inspirational quotes widget does not work.
-- Adding links to the Quick Links widget is time-consuming.
-
-Remember, you can choose any website, even 'about:blank' if you wish. Another good option could be booky.io:  
-https://booky.io/
 
 ## Known issues:
 Some websites are not well optimized for mobile. Some will have a little zoom that will make the toolbar be displayed outside of the viewport or display only a part of it. You can find the toolbar by zooming out.
