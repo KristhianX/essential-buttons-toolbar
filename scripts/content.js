@@ -70,7 +70,7 @@ function getSettingsValues() {
 function appendToolbar() {
     return new Promise((resolve, reject) => {
         let retryCount = 0
-        const maxRetries = 8
+        const maxRetries = 10
         const initialDelay = 100
         const backoffFactor = 2
         function tryAppend() {
@@ -78,8 +78,8 @@ function appendToolbar() {
                 appendToolbarAndResolve(resolve)
             } else if (retryCount < maxRetries) {
                 const delay = initialDelay * Math.pow(backoffFactor, retryCount)
-                setTimeout(tryAppend, delay)
                 retryCount++
+                setTimeout(tryAppend, delay)
             } else {
                 reject(new Error('Toolbar appending failed'))
             }

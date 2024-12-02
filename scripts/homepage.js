@@ -599,29 +599,32 @@ function disableDragging() {
     document.removeEventListener('touchend', dragEnd)
 }
 
-function saveNewOrder() {
-    const groupDivs = document.querySelectorAll('.top-site-group')
-    const newOrder = []
-    groupDivs.forEach((groupDiv) => {
-        const groupNumber = parseInt(groupDiv.id.replace('group-', ''))
-        const topSiteElements = groupDiv.querySelectorAll('a')
-        topSiteElements.forEach((topSiteElement) => {
-            const url = topSiteElement.href
-            const topSite = topSitesList.find((site) => site.url === url)
-            if (topSite) {
+async function saveNewOrder() {
+    try {
+        const groupDivs = document.querySelectorAll('.top-site-group')
+        const newOrder = []
+        groupDivs.forEach((groupDiv) => {
+            const groupNumber = parseInt(groupDiv.id.replace('group-', ''))
+            const topSiteElements = groupDiv.querySelectorAll('a')
+            topSiteElements.forEach((topSiteElement) => {
+                const url = topSiteElement.href
+                const nameElement = topSiteElement.querySelector('span')
+                const name = nameElement ? nameElement.textContent.trim() : ''
+                const faviconImg = topSiteElement.querySelector('img')
+                const faviconUrl = faviconImg ? faviconImg.src : ''
                 newOrder.push({
-                    name: topSite.name,
-                    url: topSite.url,
-                    faviconUrl: topSite.faviconUrl,
+                    name: name,
+                    url: url,
+                    faviconUrl: faviconUrl,
                     group: groupNumber,
                 })
-            }
+            })
         })
-    })
-    topSitesList = newOrder
-    browser.storage.local.set({ topSites: topSitesList }).catch((error) => {
-        console.error('Error updating local storage:', error)
-    })
+        topSitesList = newOrder
+        await browser.storage.local.set({ topSites: topSitesList })
+    } catch (error) {
+        console.error('Error updating top sites order:', error)
+    }
 }
 
 function dragStart(e) {
