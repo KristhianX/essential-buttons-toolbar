@@ -20,6 +20,8 @@ const defaultVariables = {
     homepageBg: 'none',
     unsplashQuery: 'landscape',
     customBgURL: 'https://w.wallhaven.cc/full/eo/wallhaven-eo5jko.png',
+    topSiteSize: 60,
+    topSitesGridGap: 10, 
     buttonsInToolbarDiv: 6,
     buttonOrder: [
         'homeButton',
@@ -80,6 +82,8 @@ const settingsToCheck = [
     'homepageBg',
     'unsplashQuery',
     'customBgURL',
+    'topSiteSize',
+    'topSitesGridGap',
     'buttonOrder',
     'checkboxStates',
     'buttonsInToolbarDiv',

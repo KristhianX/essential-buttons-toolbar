@@ -39,6 +39,8 @@ function getSettings() {
         'homepageBg',
         'unsplashQuery',
         'customBgURL',
+        'topSiteSize',
+        'topSitesGridGap',
     ]
     return browser.storage.sync.get(keys).then((result) => {
         keys.forEach((key) => {
@@ -1080,7 +1082,30 @@ function createPreferencesPrompt() {
         <div class="prompt-footer">
             <button id="preferences-save" type="button">Apply</button>
         </div>
-        <h2>Backup and Restore</h2>
+        <h3>Top Sites</h3>
+        <label for="topSiteSize">Size:</label>
+        <span class="currentValue" id="currentValueTopSiteSize"></span>
+        <input 
+            type="range"
+            id="topSiteSize"
+            min="20"
+            max="120"
+            step="5"
+        />
+        <br />
+        <label for="topSitesGridGap">Spacing between items:</label>
+        <span class="currentValue" id="currentValueTopSitesGridGap"></span>
+        <input
+            type="range"
+            id="topSitesGridGap"
+            min="2"
+            max="40"
+            step="2"
+        />
+        <div class="prompt-footer">
+            <button id="updateGridButton" type="button" style="margin-top: 16px;">Apply</button>
+        </div>
+        <h3>Backup and Restore</h3>
         <div id="importExportDiv">
             <label for="exportData">Export:</label>
             <button id="exportData">Download</button>
@@ -1095,6 +1120,9 @@ function createPreferencesPrompt() {
         const fileBgSettings = document.getElementById('file-bg-settings')
         const unsplashQuery = document.getElementById('unsplash-query')
         const customBgURL = document.getElementById('custom-bg-url')
+        const topSiteSizeRangeInput = document.getElementById('topSiteSize')
+        const topSitesGridGapRangeInput =
+            document.getElementById('topSitesGridGap')
         selectBg.value = homepageSettings.homepageBg
         unsplashSettings.style.display =
             selectBg.value === 'unsplash' ? 'block' : 'none'
@@ -1104,6 +1132,11 @@ function createPreferencesPrompt() {
             selectBg.value === 'file' ? 'block' : 'none'
         unsplashQuery.value = homepageSettings.unsplashQuery
         customBgURL.value = homepageSettings.customBgURL
+        currentValueTopSiteSize.textContent = homepageSettings.topSiteSize
+        topSiteSizeRangeInput.value = homepageSettings.topSiteSize
+        currentValueTopSitesGridGap.textContent =
+            homepageSettings.topSitesGridGap
+        topSitesGridGapRangeInput.value = homepageSettings.topSitesGridGap
         selectBg.addEventListener('input', () => {
             unsplashSettings.style.display =
                 selectBg.value === 'unsplash' ? 'block' : 'none'
@@ -1111,6 +1144,14 @@ function createPreferencesPrompt() {
                 selectBg.value === 'custom' ? 'block' : 'none'
             fileBgSettings.style.display =
                 selectBg.value === 'file' ? 'block' : 'none'
+        })
+        topSiteSizeRangeInput.addEventListener('input', function () {
+            const currentValue = topSiteSizeRangeInput.value
+            currentValueTopSiteSize.textContent = currentValue
+        })
+        topSitesGridGapRangeInput.addEventListener('input', function () {
+            const currentValue = topSitesGridGapRangeInput.value
+            currentValueTopSitesGridGap.textContent = currentValue
         })
         preferencesPrompt
             .querySelector('#exportData')
@@ -1134,6 +1175,9 @@ function createPreferencesPrompt() {
         preferencesPrompt
             .querySelector('#preferences-save')
             .addEventListener('click', savePreferences)
+        preferencesPrompt
+            .querySelector('#updateGridButton')
+            .addEventListener('click', updateGridSave)
         preferencesPrompt
             .querySelector('#preferences-close')
             .addEventListener('click', () => {
@@ -1188,6 +1232,8 @@ async function savePreferences() {
             if (creditContainer) creditContainer.remove()
         }
     }
+    preferencesPrompt.style.display = 'none'
+    overlay.style.display = 'none'
 }
 
 function adjustPreferencesButton() {
@@ -1224,6 +1270,27 @@ function testExclude() {
     ))
 }
 
+function updateGridSave() {
+    const topSiteSizeRangeInput = document.getElementById('topSiteSize')
+    const topSitesGridGapRangeInput = document.getElementById('topSitesGridGap')
+    const newValues = {
+        topSiteSize: topSiteSizeRangeInput.value,
+        topSitesGridGap: topSitesGridGapRangeInput.value,
+    }
+    browser.storage.sync.set(newValues) // Await optional if no further chaining required
+    updateGrid(topSiteSizeRangeInput.value, topSitesGridGapRangeInput.value)
+    preferencesPrompt.style.display = 'none'
+    overlay.style.display = 'none'
+}
+
+function updateGrid(size, gap) {
+    const style = document.documentElement.style
+    style.setProperty('--item-size', `${size}px`)
+    style.setProperty('--grid-gap', `${gap}px`)
+    const fontSize = (size / 60) * 11
+    style.setProperty('--font-size', `${fontSize}px`)
+}
+
 //
 // Init and event listeners
 //
@@ -1245,6 +1312,10 @@ function initHomepage() {
             setWallpaperFromLocal(true)
         }
         adjustPreferencesButton()
+        updateGrid(
+            homepageSettings.topSiteSize,
+            homepageSettings.topSitesGridGap
+        )
     })
     getTopSites().then(() => {
         if (topSitesList.length === 0) return
