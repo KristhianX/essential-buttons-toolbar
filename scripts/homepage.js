@@ -1,5 +1,6 @@
 const backgroundContainer = document.querySelector('#background-container')
 const overlay = document.querySelector('#main-overlay')
+const mainContainer = document.querySelector('#main-container')
 const topSitesGrid = document.querySelector('.top-sites-grid')
 const addTopSiteButton = document.querySelector('#add-top-site-button')
 const editTopSitesButton = document.querySelector('#edit-top-sites-button')
@@ -41,6 +42,8 @@ function getSettings() {
         'customBgURL',
         'topSiteSize',
         'topSitesGridGap',
+        'topSitesContainerWidth',
+        'topSitesContainerHeight',
     ]
     return browser.storage.sync.get(keys).then((result) => {
         keys.forEach((key) => {
@@ -217,13 +220,11 @@ async function createTopSiteElement(topSite) {
 }
 
 function createPrompt() {
-    //addTopSiteButton.style.backgroundColor = 'var(--primary-color)'
-    //setTimeout(() => {
     addTopSitePrompt = document.createElement('div')
     overlay.style.display = 'block'
     addTopSitePrompt.classList.add('top-site-prompt')
     addTopSitePrompt.innerHTML = `
-        <h2>Add a new top site</h2>
+        <h2 id="topSitePromptTitle">Add a new top site</h2>
         <h3>Preview</h3>
         <div id="top-site-preview">
         <div id="top-site-preview-image"></div>
@@ -278,10 +279,8 @@ function createPrompt() {
         .addEventListener('click', () => {
             addTopSitePrompt.remove()
             overlay.style.display = 'none'
-            //addTopSiteButton.style.background = 'none'
         })
     generatePlaceholder()
-    //}, 100)
 }
 
 function updatePreview() {
@@ -359,7 +358,7 @@ async function addTopSite() {
     )
     groupNumber.appendChild(topSiteElement)
     overlay.style.display = 'none'
-    //addTopSiteButton.style.background = 'none'
+    mainContainer.classList.remove('main-container-empty')
 }
 
 function editTopSitesElements() {
@@ -402,47 +401,38 @@ async function editTopSite(event) {
         const topSiteIndex = topSitesList.findIndex(
             (site) => site.group == groupNumber
         )
-
         if (topSiteIndex !== -1) {
             const topSite = topSitesList[topSiteIndex]
-
-            // Use `createPrompt` to show the edit dialog
             createPrompt()
-
-            // Wait for the prompt to be created
             setTimeout(() => {
+                const topSitePromptTitle =
+                    document.getElementById('topSitePromptTitle')
                 const nameInput = document.getElementById('top-site-name')
                 const urlInput = document.getElementById('top-site-url')
                 const faviconUrlInput = document.getElementById(
                     'top-site-favicon-url'
                 )
-
                 if (!nameInput || !urlInput || !faviconUrlInput) {
                     console.error('Prompt inputs are missing.')
                     return
                 }
-
                 // Pre-fill values in the dialog
+                topSitePromptTitle.textContent = 'Edit top site'
                 nameInput.value = topSite.name
                 urlInput.value = topSite.url
                 faviconUrlInput.value = topSite.faviconUrl || ''
-
                 updatePreview()
-
                 // Update the Save button to edit instead of adding
                 const saveButton = document.getElementById('top-site-submit')
                 saveButton.removeEventListener('click', addTopSite)
-                //saveButton.textContent = 'Save Changes'
                 saveButton.onclick = async () => {
                     const updatedName = nameInput.value
                     const updatedUrl = urlInput.value
                     const updatedFaviconUrl = faviconUrlInput.value
-
                     if (!updatedName || !updatedUrl) {
                         alert('Name and URL are mandatory.')
                         return
                     }
-
                     try {
                         let dataUrl = topSite.faviconUrl
                         if (updatedFaviconUrl) {
@@ -450,7 +440,6 @@ async function editTopSite(event) {
                         } else {
                             dataUrl = ''
                         }
-
                         // Update the top site object
                         topSitesList[topSiteIndex] = {
                             ...topSite,
@@ -458,12 +447,10 @@ async function editTopSite(event) {
                             url: updatedUrl,
                             faviconUrl: dataUrl || '',
                         }
-
                         // Save updated list to storage
                         await browser.storage.local.set({
                             topSites: topSitesList,
                         })
-
                         // Update the existing DOM elements directly
                         const groupElement = document.getElementById(
                             `group-${groupNumber}`
@@ -471,7 +458,6 @@ async function editTopSite(event) {
                         const anchor = groupElement.querySelector('a')
                         const img = groupElement.querySelector('img')
                         const span = groupElement.querySelector('span')
-
                         anchor.href = updatedUrl
                         span.textContent = updatedName
                         if (img && dataUrl) {
@@ -485,7 +471,7 @@ async function editTopSite(event) {
                             newImg.src = dataUrl
                             anchor.appendChild(newImg)
                         } else {
-                            img.remove()
+                            if (img) img.remove()
                             const placeholderImage =
                                 document.createElement('div')
                             placeholderImage.className = 'placeholder-image'
@@ -494,7 +480,6 @@ async function editTopSite(event) {
                                 .toUpperCase()
                             anchor.appendChild(placeholderImage)
                         }
-
                         // Close the prompt
                         addTopSitePrompt.remove()
                         overlay.style.display = 'none'
@@ -710,10 +695,8 @@ function applyNewItemsOrder() {
 function exportData(localKeys, syncKeys) {
     const localStorage = browser.storage.local.get(localKeys)
     const syncStorage = browser.storage.sync.get(syncKeys)
-
     Promise.all([localStorage, syncStorage]).then(([localData, syncData]) => {
         const exportData = []
-
         // Process local storage data
         Object.entries(localData).forEach(([key, value]) => {
             exportData.push({
@@ -722,7 +705,6 @@ function exportData(localKeys, syncKeys) {
                 value,
             })
         })
-
         // Process sync storage data
         Object.entries(syncData).forEach(([key, value]) => {
             exportData.push({
@@ -731,7 +713,6 @@ function exportData(localKeys, syncKeys) {
                 value,
             })
         })
-
         // Convert to JSON and download
         const jsonContent = JSON.stringify(exportData, null, 2)
         const blob = new Blob([jsonContent], { type: 'application/json' })
@@ -754,7 +735,6 @@ function importData(fileInput, keysToImport) {
         fileInput.value = ''
         return
     }
-
     const file = fileInput.files[0]
     if (file && file.type === 'application/json') {
         const reader = new FileReader()
@@ -763,7 +743,6 @@ function importData(fileInput, keysToImport) {
                 const importedData = JSON.parse(reader.result)
                 const localData = {}
                 const syncData = {}
-
                 // Filter and categorize data by type
                 importedData.forEach((item) => {
                     if (
@@ -777,7 +756,6 @@ function importData(fileInput, keysToImport) {
                         }
                     }
                 })
-
                 // Check if no valid keys were found
                 if (
                     Object.keys(localData).length === 0 &&
@@ -788,7 +766,6 @@ function importData(fileInput, keysToImport) {
                     )
                     return
                 }
-
                 // Update local storage
                 if (Object.keys(localData).length > 0) {
                     browser.storage.local
@@ -797,7 +774,6 @@ function importData(fileInput, keysToImport) {
                             console.error('Local storage error:', error)
                         )
                 }
-
                 // Update sync storage
                 if (Object.keys(syncData).length > 0) {
                     browser.storage.sync
@@ -806,7 +782,6 @@ function importData(fileInput, keysToImport) {
                             console.error('Sync storage error:', error)
                         )
                 }
-
                 alert(
                     'Import completed successfully! The page will now reload.'
                 )
@@ -950,11 +925,11 @@ function generateCreditsContainer() {
     if (creditInfo) {
         creditContainer = document.createElement('div')
         const authorLink = document.createElement('a')
-        authorLink.href = creditInfo.authorUrl
+        authorLink.href = `${creditInfo.authorUrl}?utm_source=essential_homepage&utm_medium=referral`
         authorLink.target = '_blank'
         authorLink.textContent = creditInfo.authorName
         const photoLink = document.createElement('a')
-        photoLink.href = creditInfo.photoUrl
+        photoLink.href = `${creditInfo.photoUrl}?utm_source=essential_homepage&utm_medium=referral`
         photoLink.target = '_blank'
         photoLink.textContent = 'Unsplash'
         const changeWallDiv = document.createElement('div')
@@ -1060,7 +1035,7 @@ function createPreferencesPrompt() {
             </svg>
         </span>
         <h2>Preferences</h2>
-        <label for="selectBg">Background:</label>
+        <label for="selectBg">Background source:</label>
         <select id="selectBg">
             <option value="unsplash">Unsplash</option>
             <option value="custom">Custom URL</option>
@@ -1068,7 +1043,7 @@ function createPreferencesPrompt() {
             <option value="none">None</option>
         </select>
         <div id="unsplash-settings">
-            <label for="unsplash-query">Search query:</label>
+            <label for="unsplash-query">Search query (Generates a daily background based on this):</label>
             <input type="text" id="unsplash-query" />
         </div>
         <div id="custom-bg-settings">
@@ -1083,7 +1058,7 @@ function createPreferencesPrompt() {
             <button id="preferences-save" type="button">Apply</button>
         </div>
         <h3>Top Sites</h3>
-        <label for="topSiteSize">Size:</label>
+        <label for="topSiteSize">Item size:</label>
         <span class="currentValue" id="currentValueTopSiteSize"></span>
         <input 
             type="range"
@@ -1098,18 +1073,38 @@ function createPreferencesPrompt() {
         <input
             type="range"
             id="topSitesGridGap"
-            min="2"
+            min="0"
             max="40"
             step="2"
+        />
+        <br />
+        <label for="topSitesContainerWidth">Container width:</label>
+        <span class="currentValue" id="currentValueTopSitesContainerWidth"></span>
+        <input 
+            type="range"
+            id="topSitesContainerWidth"
+            min="40"
+            max="95"
+            step="5"
+        />
+        <br />
+        <label for="topSitesContainerHeight">Container height:</label>
+        <span class="currentValue" id="currentValueTopSitesContainerHeight"></span>
+        <input 
+            type="range"
+            id="topSitesContainerHeight"
+            min="40"
+            max="95"
+            step="5"
         />
         <div class="prompt-footer">
             <button id="updateGridButton" type="button" style="margin-top: 16px;">Apply</button>
         </div>
         <h3>Backup and Restore</h3>
         <div id="importExportDiv">
-            <label for="exportData">Export:</label>
+            <label for="exportData">Export top sites and preferences:</label>
             <button id="exportData">Download</button>
-            <label for="importData">Import:</label>
+            <label for="importData">Import top sites and preferences:</label>
             <input type="file" id="importData" accept="application/json" />
         </div>
         `
@@ -1123,6 +1118,12 @@ function createPreferencesPrompt() {
         const topSiteSizeRangeInput = document.getElementById('topSiteSize')
         const topSitesGridGapRangeInput =
             document.getElementById('topSitesGridGap')
+        const topSitesContainerWidthRangeInput = document.getElementById(
+            'topSitesContainerWidth'
+        )
+        const topSitesContainerHeightRangeInput = document.getElementById(
+            'topSitesContainerHeight'
+        )
         selectBg.value = homepageSettings.homepageBg
         unsplashSettings.style.display =
             selectBg.value === 'unsplash' ? 'block' : 'none'
@@ -1137,6 +1138,14 @@ function createPreferencesPrompt() {
         currentValueTopSitesGridGap.textContent =
             homepageSettings.topSitesGridGap
         topSitesGridGapRangeInput.value = homepageSettings.topSitesGridGap
+        currentValueTopSitesContainerWidth.textContent =
+            homepageSettings.topSitesContainerWidth
+        topSitesContainerWidthRangeInput.value =
+            homepageSettings.topSitesContainerWidth
+        currentValueTopSitesContainerHeight.textContent =
+            homepageSettings.topSitesContainerHeight
+        topSitesContainerHeightRangeInput.value =
+            homepageSettings.topSitesContainerHeight
         selectBg.addEventListener('input', () => {
             unsplashSettings.style.display =
                 selectBg.value === 'unsplash' ? 'block' : 'none'
@@ -1153,6 +1162,17 @@ function createPreferencesPrompt() {
             const currentValue = topSitesGridGapRangeInput.value
             currentValueTopSitesGridGap.textContent = currentValue
         })
+        topSitesContainerWidthRangeInput.addEventListener('input', function () {
+            const currentValue = topSitesContainerWidthRangeInput.value
+            currentValueTopSitesContainerWidth.textContent = currentValue
+        })
+        topSitesContainerHeightRangeInput.addEventListener(
+            'input',
+            function () {
+                const currentValue = topSitesContainerHeightRangeInput.value
+                currentValueTopSitesContainerHeight.textContent = currentValue
+            }
+        )
         preferencesPrompt
             .querySelector('#exportData')
             .addEventListener('click', () =>
@@ -1273,22 +1293,39 @@ function testExclude() {
 function updateGridSave() {
     const topSiteSizeRangeInput = document.getElementById('topSiteSize')
     const topSitesGridGapRangeInput = document.getElementById('topSitesGridGap')
+    const topSitesContainerWidthRangeInput = document.getElementById(
+        'topSitesContainerWidth'
+    )
+    const topSitesContainerHeightRangeInput = document.getElementById(
+        'topSitesContainerHeight'
+    )
     const newValues = {
         topSiteSize: topSiteSizeRangeInput.value,
         topSitesGridGap: topSitesGridGapRangeInput.value,
+        topSitesContainerWidth: topSitesContainerWidthRangeInput.value,
+        topSitesContainerHeight: topSitesContainerHeightRangeInput.value,
     }
-    browser.storage.sync.set(newValues) // Await optional if no further chaining required
-    updateGrid(topSiteSizeRangeInput.value, topSitesGridGapRangeInput.value)
+    browser.storage.sync.set(newValues)
+    updateGrid(
+        topSiteSizeRangeInput.value,
+        topSitesGridGapRangeInput.value,
+        topSitesContainerWidthRangeInput.value,
+        topSitesContainerHeightRangeInput.value
+    )
     preferencesPrompt.style.display = 'none'
     overlay.style.display = 'none'
 }
 
-function updateGrid(size, gap) {
+function updateGrid(size, gap, containerWidth, containerHeight) {
     const style = document.documentElement.style
+    const fontSize = (size / 60) * 11 // change this for homepageSettings.topSiteFontSize
     style.setProperty('--item-size', `${size}px`)
     style.setProperty('--grid-gap', `${gap}px`)
-    const fontSize = (size / 60) * 11
+    style.setProperty('--container-width', `${containerWidth}%`)
+    style.setProperty('--container-height', `${containerHeight}vh`)
     style.setProperty('--font-size', `${fontSize}px`)
+    style.setProperty('--top-site-radius', Number(gap) === 0 ? '0px' : '8px');
+
 }
 
 //
@@ -1314,11 +1351,16 @@ function initHomepage() {
         adjustPreferencesButton()
         updateGrid(
             homepageSettings.topSiteSize,
-            homepageSettings.topSitesGridGap
+            homepageSettings.topSitesGridGap,
+            homepageSettings.topSitesContainerWidth,
+            homepageSettings.topSitesContainerHeight
         )
     })
     getTopSites().then(() => {
-        if (topSitesList.length === 0) return
+        if (topSitesList.length === 0) {
+            mainContainer.classList.add('main-container-empty')
+            return
+        }
         createTopSitesButtons()
     })
 }
