@@ -1069,7 +1069,7 @@ function createPreferencesPrompt() {
             step="5"
         />
         <br />
-        <label for="topSiteFontSize">Item's font size:</label>
+        <label for="topSiteFontSize">Item font size:</label>
         <span class="currentValue" id="currentValuetopSiteFontSize"></span>
         <input 
             type="range"
@@ -1127,7 +1127,8 @@ function createPreferencesPrompt() {
         const unsplashQuery = document.getElementById('unsplash-query')
         const customBgURL = document.getElementById('custom-bg-url')
         const topSiteSizeRangeInput = document.getElementById('topSiteSize')
-        const topSiteFontSizeRangeInput = document.getElementById('topSiteFontSize')
+        const topSiteFontSizeRangeInput =
+            document.getElementById('topSiteFontSize')
         const topSitesGridGapRangeInput =
             document.getElementById('topSitesGridGap')
         const topSitesContainerWidthRangeInput = document.getElementById(
@@ -1147,7 +1148,8 @@ function createPreferencesPrompt() {
         customBgURL.value = homepageSettings.customBgURL
         currentValueTopSiteSize.textContent = homepageSettings.topSiteSize
         topSiteSizeRangeInput.value = homepageSettings.topSiteSize
-        currentValuetopSiteFontSize.textContent = homepageSettings.topSiteFontSize
+        currentValuetopSiteFontSize.textContent =
+            homepageSettings.topSiteFontSize
         topSiteFontSizeRangeInput.value = homepageSettings.topSiteFontSize
         currentValueTopSitesGridGap.textContent =
             homepageSettings.topSitesGridGap
@@ -1345,8 +1347,7 @@ function updateGrid(size, fontSize, gap, containerWidth, containerHeight) {
     style.setProperty('--container-width', `${containerWidth}%`)
     style.setProperty('--container-height', `${containerHeight}vh`)
     style.setProperty('--font-size', `${calculatedFontSize}px`)
-    style.setProperty('--top-site-radius', Number(gap) === 0 ? '0px' : '8px');
-
+    style.setProperty('--top-site-radius', Number(gap) === 0 ? '0px' : '8px')
 }
 
 //
@@ -1377,13 +1378,21 @@ function initHomepage() {
             homepageSettings.topSitesContainerWidth,
             homepageSettings.topSitesContainerHeight
         )
+        topSitesGrid.style.display = 'grid'
     })
     getTopSites().then(() => {
         if (topSitesList.length === 0) {
             topSitesContainer.classList.add('top-sites-container-empty')
+            topSitesContainer.style.display = 'flex'
             return
         }
         createTopSitesButtons()
+            .then(() => {
+                topSitesContainer.style.display = 'flex'
+            })
+            .catch((error) => {
+                console.error('Error in createTopSitesButtons:', error)
+            })
     })
 }
 

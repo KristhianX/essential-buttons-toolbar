@@ -167,7 +167,7 @@ label {
 
 .top-sites-container {
     width: 100%;
-    display: flex;
+    display: none;
     flex-direction: column;
     justify-content: center;
     overflow: hidden;
@@ -179,7 +179,7 @@ label {
 }
 
 .top-sites-grid {
-    display: grid;
+    display: none;
     grid-template-columns: repeat(auto-fill, var(--item-size, 60px));
     grid-auto-rows: var(--item-size, 60px);
     gap: var(--grid-gap, 10px);
