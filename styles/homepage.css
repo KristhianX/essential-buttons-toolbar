@@ -157,10 +157,6 @@ label {
     justify-content: center;
 }
 
-.main-container-empty {
-    width: fit-content !important; /*use .top-sites-container instead */
-}
-
 #top-sites-header {
     width: fit-content;
     margin: 0 auto 2vh 0;
@@ -175,6 +171,11 @@ label {
     flex-direction: column;
     justify-content: center;
     overflow: hidden;
+}
+
+.top-sites-container-empty {
+    width: fit-content;
+    margin: 0 auto;
 }
 
 .top-sites-grid {

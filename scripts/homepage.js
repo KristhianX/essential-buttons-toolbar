@@ -1,6 +1,6 @@
 const backgroundContainer = document.querySelector('#background-container')
 const overlay = document.querySelector('#main-overlay')
-const mainContainer = document.querySelector('#main-container')
+const topSitesContainer = document.querySelector('.top-sites-container')
 const topSitesGrid = document.querySelector('.top-sites-grid')
 const addTopSiteButton = document.querySelector('#add-top-site-button')
 const editTopSitesButton = document.querySelector('#edit-top-sites-button')
@@ -41,6 +41,7 @@ function getSettings() {
         'unsplashQuery',
         'customBgURL',
         'topSiteSize',
+        'topSiteFontSize',
         'topSitesGridGap',
         'topSitesContainerWidth',
         'topSitesContainerHeight',
@@ -358,7 +359,7 @@ async function addTopSite() {
     )
     groupNumber.appendChild(topSiteElement)
     overlay.style.display = 'none'
-    mainContainer.classList.remove('main-container-empty')
+    topSitesContainer.classList.remove('top-sites-container-empty')
 }
 
 function editTopSitesElements() {
@@ -1068,6 +1069,16 @@ function createPreferencesPrompt() {
             step="5"
         />
         <br />
+        <label for="topSiteFontSize">Item's font size:</label>
+        <span class="currentValue" id="currentValuetopSiteFontSize"></span>
+        <input 
+            type="range"
+            id="topSiteFontSize"
+            min="5"
+            max="25"
+            step="1"
+        />
+        <br />
         <label for="topSitesGridGap">Spacing between items:</label>
         <span class="currentValue" id="currentValueTopSitesGridGap"></span>
         <input
@@ -1116,6 +1127,7 @@ function createPreferencesPrompt() {
         const unsplashQuery = document.getElementById('unsplash-query')
         const customBgURL = document.getElementById('custom-bg-url')
         const topSiteSizeRangeInput = document.getElementById('topSiteSize')
+        const topSiteFontSizeRangeInput = document.getElementById('topSiteFontSize')
         const topSitesGridGapRangeInput =
             document.getElementById('topSitesGridGap')
         const topSitesContainerWidthRangeInput = document.getElementById(
@@ -1135,6 +1147,8 @@ function createPreferencesPrompt() {
         customBgURL.value = homepageSettings.customBgURL
         currentValueTopSiteSize.textContent = homepageSettings.topSiteSize
         topSiteSizeRangeInput.value = homepageSettings.topSiteSize
+        currentValuetopSiteFontSize.textContent = homepageSettings.topSiteFontSize
+        topSiteFontSizeRangeInput.value = homepageSettings.topSiteFontSize
         currentValueTopSitesGridGap.textContent =
             homepageSettings.topSitesGridGap
         topSitesGridGapRangeInput.value = homepageSettings.topSitesGridGap
@@ -1157,6 +1171,10 @@ function createPreferencesPrompt() {
         topSiteSizeRangeInput.addEventListener('input', function () {
             const currentValue = topSiteSizeRangeInput.value
             currentValueTopSiteSize.textContent = currentValue
+        })
+        topSiteFontSizeRangeInput.addEventListener('input', function () {
+            const currentValue = topSiteFontSizeRangeInput.value
+            currentValuetopSiteFontSize.textContent = currentValue
         })
         topSitesGridGapRangeInput.addEventListener('input', function () {
             const currentValue = topSitesGridGapRangeInput.value
@@ -1292,6 +1310,7 @@ function testExclude() {
 
 function updateGridSave() {
     const topSiteSizeRangeInput = document.getElementById('topSiteSize')
+    const topSiteFontSizeRangeInput = document.getElementById('topSiteFontSize')
     const topSitesGridGapRangeInput = document.getElementById('topSitesGridGap')
     const topSitesContainerWidthRangeInput = document.getElementById(
         'topSitesContainerWidth'
@@ -1301,6 +1320,7 @@ function updateGridSave() {
     )
     const newValues = {
         topSiteSize: topSiteSizeRangeInput.value,
+        topSiteFontSize: topSiteFontSizeRangeInput.value,
         topSitesGridGap: topSitesGridGapRangeInput.value,
         topSitesContainerWidth: topSitesContainerWidthRangeInput.value,
         topSitesContainerHeight: topSitesContainerHeightRangeInput.value,
@@ -1308,6 +1328,7 @@ function updateGridSave() {
     browser.storage.sync.set(newValues)
     updateGrid(
         topSiteSizeRangeInput.value,
+        topSiteFontSizeRangeInput.value,
         topSitesGridGapRangeInput.value,
         topSitesContainerWidthRangeInput.value,
         topSitesContainerHeightRangeInput.value
@@ -1316,14 +1337,14 @@ function updateGridSave() {
     overlay.style.display = 'none'
 }
 
-function updateGrid(size, gap, containerWidth, containerHeight) {
+function updateGrid(size, fontSize, gap, containerWidth, containerHeight) {
     const style = document.documentElement.style
-    const fontSize = (size / 60) * 11 // change this for homepageSettings.topSiteFontSize
+    const calculatedFontSize = (size / 60) * fontSize
     style.setProperty('--item-size', `${size}px`)
     style.setProperty('--grid-gap', `${gap}px`)
     style.setProperty('--container-width', `${containerWidth}%`)
     style.setProperty('--container-height', `${containerHeight}vh`)
-    style.setProperty('--font-size', `${fontSize}px`)
+    style.setProperty('--font-size', `${calculatedFontSize}px`)
     style.setProperty('--top-site-radius', Number(gap) === 0 ? '0px' : '8px');
 
 }
@@ -1351,6 +1372,7 @@ function initHomepage() {
         adjustPreferencesButton()
         updateGrid(
             homepageSettings.topSiteSize,
+            homepageSettings.topSiteFontSize,
             homepageSettings.topSitesGridGap,
             homepageSettings.topSitesContainerWidth,
             homepageSettings.topSitesContainerHeight
@@ -1358,7 +1380,7 @@ function initHomepage() {
     })
     getTopSites().then(() => {
         if (topSitesList.length === 0) {
-            mainContainer.classList.add('main-container-empty')
+            topSitesContainer.classList.add('top-sites-container-empty')
             return
         }
         createTopSitesButtons()
