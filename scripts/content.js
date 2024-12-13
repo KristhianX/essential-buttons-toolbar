@@ -712,7 +712,30 @@ const buttonElements = {
             }, 100)
         },
     },
+    addTopSiteButton: {
+        behavior: function () {
+            this.classList.add('pressed')
+            triggerAddTopSitePrompt()
+            setTimeout(() => {
+                this.classList.remove('pressed')
+                closeMenu()
+            }, 100)
+        },
+    },
     // Add more buttons
+}
+
+function triggerAddTopSitePrompt() {
+    ;(async () => {
+        try {
+            const { createPrompt } = await import(
+                browser.runtime.getURL('scripts/topSitePrompt.js')
+            )
+            createPrompt()
+        } catch (error) {
+            console.error('Error importing or executing createPrompt:', error)
+        }
+    })()
 }
 
 function toggleButtonVisibility() {

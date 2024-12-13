@@ -46,6 +46,7 @@ const defaultVariables = {
         'scrollBottomButton',
         'moveToolbarButton',
         'copyLinkButton',
+        'addTopSiteButton',
     ],
     checkboxStates: {
         homeButton: true,
@@ -67,6 +68,7 @@ const defaultVariables = {
         scrollBottomButton: false,
         moveToolbarButton: false,
         copyLinkButton: false,
+        addTopSiteButton: false,
     },
 }
 const settingsToCheck = [
