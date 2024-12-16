@@ -1,0 +1,154 @@
+:root {
+    --background-color: 43, 42, 51;
+    --box-background: 31, 31, 31;
+    --text-color: #dcdce4;
+    --primary-color: #6495ed;
+    --secondary-color: #ff674d;
+    color-scheme: dark;
+    height: 100%;
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --background-color: 242, 242, 249;
+        --box-background: 227, 227, 242;
+        --text-color: #141414;
+        --primary-color: #6495ed;
+        --secondary-color: #ff674d;
+        color-scheme: light;
+    }
+}
+
+body {
+    margin: 0;
+    border: 1px solid rgb(var(--background-color));
+    background: rgb(var(--box-background));
+    border-radius: 8px;
+}
+
+.prompt-footer {
+    display: flex;
+}
+
+#top-site-preview {
+    background: rgb(var(--background-color));
+    width: var(--item-size, 60px);
+    height: var(--item-size, 60px);
+    margin: 5px auto 10px;
+    display: block;
+    position: relative;
+    border-radius: 8px;
+}
+
+#top-site-preview-image {
+    height: 50%;
+    aspect-ratio: 1;
+    position: absolute;
+    top: 0;
+    margin-top: 10%;
+    left: 50%;
+    transform: translate(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-color);
+    font-size: var(--font-size, 11px);
+    border-radius: 50%;
+}
+
+#top-site-preview-name {
+    display: flex;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+    bottom: 5%;
+    height: 30%;
+    max-width: 90%;
+    white-space: nowrap;
+    align-items: center;
+    overflow: hidden;
+    font-size: var(--font-size, 11px);
+    color: var(--text-color);
+}
+
+.favicon-options {
+    color: var(--text-color);
+    margin-bottom: 8px;
+}
+
+.favicon-options input[type='radio'] {
+    width: 12px;
+    height: 12px;
+    background-color: rgb(var(--background-color));
+    border: 1px solid var(--primary-color);
+    border-radius: 50%;
+    transition: background-color 0.3s, border-color 0.3s;
+    appearance: none;
+    margin: 0 5px 0 0;
+}
+
+.favicon-options input[type='radio']:checked {
+    background-color: var(--primary-color);
+}
+
+.favicon-options label {
+    position: relative;
+    margin: 5px;
+    cursor: pointer;
+    display: block;
+    line-height: 1.4;
+    user-select: none;
+}
+
+button {
+    display: block;
+    margin: 10px auto;
+    padding: 6px 16px;
+    color: var(--text-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    background: none;
+}
+
+.top-site-prompt button {
+    display: inline-flex;
+    margin: 8px auto;
+}
+
+.close-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    float: right;
+    cursor: pointer;
+    background: rgb(var(--background-color));
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.close-button svg {
+    height: 60%;
+    aspect-ratio: 1;
+    pointer-events: none;
+}
+
+#top-site-cancel {
+    border-color: var(--secondary-color);
+}
+
+input[type='text'] {
+    width: -moz-available;
+    min-width: 250px;
+    padding: 8px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    background: rgb(var(--background-color));
+    border: none;
+    border-radius: 4px;
+    color: var(--text-color);
+    outline: none;
+}

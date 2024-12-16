@@ -54,14 +54,9 @@ function getSettings() {
 }
 
 function getTopSites() {
-    return browser.storage.local
-        .get('topSites')
-        .then((result) => {
-            topSitesList = result.topSites || []
-        })
-        .catch((error) => {
-            console.error('Error getting top sites:', error)
-        })
+    return browser.storage.local.get('topSites').then(({ topSites = [] }) => {
+        topSitesList = topSites;
+    });
 }
 
 async function createTopSitesButtons() {

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta
+            charset="UTF-8"
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="../styles/topSitePrompt.css"
+        />
+    </head>
+    <body>
+        <h2 id="topSitePromptTitle">Add a new top site</h2>
+        <h3>Preview</h3>
+        <div id="top-site-preview">
+            <div id="top-site-preview-image"></div>
+            <span id="top-site-preview-name"></span>
+        </div>
+        <div class="favicon-options">
+            <label class="radio-container">
+                <input
+                    type="radio"
+                    name="favicon-option"
+                    value="custom"
+                    checked
+                />
+                Custom favicon
+            </label>
+            <label class="radio-container">
+                <input type="radio" name="favicon-option" value="duckduckgo" />
+                Get favicon from DuckDuckGo
+            </label>
+            <label class="radio-container">
+                <input type="radio" name="favicon-option" value="google" />
+                Get favicon from Google
+            </label>
+        </div>
+        <input
+            type="text"
+            placeholder="Name"
+            id="top-site-name"
+            value="${currentTitle}"
+            required
+        />
+        <input
+            type="text"
+            placeholder="URL (https://www.example.com)"
+            id="top-site-url"
+            value="${currentUrl}"
+            required
+        />
+        <input
+            type="text"
+            placeholder="Favicon URL (optional)"
+            id="top-site-favicon-url"
+        />
+        <div class="prompt-footer">
+            <button id="top-site-cancel" type="button">Cancel</button>
+            <button id="top-site-submit" type="button">Save</button>
+        </div>
+    </body>
+</html>

@@ -28,7 +28,7 @@ const buttonsToDisable = [
 ]
 
 //
-//  Get settings
+// Get settings
 //
 function getSettingsValues() {
     return new Promise((resolve) => {
@@ -68,23 +68,21 @@ function getSettingsValues() {
 // Toolbar
 //
 function appendToolbar() {
-    return new Promise((resolve, reject) => {
-        let retryCount = 0
-        const maxRetries = 10
-        const initialDelay = 100
-        const backoffFactor = 2
-        function tryAppend() {
-            if (document.body) {
-                appendToolbarAndResolve(resolve)
-            } else if (retryCount < maxRetries) {
-                const delay = initialDelay * Math.pow(backoffFactor, retryCount)
-                retryCount++
-                setTimeout(tryAppend, delay)
-            } else {
-                reject(new Error('Toolbar appending failed'))
-            }
+    return new Promise((resolve) => {
+        if (document.body) {
+            appendToolbarAndResolve(resolve)
+            return
         }
-        tryAppend()
+        const observer = new MutationObserver(() => {
+            if (document.body) {
+                observer.disconnect()
+                appendToolbarAndResolve(resolve)
+            }
+        })
+        observer.observe(document.documentElement, {
+            childList: true,
+            subtree: false,
+        })
     })
 }
 
