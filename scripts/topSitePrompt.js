@@ -1,29 +1,30 @@
 let essOverlay
 let addTopSitePrompt
 let promptIframeDoc
+let promptTopSitesList = []
+let promptLastGroup
+const essBtnsToolbarIframe = document.getElementById('essBtnsToolbar')
 
-export function createPrompt() {
-    // Ensure there's an essOverlay element
-    if (!essOverlay) {
-        essOverlay = document.createElement('div')
-        essOverlay.style.position = 'fixed'
-        essOverlay.style.top = 0
-        essOverlay.style.left = 0
-        essOverlay.style.width = '100%'
-        essOverlay.style.height = '100%'
-        essOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
-        essOverlay.style.display = 'none'
-        essOverlay.style.zIndex = '2147483647'
-        document.body.appendChild(essOverlay)
-    }
+export function createPrompt(theme) {
+    essOverlay = document.createElement('div')
+    essOverlay.style = `
+        all: unset;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: block;
+        z-index: 2147483647;
+    `
     addTopSitePrompt = document.createElement('iframe')
     addTopSitePrompt.style = `
         display: block !important;
-        max-height: 70%;
         position: fixed;
         z-index: 2147483647;
         margin: auto;
-        padding: 10px;
+        height: 408.8px;
         min-height: unset;
         max-height: 70%;
         width: 80%;
@@ -39,12 +40,13 @@ export function createPrompt() {
         transform: translate(-50%, -50%);
     `
     addTopSitePrompt.src = browser.runtime.getURL('pages/topSitePrompt.html')
-    document.body.insertAdjacentElement('afterend', addTopSitePrompt)
+    essBtnsToolbarIframe.insertAdjacentElement('afterend', addTopSitePrompt)
+    essBtnsToolbarIframe.insertAdjacentElement('afterend', essOverlay)
+    applyColorSchemeToIframe(addTopSitePrompt)
     addTopSitePrompt.addEventListener('load', () => {
         promptIframeDoc = addTopSitePrompt.contentDocument
         addListeners()
     })
-    essOverlay.style.display = 'block'
 }
 
 function addListeners() {
@@ -54,7 +56,10 @@ function addListeners() {
         document.title.length > 50
             ? `${document.title.substring(0, 47)}...`
             : document.title
-    
+    const promptNameInput = promptIframeDoc.getElementById('top-site-name')
+    const promptUrlInput = promptIframeDoc.getElementById('top-site-url')
+    promptNameInput.value = currentTitle
+    promptUrlInput.value = currentUrl
     // Add event listeners
     promptIframeDoc
         .querySelector('#top-site-name')
@@ -81,7 +86,7 @@ function addListeners() {
         .querySelector('#top-site-cancel')
         .addEventListener('click', () => {
             addTopSitePrompt.remove()
-            essOverlay.style.display = 'none'
+            essOverlay.remove()
         })
 
     generatePlaceholder()
@@ -90,7 +95,9 @@ function addListeners() {
 function updatePreview() {
     const nameInput = promptIframeDoc.getElementById('top-site-name')
     const previewName = promptIframeDoc.getElementById('top-site-preview-name')
-    const faviconUrlInput = promptIframeDoc.getElementById('top-site-favicon-url')
+    const faviconUrlInput = promptIframeDoc.getElementById(
+        'top-site-favicon-url'
+    )
     const faviconUrlInputValue = faviconUrlInput.value
     const selectedFaviconOption = promptIframeDoc.querySelector(
         'input[name="favicon-option"]:checked'
@@ -121,6 +128,12 @@ function updatePreview() {
     }
 }
 
+function promptGetTopSites() {
+    return browser.storage.local.get('topSites').then(({ topSites = [] }) => {
+        promptTopSitesList = topSites
+    })
+}
+
 async function addTopSite() {
     const nameInput = promptIframeDoc.querySelector('#top-site-name')
     const urlInput = promptIframeDoc.querySelector('#top-site-url')
@@ -134,29 +147,31 @@ async function addTopSite() {
         alert('Name and URL are mandatory.')
         return
     }
-    lastGroup =
-        topSitesList.reduce((maxGroup, topSite) => {
-            return Math.max(maxGroup, topSite.group)
-        }, 0) + 1
-    let dataUrl
-    try {
-        if (faviconUrl) {
-            dataUrl = await retrieveFavicon(faviconUrl)
+
+    promptGetTopSites().then(async () => {
+        promptLastGroup =
+            promptTopSitesList.reduce((maxGroup, topSite) => {
+                return Math.max(maxGroup, topSite.group)
+            }, 0) + 1
+        let dataUrl
+        try {
+            if (faviconUrl) {
+                dataUrl = await retrieveFavicon(faviconUrl)
+            }
+        } catch (error) {
+            console.error('Error retrieving favicon data URL:', error)
         }
-    } catch (error) {
-        console.error('Error retrieving favicon data URL:', error)
-    }
-    const newTopSite = {
-        name: name,
-        url: url,
-        faviconUrl: dataUrl || '',
-        group: lastGroup,
-    }
-    topSitesList.push(newTopSite)
-    browser.storage.local.set({ topSites: topSitesList })
-    addTopSitePrompt.remove()
-    essOverlay.style.display = 'none'
-    topSitesContainer.classList.remove('top-sites-container-empty')
+        const newTopSite = {
+            name: name,
+            url: url,
+            faviconUrl: dataUrl || '',
+            group: promptLastGroup,
+        }
+        promptTopSitesList.push(newTopSite)
+        browser.storage.local.set({ topSites: promptTopSitesList })
+        addTopSitePrompt.remove()
+        essOverlay.remove()
+    })
 }
 
 async function retrieveFavicon(faviconUrl) {
@@ -183,9 +198,13 @@ async function retrieveFavicon(faviconUrl) {
 }
 
 function generatePlaceholder() {
-    const faviconUrlInput = promptIframeDoc.getElementById('top-site-favicon-url')
+    const faviconUrlInput = promptIframeDoc.getElementById(
+        'top-site-favicon-url'
+    )
     const nameInput = promptIframeDoc.getElementById('top-site-name').value
-    const previewImage = promptIframeDoc.getElementById('top-site-preview-image')
+    const previewImage = promptIframeDoc.getElementById(
+        'top-site-preview-image'
+    )
     faviconUrlInput.value = ''
     previewImage.style.content = 'none'
     previewImage.style.background = 'rgb(var(--box-background))'
@@ -196,8 +215,12 @@ function generatePlaceholder() {
 }
 
 function fetchFaviconFromUrl() {
-    const faviconUrlInput = promptIframeDoc.getElementById('top-site-favicon-url')
-    const previewImage = promptIframeDoc.getElementById('top-site-preview-image')
+    const faviconUrlInput = promptIframeDoc.getElementById(
+        'top-site-favicon-url'
+    )
+    const previewImage = promptIframeDoc.getElementById(
+        'top-site-preview-image'
+    )
     const customFaviconUrl = faviconUrlInput.value
     previewImage.style.background = 'none'
     previewImage.textContent = ''
@@ -208,12 +231,15 @@ function fetchFaviconFromUrl() {
 function fetchFaviconFromDuckDuckGo() {
     const urlInput = promptIframeDoc.getElementById('top-site-url').value
     if (!urlInput) return
-    const previewImage = promptIframeDoc.getElementById('top-site-preview-image')
+    const previewImage = promptIframeDoc.getElementById(
+        'top-site-preview-image'
+    )
     let domain = urlInput.replace(/^https?:\/\//, '')
     domain = domain.split('/')[0]
     const duckDuckGoFaviconUrl =
         'https://icons.duckduckgo.com/ip3/' + domain + '.ico'
-    promptIframeDoc.getElementById('top-site-favicon-url').value = duckDuckGoFaviconUrl
+    promptIframeDoc.getElementById('top-site-favicon-url').value =
+        duckDuckGoFaviconUrl
     previewImage.style.background = 'none'
     previewImage.textContent = ''
     previewImage.style.borderRadius = '0'
@@ -223,10 +249,13 @@ function fetchFaviconFromDuckDuckGo() {
 function fetchFaviconFromGoogle() {
     const urlInput = promptIframeDoc.getElementById('top-site-url').value
     if (!urlInput) return
-    const previewImage = promptIframeDoc.getElementById('top-site-preview-image')
+    const previewImage = promptIframeDoc.getElementById(
+        'top-site-preview-image'
+    )
     const googleFaviconUrl =
         'https://www.google.com/s2/favicons?domain=' + urlInput + '&sz=64'
-    promptIframeDoc.getElementById('top-site-favicon-url').value = googleFaviconUrl
+    promptIframeDoc.getElementById('top-site-favicon-url').value =
+        googleFaviconUrl
     previewImage.style.background = 'none'
     previewImage.textContent = ''
     previewImage.style.borderRadius = '0'

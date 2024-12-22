@@ -31,35 +31,25 @@ const buttonsToDisable = [
 // Get settings
 //
 function getSettingsValues() {
-    return new Promise((resolve) => {
-        const keys = [
-            'homepageURL',
-            'newTabURL',
-            'toolbarHeight',
-            'toolbarWidth',
-            'toolbarTransparency',
-            'topBottomMargin',
-            'defaultPosition',
-            'theme',
-            'iconTheme',
-            'hideMethod',
-            'excludedUrls',
-            'checkboxStates',
-            'buttonOrder',
-            'buttonsInToolbarDiv',
-        ]
-        browser.storage.sync.get(keys).then((result) => {
-            const nonExcludedKeys = keys.filter((key) => key !== 'excludedUrls')
-            const isEmpty = nonExcludedKeys.some(
-                (key) => result[key] === undefined || result[key] === null
-            )
-            if (isEmpty) {
-                return getSettingsValues()
-            }
-            keys.forEach((key) => {
-                settings[key] = result[key]
-            })
-            resolve()
+    const keys = [
+        'homepageURL',
+        'newTabURL',
+        'toolbarHeight',
+        'toolbarWidth',
+        'toolbarTransparency',
+        'topBottomMargin',
+        'defaultPosition',
+        'theme',
+        'iconTheme',
+        'hideMethod',
+        'excludedUrls',
+        'checkboxStates',
+        'buttonOrder',
+        'buttonsInToolbarDiv',
+    ]
+    return browser.storage.sync.get(keys).then((result) => {
+        keys.forEach((key) => {
+            settings[key] = result[key]
         })
     })
 }
@@ -109,23 +99,11 @@ function appendToolbarAndResolve(resolve) {
         toolbarIframe.src = browser.runtime.getURL('pages/toolbar.html')
         toolbarIframe.setAttribute('id', 'essBtnsToolbar')
         document.body.insertAdjacentElement('afterend', toolbarIframe)
-        function applyColorSchemeToIframe() {
-            if (settings.theme === 'light') {
-                toolbarIframe.style.colorScheme = 'light'
-            } else if (settings.theme === 'dark') {
-                toolbarIframe.style.colorScheme = 'dark'
-            } else {
-                const prefersDarkScheme = window.matchMedia(
-                    '(prefers-color-scheme: dark)'
-                ).matches
-                toolbarIframe.style.colorScheme = prefersDarkScheme
-                    ? 'dark'
-                    : 'light'
-            }
-        }
         window
             .matchMedia('(prefers-color-scheme: dark)')
-            .addEventListener('change', applyColorSchemeToIframe)
+            .addEventListener('change', () =>
+                applyColorSchemeToIframe(toolbarIframe)
+            )
         toolbarIframe.addEventListener('load', () => {
             iframeDocument =
                 toolbarIframe.contentDocument ||
@@ -133,12 +111,25 @@ function appendToolbarAndResolve(resolve) {
             toolbarDiv = iframeDocument.getElementById('toolbar')
             menuDiv = iframeDocument.getElementById('menu')
             toolbarButtons = iframeDocument.querySelectorAll('.toolbar-button')
-            applyColorSchemeToIframe()
+            applyColorSchemeToIframe(toolbarIframe)
             if (toolbarDiv && menuDiv) {
                 styleToolbarDivs()
             }
             resolve()
         })
+    }
+}
+
+function applyColorSchemeToIframe(iframe) {
+    if (settings.theme === 'light') {
+        iframe.style.colorScheme = 'light'
+    } else if (settings.theme === 'dark') {
+        iframe.style.colorScheme = 'dark'
+    } else {
+        const prefersDarkScheme = window.matchMedia(
+            '(prefers-color-scheme: dark)'
+        ).matches
+        iframe.style.colorScheme = prefersDarkScheme ? 'dark' : 'light'
     }
 }
 
@@ -973,23 +964,29 @@ function checkExistenceAndHeight() {
 async function initializeToolbar() {
     const problematicUrls = ['https://gaming.amazon.com']
     removeToolbar()
-    await getSettingsValues()
-    const isCurrentPageExcluded = [
-        ...(settings.excludedUrls || []),
-        ...problematicUrls,
-    ].some((excludedUrl) => {
-        const pattern = new RegExp('^' + excludedUrl.replace(/\*/g, '.*') + '$')
-        return pattern.test(currentUrl)
+    getSettingsValues().then(async () => {
+        const isCurrentPageExcluded = [
+            ...(settings.excludedUrls || []),
+            ...problematicUrls,
+        ].some((excludedUrl) => {
+            const pattern = new RegExp(
+                '^' + excludedUrl.replace(/\*/g, '.*') + '$'
+            )
+            return pattern.test(currentUrl)
+        })
+        if (!isCurrentPageExcluded) {
+            await appendToolbar()
+            updateToolbarHeight()
+            window.addEventListener('load', checkExistenceAndHeight)
+            toggleButtonVisibility()
+            appendButtons()
+            hideOnScroll()
+            window.visualViewport.addEventListener(
+                'resize',
+                updateToolbarHeight
+            )
+        }
     })
-    if (!isCurrentPageExcluded) {
-        await appendToolbar()
-        updateToolbarHeight()
-        window.addEventListener('load', checkExistenceAndHeight)
-        toggleButtonVisibility()
-        appendButtons()
-        hideOnScroll()
-        window.visualViewport.addEventListener('resize', updateToolbarHeight)
-    }
 }
 
 browser.runtime.onMessage.addListener((message) => {

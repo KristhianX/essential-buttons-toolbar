@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 :root {
     --background-color: 43, 42, 51;
     --box-background: 31, 31, 31;
@@ -24,6 +28,41 @@ body {
     border: 1px solid rgb(var(--background-color));
     background: rgb(var(--box-background));
     border-radius: 8px;
+    padding: 10px;
+}
+
+h1,
+h2,
+h3 {
+    color: var(--text-color);
+    text-align: center;
+    margin: 0;
+}
+
+h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+h3 {
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.favicon-options label {
+    position: relative;
+    margin: 5px;
+    cursor: pointer;
+    display: block;
+    line-height: 1.4;
+    user-select: none;
 }
 
 .prompt-footer {
@@ -101,8 +140,8 @@ body {
 }
 
 button {
-    display: block;
-    margin: 10px auto;
+    display: inline-flex;
+    margin: 8px auto;
     padding: 6px 16px;
     color: var(--text-color);
     border: 1px solid var(--primary-color);
