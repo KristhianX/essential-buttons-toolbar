@@ -936,7 +936,7 @@ function generateCreditsContainer() {
         authorLink.target = '_blank'
         authorLink.textContent = creditInfo.authorName
         const photoLink = document.createElement('a')
-        photoLink.href = `${creditInfo.photoUrl}?utm_source=essential_homepage&utm_medium=referral`
+        photoLink.href = `https://unsplash.com/?utm_source=essential_homepage&utm_medium=referral`
         photoLink.target = '_blank'
         photoLink.textContent = 'Unsplash'
         const changeWallDiv = document.createElement('div')

@@ -100,7 +100,7 @@ body {
     height: 24px;
     border-radius: 50%;
     cursor: pointer;
-    background: rgb(var(--box-background));
+    background: rgba(var(--box-background), 0.7);
 }
 
 #changeWallButton svg {
