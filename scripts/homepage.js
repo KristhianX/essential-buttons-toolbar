@@ -25,6 +25,21 @@ let pointerDeltaY
 let essHomepage = window.location.href
 const homepageSettings = {}
 
+topSitesGrid.addEventListener('click', handleClick)
+
+function handleClick(e) {
+    if (
+        e.target.parentElement.classList.contains('top-site-group') ||
+        e.target.parentElement.tagName === 'A'
+    ) {
+        const link = e.target.closest('a').href
+        if (link.startsWith('moz-extension://')) {
+            e.preventDefault()
+            browser.tabs.update({ url: link })
+        }
+    }
+}
+
 function overrideTheme(theme) {
     document.documentElement.classList.toggle('dark-theme', theme === 'dark')
     document.documentElement.classList.toggle('light-theme', theme === 'light')
