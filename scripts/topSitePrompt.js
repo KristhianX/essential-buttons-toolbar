@@ -141,13 +141,13 @@ async function addTopSite() {
         '#top-site-favicon-url'
     )
     const name = nameInput.value
-    const url = urlInput.value
-    const faviconUrl = faviconUrlInput.value
+    const url = urlInput.value.trim()
+    const faviconUrl = faviconUrlInput.value.trim()
     if (!name || !url) {
         alert('Name and URL are mandatory.')
         return
     }
-
+    const sanitizedUrl = promptSanitizeUrl(url)
     promptGetTopSites().then(async () => {
         promptLastGroup =
             promptTopSitesList.reduce((maxGroup, topSite) => {
@@ -163,15 +163,25 @@ async function addTopSite() {
         }
         const newTopSite = {
             name: name,
-            url: url,
+            url: sanitizedUrl,
             faviconUrl: dataUrl || '',
-            group: promptLastGroup,
+            group: promptLastGroup
         }
         promptTopSitesList.push(newTopSite)
         browser.storage.local.set({ topSites: promptTopSitesList })
         addTopSitePrompt.remove()
         essOverlay.remove()
     })
+}
+
+function promptSanitizeUrl(url) {
+    try {
+        const urlObject = new URL(url)
+        return urlObject.href // URL is valid, return as-is
+    } catch (e) {
+        // Invalid URL, add https:// by default
+        return `https://${url}`
+    }
 }
 
 async function retrieveFavicon(faviconUrl) {

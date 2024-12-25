@@ -44,7 +44,7 @@ function getSettings() {
         'topSiteFontSize',
         'topSitesGridGap',
         'topSitesContainerWidth',
-        'topSitesContainerHeight',
+        'topSitesContainerHeight'
     ]
     return browser.storage.sync.get(keys).then((result) => {
         keys.forEach((key) => {
@@ -55,8 +55,8 @@ function getSettings() {
 
 function getTopSites() {
     return browser.storage.local.get('topSites').then(({ topSites = [] }) => {
-        topSitesList = topSites;
-    });
+        topSitesList = topSites
+    })
 }
 
 async function createTopSitesButtons() {
@@ -320,12 +320,13 @@ async function addTopSite() {
         '#top-site-favicon-url'
     )
     const name = nameInput.value
-    const url = urlInput.value
-    const faviconUrl = faviconUrlInput.value
+    const url = urlInput.value.trim()
+    const faviconUrl = faviconUrlInput.value.trim()
     if (!name || !url) {
         alert('Name and URL are mandatory.')
         return
     }
+    const sanitizedUrl = sanitizeUrl(url)
     lastGroup =
         topSitesList.reduce((maxGroup, topSite) => {
             return Math.max(maxGroup, topSite.group)
@@ -340,9 +341,9 @@ async function addTopSite() {
     }
     const newTopSite = {
         name: name,
-        url: url,
+        url: sanitizedUrl,
         faviconUrl: dataUrl || '',
-        group: lastGroup,
+        group: lastGroup
     }
     topSitesList.push(newTopSite)
     browser.storage.local.set({ topSites: topSitesList })
@@ -355,6 +356,16 @@ async function addTopSite() {
     groupNumber.appendChild(topSiteElement)
     overlay.style.display = 'none'
     topSitesContainer.classList.remove('top-sites-container-empty')
+}
+
+function sanitizeUrl(url) {
+    try {
+        const urlObject = new URL(url)
+        return urlObject.href // URL is valid, return as-is
+    } catch (e) {
+        // Invalid URL, add https:// by default
+        return `https://${url}`
+    }
 }
 
 function editTopSitesElements() {
@@ -441,11 +452,11 @@ async function editTopSite(event) {
                             ...topSite,
                             name: updatedName,
                             url: updatedUrl,
-                            faviconUrl: dataUrl || '',
+                            faviconUrl: dataUrl || ''
                         }
                         // Save updated list to storage
                         await browser.storage.local.set({
-                            topSites: topSitesList,
+                            topSites: topSitesList
                         })
                         // Update the existing DOM elements directly
                         const groupElement = document.getElementById(
@@ -599,7 +610,7 @@ async function saveNewOrder() {
                     name: name,
                     url: url,
                     faviconUrl: faviconUrl,
-                    group: groupNumber,
+                    group: groupNumber
                 })
             })
         })
@@ -698,7 +709,7 @@ function exportData(localKeys, syncKeys) {
             exportData.push({
                 key,
                 type: 'local',
-                value,
+                value
             })
         })
         // Process sync storage data
@@ -706,7 +717,7 @@ function exportData(localKeys, syncKeys) {
             exportData.push({
                 key,
                 type: 'sync',
-                value,
+                value
             })
         })
         // Convert to JSON and download
@@ -903,7 +914,7 @@ async function getWallpaper(query) {
         generateCreditsContainer()
         browser.storage.local
             .set({
-                wallpaperSetDate: getCurrentDate(),
+                wallpaperSetDate: getCurrentDate()
             })
             .catch((error) => {
                 console.error(
@@ -1204,7 +1215,7 @@ function createPreferencesPrompt() {
                     'topSites',
                     'homepageBg',
                     'unsplashQuery',
-                    'customBgURL',
+                    'customBgURL'
                 ])
             })
         preferencesPrompt
@@ -1231,7 +1242,7 @@ async function savePreferences() {
         homepageBg: selectBg.value,
         unsplashQuery: unsplashQuery.value,
         customBgURL: customBgURL.value,
-        selectedFileName: imageFileInput.files[0]?.name || null,
+        selectedFileName: imageFileInput.files[0]?.name || null
     }
     const currentValues = await browser.storage.sync.get(Object.keys(newValues)) // Await the result
     let hasChanged = false
@@ -1320,7 +1331,7 @@ function updateGridSave() {
         topSiteFontSize: topSiteFontSizeRangeInput.value,
         topSitesGridGap: topSitesGridGapRangeInput.value,
         topSitesContainerWidth: topSitesContainerWidthRangeInput.value,
-        topSitesContainerHeight: topSitesContainerHeightRangeInput.value,
+        topSitesContainerHeight: topSitesContainerHeightRangeInput.value
     }
     browser.storage.sync.set(newValues)
     updateGrid(

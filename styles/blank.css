@@ -1,10 +1,10 @@
 :root {
-    --background-color: #1f1f1f;       /* Darker, with a subtle hint of blue for depth */
+    --background-color: #1f1f1f;
 }
 
 @media (prefers-color-scheme: light) {
     :root {
-        --background-color: #f2f2f9;    /* Softer, with a subtle lavender tint */
+        --background-color: #f2f2f9;
     }
 }
 

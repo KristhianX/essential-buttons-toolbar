@@ -77,7 +77,7 @@ function loadValues() {
             'buttonOrder',
             'checkboxStates',
             'toolbarTransparency',
-            'buttonsInToolbarDiv',
+            'buttonsInToolbarDiv'
         ])
         .then((result) => {
             setHomepageSelect.value = result.setHomepage
@@ -330,7 +330,7 @@ const buttonsData = [
     { id: 'toggleDesktopSiteButton', label: 'Toggle desktop site (global)' },
     { id: 'openWithButton', label: 'Open with' },
     { id: 'copyLinkButton', label: 'Copy link' },
-    { id: 'addTopSiteButton', label: 'Add to Top Sites' },
+    { id: 'addTopSiteButton', label: 'Add to Top Sites' }
 ]
 
 function updateButtonIcon(buttonData, iconTheme, defaultPosition) {
@@ -472,8 +472,10 @@ excludedUrlsList.addEventListener('click', removeFromExcludedUrls)
 generalSaveButton.addEventListener('click', () => {
     const setHomepage = setHomepageSelect.value
     const setNewTab = setNewTabSelect.value
-    let defHomepageURL = homepageURLInput.value
-    let defNewTabURL = newTabURLInput.value
+    const rawHomepageURL = homepageURLInput.value.trim()
+    const rawNewTabURL = newTabURLInput.value.trim()
+    let defHomepageURL = setSanitizeUrl(rawHomepageURL)
+    let defNewTabURL = setSanitizeUrl(rawNewTabURL)
     const toolbarHeight = toolbarHeightRangeInput.value
     const toolbarWidth = toolbarWidthRangeInput.value
     const toolbarTransparency = toolbarTransparencyRangeInput.value
@@ -505,7 +507,7 @@ generalSaveButton.addEventListener('click', () => {
             defaultPosition: defaultPosition,
             theme: theme,
             iconTheme: iconTheme,
-            hideMethod: hideMethod,
+            hideMethod: hideMethod
         })
         .then(() => {
             overrideTheme(theme)
@@ -517,6 +519,16 @@ generalSaveButton.addEventListener('click', () => {
             }, 1000)
         })
 })
+
+function setSanitizeUrl(url) {
+    try {
+        const urlObject = new URL(url)
+        return urlObject.href // URL is valid, return as-is
+    } catch (e) {
+        // Invalid URL, add https:// by default
+        return `https://${url}`
+    }
+}
 
 generalResetButton.addEventListener('click', () => {
     const confirmed = window.confirm(
@@ -542,7 +554,7 @@ buttonsSaveButton.addEventListener('click', () => {
         .set({
             buttonsInToolbarDiv: buttonsInToolbarDiv,
             buttonOrder: updateButtonOrder(),
-            checkboxStates: getCheckboxStates(),
+            checkboxStates: getCheckboxStates()
         })
         .then(() => {
             statusMessage.style.display = 'block'
