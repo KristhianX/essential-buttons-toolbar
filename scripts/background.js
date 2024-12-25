@@ -47,6 +47,7 @@ const defaultVariables = {
         'moveToolbarButton',
         'copyLinkButton',
         'addTopSiteButton',
+        'shareButton'
     ],
     checkboxStates: {
         homeButton: true,
@@ -69,7 +70,8 @@ const defaultVariables = {
         moveToolbarButton: false,
         copyLinkButton: false,
         addTopSiteButton: false,
-    },
+        shareButton: false
+    }
 }
 const settingsToCheck = [
     'setHomepage',
@@ -94,7 +96,7 @@ const settingsToCheck = [
     'topSitesContainerHeight',
     'buttonOrder',
     'checkboxStates',
-    'buttonsInToolbarDiv',
+    'buttonsInToolbarDiv'
 ]
 
 browser.storage.local.get('isDesktopSite').then((result) => {
@@ -257,14 +259,14 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
                             '*://*/*',
                             settingsURL,
                             essBlankURL,
-                            essHomepageURL,
-                        ],
+                            essHomepageURL
+                        ]
                     },
                     function (tabs) {
                         for (const tab of tabs) {
                             if (tab.id !== sender.tab.id) {
                                 browser.tabs.sendMessage(tab.id, {
-                                    action: 'reloadToolbar',
+                                    action: 'reloadToolbar'
                                 })
                             }
                         }
@@ -303,7 +305,7 @@ function setSettingsValues() {
                 (item) => !result.buttonOrder.includes(item)
             )
             browser.storage.sync.set({
-                buttonOrder: result.buttonOrder.concat(updatedButtonOrder),
+                buttonOrder: result.buttonOrder.concat(updatedButtonOrder)
             })
         }
         // Check and append missing elements to the checkboxStates array
@@ -319,7 +321,7 @@ function setSettingsValues() {
             // Set added items to false
             const updatedCheckboxStates = {
                 ...existingCheckboxStates,
-                ...Object.fromEntries(addedItems.map((item) => [item, false])),
+                ...Object.fromEntries(addedItems.map((item) => [item, false]))
             }
             browser.storage.sync.set({ checkboxStates: updatedCheckboxStates })
         }

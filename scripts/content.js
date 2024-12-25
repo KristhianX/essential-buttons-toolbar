@@ -24,7 +24,7 @@ const buttonsToDisable = [
     'settingsButton',
     'undoCloseTabButton',
     'closeAllTabsButton',
-    'closeOtherTabsButton',
+    'closeOtherTabsButton'
 ]
 
 //
@@ -45,7 +45,7 @@ function getSettingsValues() {
         'excludedUrls',
         'checkboxStates',
         'buttonOrder',
-        'buttonsInToolbarDiv',
+        'buttonsInToolbarDiv'
     ]
     return browser.storage.sync.get(keys).then((result) => {
         keys.forEach((key) => {
@@ -71,7 +71,7 @@ function appendToolbar() {
         })
         observer.observe(document.documentElement, {
             childList: true,
-            subtree: false,
+            subtree: false
         })
     })
 }
@@ -358,10 +358,10 @@ const buttonElements = {
                 closeMenu()
                 browser.runtime.sendMessage({
                     action: 'updateTab',
-                    url: settings.homepageURL,
+                    url: settings.homepageURL
                 })
             }, 100)
-        },
+        }
     },
     duplicateTabButton: {
         behavior: function (e) {
@@ -373,10 +373,10 @@ const buttonElements = {
                 closeMenu()
                 browser.runtime.sendMessage({
                     action: 'duplicateTab',
-                    url: updatedUrl,
+                    url: updatedUrl
                 })
             }, 100)
-        },
+        }
     },
     menuButton: {
         behavior: function () {
@@ -399,7 +399,7 @@ const buttonElements = {
             } else {
                 closeMenu()
             }
-        },
+        }
     },
     closeTabButton: {
         behavior: function () {
@@ -409,10 +409,10 @@ const buttonElements = {
                 this.classList.remove('pressed')
                 browser.runtime.sendMessage({
                     action: 'closeTab',
-                    url: settings.homepageURL,
+                    url: settings.homepageURL
                 })
             }, 100)
-        },
+        }
     },
     newTabButton: {
         behavior: function () {
@@ -422,10 +422,10 @@ const buttonElements = {
                 closeMenu()
                 browser.runtime.sendMessage({
                     action: 'createTab',
-                    url: settings.newTabURL,
+                    url: settings.newTabURL
                 })
             }, 100)
-        },
+        }
     },
     hideButton: {
         behavior: function () {
@@ -436,7 +436,7 @@ const buttonElements = {
                 closeMenu()
                 initializeToolbar()
             }, 100)
-        },
+        }
     },
     moveToolbarButton: {
         behavior: function () {
@@ -518,7 +518,7 @@ const buttonElements = {
                 }
                 this.classList.remove('pressed')
             }, 100)
-        },
+        }
     },
     // devToolsButton: {
     //     behavior: function () {
@@ -544,7 +544,7 @@ const buttonElements = {
                 closeMenu()
                 browser.runtime.sendMessage({ action: 'goBack' })
             }, 100)
-        },
+        }
     },
     goForwardButton: {
         behavior: function () {
@@ -555,7 +555,7 @@ const buttonElements = {
                 closeMenu()
                 browser.runtime.sendMessage({ action: 'goForward' })
             }, 100)
-        },
+        }
     },
     reloadButton: {
         behavior: function () {
@@ -566,7 +566,7 @@ const buttonElements = {
                 closeMenu()
                 browser.runtime.sendMessage({ action: 'reload' })
             }, 100)
-        },
+        }
     },
     settingsButton: {
         behavior: function () {
@@ -576,7 +576,7 @@ const buttonElements = {
                 closeMenu()
                 browser.runtime.sendMessage({ action: 'openSettings' })
             }, 100)
-        },
+        }
     },
     undoCloseTabButton: {
         behavior: function () {
@@ -586,7 +586,7 @@ const buttonElements = {
                 closeMenu()
                 browser.runtime.sendMessage({ action: 'undoCloseTab' })
             }, 100)
-        },
+        }
     },
     scrollTopButton: {
         behavior: function () {
@@ -596,7 +596,7 @@ const buttonElements = {
                 closeMenu()
                 findScrollableElement().scrollTo({ top: 0, behavior: 'smooth' })
             }, 100)
-        },
+        }
     },
     scrollBottomButton: {
         behavior: function () {
@@ -607,10 +607,10 @@ const buttonElements = {
                 const element = findScrollableElement()
                 element.scrollTo({
                     top: element.scrollHeight,
-                    behavior: 'smooth',
+                    behavior: 'smooth'
                 })
             }, 100)
-        },
+        }
     },
     closeAllTabsButton: {
         behavior: function () {
@@ -621,10 +621,10 @@ const buttonElements = {
                 closeMenu()
                 browser.runtime.sendMessage({
                     action: 'closeAllTabs',
-                    url: settings.homepageURL,
+                    url: settings.homepageURL
                 })
             }, 100)
-        },
+        }
     },
     closeOtherTabsButton: {
         behavior: function () {
@@ -634,7 +634,7 @@ const buttonElements = {
                 closeMenu()
                 browser.runtime.sendMessage({ action: 'closeOtherTabs' })
             }, 100)
-        },
+        }
     },
     toggleDesktopSiteButton: {
         behavior: function () {
@@ -649,7 +649,7 @@ const buttonElements = {
                             .set({ isDesktopSite: true })
                             .then(() => {
                                 browser.runtime.sendMessage({
-                                    action: 'toggleDesktopSite',
+                                    action: 'toggleDesktopSite'
                                 })
                             })
                     } else {
@@ -657,13 +657,13 @@ const buttonElements = {
                             .set({ isDesktopSite: false })
                             .then(() => {
                                 browser.runtime.sendMessage({
-                                    action: 'toggleDesktopSite',
+                                    action: 'toggleDesktopSite'
                                 })
                             })
                     }
                 })
             }, 100)
-        },
+        }
     },
     openWithButton: {
         behavior: function () {
@@ -678,10 +678,10 @@ const buttonElements = {
                 closeMenu()
                 browser.runtime.sendMessage({
                     action: 'updateTab',
-                    url: intentUrl,
+                    url: intentUrl
                 })
             }, 100)
-        },
+        }
     },
     copyLinkButton: {
         behavior: function () {
@@ -699,7 +699,7 @@ const buttonElements = {
                 this.classList.remove('pressed')
                 closeMenu()
             }, 100)
-        },
+        }
     },
     addTopSiteButton: {
         behavior: function () {
@@ -709,8 +709,21 @@ const buttonElements = {
                 this.classList.remove('pressed')
                 closeMenu()
             }, 100)
-        },
+        }
     },
+    shareButton: {
+        behavior: function () {
+            this.classList.add('pressed')
+            setTimeout(() => {
+                this.classList.remove('pressed')
+                closeMenu()
+                navigator.share({
+                    title: document.title,
+                    url: window.location.href
+                })
+            }, 100)
+        }
+    }
     // Add more buttons
 }
 
@@ -967,7 +980,7 @@ async function initializeToolbar() {
     getSettingsValues().then(async () => {
         const isCurrentPageExcluded = [
             ...(settings.excludedUrls || []),
-            ...problematicUrls,
+            ...problematicUrls
         ].some((excludedUrl) => {
             const pattern = new RegExp(
                 '^' + excludedUrl.replace(/\*/g, '.*') + '$'

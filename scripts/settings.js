@@ -330,7 +330,8 @@ const buttonsData = [
     { id: 'toggleDesktopSiteButton', label: 'Toggle desktop site (global)' },
     { id: 'openWithButton', label: 'Open with' },
     { id: 'copyLinkButton', label: 'Copy link' },
-    { id: 'addTopSiteButton', label: 'Add to Top Sites' }
+    { id: 'addTopSiteButton', label: 'Add to Top Sites' },
+    { id: 'shareButton', label: 'Share URL' }
 ]
 
 function updateButtonIcon(buttonData, iconTheme, defaultPosition) {

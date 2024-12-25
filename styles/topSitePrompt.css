@@ -4,21 +4,21 @@
 
 :root {
     --background-color: 43, 42, 51;
-    --box-background: 31, 31, 31;
-    --text-color: #dcdce4;
-    --primary-color: #6495ed;
-    --secondary-color: #ff674d;
+    --box-background: 46, 52, 64;
+    --text-color: #D8DEE9;
+    --primary-color: #5e81ac;
+    --secondary-color: #d08770;
     color-scheme: dark;
     height: 100%;
 }
 
 @media (prefers-color-scheme: light) {
     :root {
-        --background-color: 242, 242, 249;
+        --background-color: 229, 233, 240;
         --box-background: 227, 227, 242;
-        --text-color: #141414;
-        --primary-color: #6495ed;
-        --secondary-color: #ff674d;
+        --text-color: #2E3440;
+        --primary-color: #5e81ac;
+        --secondary-color: #d08770;
         color-scheme: light;
     }
 }
