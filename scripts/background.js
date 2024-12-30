@@ -114,6 +114,10 @@ browser.storage.local.get('isDesktopSite').then((result) => {
 //
 let updatedEventTriggered
 
+browser.tabs.onActivated.addListener(function () {
+    updatedEventTriggered = true
+})
+
 function handleInstallOrUpdate(details) {
     if (details.reason === 'install') {
         setSettingsValues()
@@ -135,10 +139,6 @@ function handleInstallOrUpdate(details) {
         })
     }
 }
-
-browser.tabs.onActivated.addListener(function () {
-    updatedEventTriggered = true
-})
 
 browser.runtime.onInstalled.addListener(handleInstallOrUpdate)
 
