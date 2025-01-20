@@ -96,6 +96,10 @@ function loadValues() {
             })
             toolbarContainer.style.width = result.toolbarWidth + 'vw'
             menuContainer.style.width = result.toolbarWidth + 'vw'
+            toolbarContainer.style.minHeight =
+                result.toolbarHeight / window.visualViewport.scale + 'px'
+            menuContainer.style.minHeight =
+                result.toolbarHeight / window.visualViewport.scale + 'px'
             currentValueTransparency.textContent = result.toolbarTransparency
             toolbarTransparencyRangeInput.value = result.toolbarTransparency
             currentValueTBMargin.textContent = result.topBottomMargin
