@@ -1,10 +1,10 @@
 :root {
-    --background-color: #1f1f1f;
+    --background-color: #181825; /* Mantle */
 }
 
 @media (prefers-color-scheme: light) {
     :root {
-        --background-color: #E5E9F0;
+        --background-color: #eff1f5; /* Base */
     }
 }
 

@@ -3,7 +3,7 @@
     --private-background: 50, 28, 100;
     --border-color: #45444c;
     --icon-color: #fbfbfe;
-    --primary-color: 129, 161, 193;
+    --primary-color: 137, 180, 250;
     color-scheme: dark;
     height: 100%;
 }
@@ -14,7 +14,7 @@
         --private-background: 207, 174, 233;
         --border-color: #f4f4f6;
         --icon-color: #15141a;
-        --primary-color: 129, 161, 193;
+        --primary-color: 137, 180, 250;
         color-scheme: light;
     }
 }

@@ -166,7 +166,7 @@ function generatePlaceholder() {
     const previewImage = document.getElementById('top-site-preview-image')
     faviconUrlInput.value = ''
     previewImage.style.content = 'none'
-    previewImage.style.background = 'rgb(var(--box-background))'
+    previewImage.style.background = 'rgb(var(--background-color))'
     previewImage.style.borderRadius = '50%'
     previewImage.textContent = nameInput
         ? nameInput.trim()[0].toUpperCase()

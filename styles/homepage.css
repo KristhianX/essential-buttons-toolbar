@@ -3,41 +3,41 @@
 }
 
 :root {
-    --background-color: 43, 42, 51;
-    --box-background: 46, 52, 64;
-    --text-color: #D8DEE9;
-    --primary-color: #5e81ac;
-    --secondary-color: #d08770;
-    --link-color: #81a1c1;
+    --background-color: 24, 24, 37; /* Mantle */
+    --box-background: 30, 30, 46; /* Base */
+    --text-color: #cdd6f4; /* Text */
+    --primary-color: #89b4fa; /* Blue */
+    --secondary-color: #eba0ac; /* Maroon */
+    --link-color: #b4befe; /* Lavender */
 }
 
 @media (prefers-color-scheme: light) {
     :root {
-        --background-color: 229, 233, 240;
-    	--box-background: 227, 227, 242;
-    	--text-color: #2E3440;
-    	--primary-color: #5e81ac;
-    	--secondary-color: #d08770;
-    	--link-color: #5e81ac; 
-	}
+        --background-color: 239, 241, 245; /* Base */
+        --box-background: 230, 233, 249; /* Mantle */
+        --text-color: #4c4f69; /* Text */
+        --primary-color: #1e66f5; /* Blue */
+        --secondary-color: #e64553; /* Maroon */
+        --link-color: #7287fd; /* Lavender */
+    }
 }
 
 .dark-theme {
-    --background-color: 43, 42, 51;
-    --box-background: 46, 52, 64;
-    --text-color: #D8DEE9;
-    --primary-color: #5e81ac;
-    --secondary-color: #d08770;
-    --link-color: #81a1c1;
+    --background-color: 24, 24, 37; /* Mantle */
+    --box-background: 30, 30, 46; /* Base */
+    --text-color: #cdd6f4; /* Text */
+    --primary-color: #89b4fa; /* Blue */
+    --secondary-color: #eba0ac; /* Maroon */
+    --link-color: #b4befe; /* Lavender */
 }
 
 .light-theme {
-    --background-color: 229, 233, 240;
-    --box-background: 242, 242, 249;
-    --text-color: #2E3440;
-    --primary-color: #5e81ac;
-    --secondary-color: #d08770;
-    --link-color: #5e81ac; 
+    --background-color: 239, 241, 245; /* Base */
+    --box-background: 230, 233, 249; /* Mantle */
+    --text-color: #4c4f69; /* Text */
+    --primary-color: #1e66f5; /* Blue */
+    --secondary-color: #e64553; /* Maroon */
+    --link-color: #7287fd; /* Lavender */
 }
 
 :root {
@@ -251,14 +251,14 @@ label {
     overflow: scroll;
     margin: auto;
     position: fixed;
-    border: 1px solid rgb(var(--background-color));
+    border: 1px solid rgb(var(--box-background));
     border-radius: 8px;
     padding: 10px;
     display: block;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgb(var(--box-background));
+    background: rgb(var(--background-color));
     z-index: 3;
 }
 
@@ -273,7 +273,7 @@ label {
 }
 
 #top-site-preview {
-    background: rgb(var(--background-color));
+    background: rgb(var(--box-background));
     width: var(--item-size, 60px);
     height: var(--item-size, 60px);
     margin: 5px auto 10px;
@@ -321,7 +321,7 @@ label {
 .favicon-options input[type='radio'] {
     width: 12px;
     height: 12px;
-    background-color: rgb(var(--background-color));
+    background-color: rgb(var(--box-background));
     border: 1px solid var(--primary-color);
     border-radius: 50%;
     transition: background-color 0.3s, border-color 0.3s;
@@ -462,7 +462,7 @@ button {
     justify-content: center;
     float: right;
     cursor: pointer;
-    background: rgb(var(--background-color));
+    background: rgb(var(--box-background));
     width: 24px;
     height: 24px;
     border-radius: 50%;
@@ -490,7 +490,7 @@ input[type='range'] {
     appearance: none;
     width: 80%;
     height: 6px;
-    background: rgb(var(--background-color));
+    background: rgb(var(--box-background));
     border: none;
     border-radius: 4px;
     outline: none;
@@ -500,7 +500,7 @@ input[type='range'] {
 input[type='range']::-moz-range-thumb {
     width: 12px;
     height: 24px;
-    background: rgb(var(--background-color));
+    background: rgb(var(--box-background));
     border: 1px solid var(--primary-color);
     border-radius: 4px;
     cursor: pointer;
@@ -520,18 +520,18 @@ input[type='text'] {
     padding: 8px;
     font-size: 14px;
     margin-bottom: 10px;
-    background: rgb(var(--background-color));
+    background: rgb(var(--box-background));
     border: none;
     border-radius: 4px;
     color: var(--text-color);
     outline: none;
 }
 
-input[type="file"] {
+input[type='file'] {
     margin: 8px 0;
 }
 
-input[type="file"]::file-selector-button {
+input[type='file']::file-selector-button {
     display: inline-flex;
     padding: 6px 16px;
     color: var(--text-color);
@@ -548,7 +548,7 @@ select {
     padding: 8px;
     font-size: 14px;
     margin-top: 4px;
-    background: rgb(var(--background-color));
+    background: rgb(var(--box-background));
     color: var(--text-color);
     border-radius: 4px;
     outline: none;
