@@ -612,6 +612,35 @@ const buttonElements = {
             }, 100)
         }
     },
+    pageUpButton: {
+        behavior: function () {
+            this.classList.add('pressed')
+            setTimeout(() => {
+                this.classList.remove('pressed')
+                closeMenu()
+                const element = findScrollableElement()
+                const offset = Math.max(window.innerHeight - 80, 10)
+                const targetTop = Math.max(0, element.scrollTop - offset)
+                element.scrollTo({ top: targetTop, behavior: 'smooth' })
+            }, 100)
+        }
+    },
+    pageDownButton: {
+        behavior: function () {
+            this.classList.add('pressed')
+            setTimeout(() => {
+                this.classList.remove('pressed')
+                closeMenu()
+                const element = findScrollableElement()
+                const offset = Math.max(window.innerHeight - 80, 10)
+                const targetTop = Math.min(
+                    element.scrollHeight,
+                    element.scrollTop + offset
+                )
+                element.scrollTo({ top: targetTop, behavior: 'smooth' })
+            }, 100)
+        }
+    },
     closeAllTabsButton: {
         behavior: function () {
             window.stop()

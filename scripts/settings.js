@@ -329,6 +329,8 @@ const buttonsData = [
     { id: 'settingsButton', label: 'Open add-on settings' },
     { id: 'scrollTopButton', label: 'Scroll page to the top' },
     { id: 'scrollBottomButton', label: 'Scroll page to the bottom' },
+    { id: 'pageUpButton', label: 'Page up' },
+    { id: 'pageDownButton', label: 'Page down' },
     { id: 'closeAllTabsButton', label: 'Close all tabs' },
     { id: 'closeOtherTabsButton', label: 'Close other tabs' },
     { id: 'toggleDesktopSiteButton', label: 'Toggle desktop site (global)' },
