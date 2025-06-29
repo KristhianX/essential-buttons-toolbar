@@ -20,6 +20,7 @@ const defaultPositionSelect = document.getElementById('defaultPosition')
 const themeSelect = document.getElementById('theme')
 const iconThemeSelect = document.getElementById('iconTheme')
 const hideMethodSelect = document.getElementById('hideMethod')
+const pageUpDownScrollTypeSelect = document.getElementById('pageUpDownScrollType')
 const previewButtons = document.querySelectorAll('.preview-button')
 const customUrlInput = document.getElementById('customUrl')
 const excludedUrlsList = document.getElementById('excludedUrls')
@@ -73,6 +74,7 @@ function loadValues() {
             'theme',
             'iconTheme',
             'hideMethod',
+            'pageUpDownScrollType',
             'excludedUrls',
             'buttonOrder',
             'checkboxStates',
@@ -108,6 +110,7 @@ function loadValues() {
             themeSelect.value = result.theme
             iconThemeSelect.value = result.iconTheme
             hideMethodSelect.value = result.hideMethod
+            pageUpDownScrollTypeSelect.value = result.pageUpDownScrollType
             overrideTheme(result.theme)
             displayInputURL()
             updateLabels(result.defaultPosition)
@@ -491,6 +494,7 @@ generalSaveButton.addEventListener('click', () => {
     const theme = themeSelect.value
     const iconTheme = iconThemeSelect.value
     const hideMethod = hideMethodSelect.value
+    const pageUpDownScrollType = pageUpDownScrollTypeSelect.value
     if (setHomepage === 'homepage') {
         defHomepageURL = essHomepageURL
     } else if (setHomepage === 'blank') {
@@ -514,7 +518,8 @@ generalSaveButton.addEventListener('click', () => {
             defaultPosition: defaultPosition,
             theme: theme,
             iconTheme: iconTheme,
-            hideMethod: hideMethod
+            hideMethod: hideMethod,
+            pageUpDownScrollType: pageUpDownScrollType
         })
         .then(() => {
             overrideTheme(theme)

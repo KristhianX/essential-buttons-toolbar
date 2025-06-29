@@ -42,6 +42,7 @@ function getSettingsValues() {
         'theme',
         'iconTheme',
         'hideMethod',
+        'pageUpDownScrollType',
         'excludedUrls',
         'checkboxStates',
         'buttonOrder',
@@ -621,7 +622,7 @@ const buttonElements = {
                 const element = findScrollableElement()
                 const offset = Math.max(window.innerHeight - 80, 10)
                 const targetTop = Math.max(0, element.scrollTop - offset)
-                element.scrollTo({ top: targetTop })
+                element.scrollTo({ top: targetTop, behavior: settings.pageUpDownScrollType })
             }, 100)
         }
     },
@@ -637,7 +638,7 @@ const buttonElements = {
                     element.scrollHeight,
                     element.scrollTop + offset
                 )
-                element.scrollTo({ top: targetTop })
+                element.scrollTo({ top: targetTop, behavior: settings.pageUpDownScrollType })
             }, 100)
         }
     },
