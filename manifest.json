@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Essential Buttons Toolbar and Homepage",
-    "version": "1.9.3",
+    "version": "1.9.3.1",
     "permissions": [
         "*://*/*",
         "activeTab",
@@ -34,7 +34,7 @@
     },
     "browser_specific_settings": {
         "gecko": {
-            "id": "{df2262aa-a56b-416a-aff0-3a13644a578b}"
+            "id": "defmikekoh-mymodified-essential-buttons-toolbar-extension@example.com"
         }
     }
 }
