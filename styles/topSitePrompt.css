@@ -4,7 +4,7 @@
 
 :root {
     --background-color: 24, 24, 37; /* Mantle */
-    --box-background: 30, 30, 46; /* Base */
+    --box-background: 49, 50, 68; /* Surface 0 */
     --text-color: #cdd6f4; /* Text */
     --primary-color: #89b4fa; /* Blue */
     --secondary-color: #eba0ac; /* Maroon */
@@ -14,7 +14,7 @@
 
 @media (prefers-color-scheme: light) {
     :root {
-        --background-color: 239, 241, 245; /* Base */
+        --background-color: 204, 208, 218; /* Surface 0 */
         --box-background: 230, 233, 249; /* Mantle */
         --text-color: #4c4f69; /* Text */
         --primary-color: #1e66f5; /* Blue */

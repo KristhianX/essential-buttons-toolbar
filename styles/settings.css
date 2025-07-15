@@ -4,7 +4,7 @@
 
 :root {
     --background-color: #181825; /* Mantle */
-    --box-background: #1e1e2e; /* Base */
+    --box-background: #313244; /* Surface 0 */
     --text-color: #cdd6f4; /* Text */
     --primary-color: #89b4fa; /* Blue */
     --secondary-color: #eba0ac; /* Maroon */
@@ -13,7 +13,7 @@
 
 @media (prefers-color-scheme: light) {
     :root {
-        --background-color: #eff1f5; /* Base */
+        --background-color: #ccd0da; /* Surface 0 */
         --box-background: #e6e9ef; /* Mantle */
         --text-color: #4c4f69; /* Text */
         --primary-color: #1e66f5; /* Blue */
@@ -24,7 +24,7 @@
 
 .dark-theme {
     --background-color: #181825; /* Mantle */
-    --box-background: #1e1e2e; /* Base */
+    --box-background: #313244; /* Surface 0 */
     --text-color: #cdd6f4; /* Text */
     --primary-color: #89b4fa; /* Blue */
     --secondary-color: #eba0ac; /* Maroon */
@@ -32,7 +32,7 @@
 }
 
 .light-theme {
-    --background-color: #eff1f5; /* Base */
+    --background-color: #ccd0da; /* Surface 0 */
     --box-background: #e6e9ef; /* Mantle */
     --text-color: #4c4f69; /* Text */
     --primary-color: #1e66f5; /* Blue */
