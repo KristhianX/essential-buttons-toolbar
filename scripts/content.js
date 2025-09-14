@@ -263,7 +263,11 @@ function updateToolbarHeight() {
                 const margin = Math.floor(
                     settings.topBottomMargin / window.visualViewport.scale
                 )
-                toolbarIframe.style.margin = `0 ${margin}px`
+                if (settings.defaultPosition === 'left') {
+                    toolbarIframe.style.margin = `0 ${margin}px 0 0`
+                } else {
+                    toolbarIframe.style.margin = `0 0 0 ${margin}px`
+                }
             }
         }
     }
