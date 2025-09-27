@@ -43,6 +43,8 @@ function getSettingsValues() {
         'iconTheme',
         'hideMethod',
         'pageUpDownScrollType',
+        'pageUpDownScrollOverlap',
+        'pageUpDownScrollOverlapLongpress',
         'excludedUrls',
         'checkboxStates',
         'buttonOrder',
@@ -620,7 +622,20 @@ const buttonElements = {
                 this.classList.remove('pressed')
                 closeMenu()
                 const element = findScrollableElement()
-                const offset = Math.max(window.innerHeight - 80, 10)
+                const overlapSetting = settings.pageUpDownScrollOverlap || 80
+                const offset = Math.max(window.innerHeight - overlapSetting, 10)
+                const targetTop = Math.max(0, element.scrollTop - offset)
+                element.scrollTo({ top: targetTop, behavior: settings.pageUpDownScrollType })
+            }, 100)
+        },
+        longPressBehavior: function () {
+            this.classList.add('pressed')
+            setTimeout(() => {
+                this.classList.remove('pressed')
+                closeMenu()
+                const element = findScrollableElement()
+                const overlapSetting = settings.pageUpDownScrollOverlapLongpress || 60
+                const offset = Math.max(window.innerHeight - overlapSetting, 10)
                 const targetTop = Math.max(0, element.scrollTop - offset)
                 element.scrollTo({ top: targetTop, behavior: settings.pageUpDownScrollType })
             }, 100)
@@ -633,7 +648,23 @@ const buttonElements = {
                 this.classList.remove('pressed')
                 closeMenu()
                 const element = findScrollableElement()
-                const offset = Math.max(window.innerHeight - 80, 10)
+                const overlapSetting = settings.pageUpDownScrollOverlap || 80
+                const offset = Math.max(window.innerHeight - overlapSetting, 10)
+                const targetTop = Math.min(
+                    element.scrollHeight,
+                    element.scrollTop + offset
+                )
+                element.scrollTo({ top: targetTop, behavior: settings.pageUpDownScrollType })
+            }, 100)
+        },
+        longPressBehavior: function () {
+            this.classList.add('pressed')
+            setTimeout(() => {
+                this.classList.remove('pressed')
+                closeMenu()
+                const element = findScrollableElement()
+                const overlapSetting = settings.pageUpDownScrollOverlapLongpress || 60
+                const offset = Math.max(window.innerHeight - overlapSetting, 10)
                 const targetTop = Math.min(
                     element.scrollHeight,
                     element.scrollTop + offset
@@ -826,10 +857,57 @@ function toggleButtonVisibility() {
                     'click',
                     buttonElements[buttonId].behavior
                 )
-                button.addEventListener(
-                    'click',
-                    buttonElements[buttonId].behavior
-                )
+
+                // Add longpress detection for Page Up/Down buttons
+                if (buttonId === 'pageUpButton' || buttonId === 'pageDownButton') {
+                    let longPressTimer = null
+                    let isLongPress = false
+
+                    const startLongPress = () => {
+                        longPressTimer = setTimeout(() => {
+                            isLongPress = true
+                            if (buttonElements[buttonId].longPressBehavior) {
+                                buttonElements[buttonId].longPressBehavior.call(button)
+                            }
+                        }, 500)
+                    }
+
+                    const cancelLongPress = () => {
+                        if (longPressTimer) {
+                            clearTimeout(longPressTimer)
+                            longPressTimer = null
+                        }
+                        if (!isLongPress) {
+                            buttonElements[buttonId].behavior.call(button)
+                        }
+                        isLongPress = false
+                    }
+
+                    // Remove existing longpress event listeners if they exist
+                    button.removeEventListener('mousedown', button._longPressStart)
+                    button.removeEventListener('touchstart', button._longPressStart)
+
+                    // Add longpress detection
+                    button._longPressStart = () => {
+                        isLongPress = false
+                        startLongPress()
+                    }
+
+                    button._longPressEnd = () => {
+                        cancelLongPress()
+                    }
+
+                    button.addEventListener('mousedown', button._longPressStart)
+                    button.addEventListener('touchstart', button._longPressStart)
+                    button.addEventListener('mouseup', button._longPressEnd)
+                    button.addEventListener('touchend', button._longPressEnd)
+                    button.addEventListener('mouseleave', button._longPressEnd)
+                } else {
+                    button.addEventListener(
+                        'click',
+                        buttonElements[buttonId].behavior
+                    )
+                }
                 buttonElements[buttonId].element = button
             }
         }

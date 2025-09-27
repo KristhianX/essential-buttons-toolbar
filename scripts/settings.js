@@ -21,6 +21,10 @@ const themeSelect = document.getElementById('theme')
 const iconThemeSelect = document.getElementById('iconTheme')
 const hideMethodSelect = document.getElementById('hideMethod')
 const pageUpDownScrollTypeSelect = document.getElementById('pageUpDownScrollType')
+const pageUpDownScrollOverlapRangeInput = document.getElementById('pageUpDownScrollOverlap')
+const pageUpDownScrollOverlapLongpressRangeInput = document.getElementById('pageUpDownScrollOverlapLongpress')
+const currentValuePageUpDownOverlap = document.getElementById('currentValuePageUpDownOverlap')
+const currentValuePageUpDownOverlapLongpress = document.getElementById('currentValuePageUpDownOverlapLongpress')
 const previewButtons = document.querySelectorAll('.preview-button')
 const customUrlInput = document.getElementById('customUrl')
 const excludedUrlsList = document.getElementById('excludedUrls')
@@ -75,6 +79,8 @@ function loadValues() {
             'iconTheme',
             'hideMethod',
             'pageUpDownScrollType',
+            'pageUpDownScrollOverlap',
+            'pageUpDownScrollOverlapLongpress',
             'excludedUrls',
             'buttonOrder',
             'checkboxStates',
@@ -111,6 +117,10 @@ function loadValues() {
             iconThemeSelect.value = result.iconTheme
             hideMethodSelect.value = result.hideMethod
             pageUpDownScrollTypeSelect.value = result.pageUpDownScrollType
+            currentValuePageUpDownOverlap.textContent = result.pageUpDownScrollOverlap || 80
+            pageUpDownScrollOverlapRangeInput.value = result.pageUpDownScrollOverlap || 80
+            currentValuePageUpDownOverlapLongpress.textContent = result.pageUpDownScrollOverlapLongpress || 60
+            pageUpDownScrollOverlapLongpressRangeInput.value = result.pageUpDownScrollOverlapLongpress || 60
             overrideTheme(result.theme)
             displayInputURL()
             updateLabels(result.defaultPosition)
@@ -300,6 +310,16 @@ toolbarTransparencyRangeInput.addEventListener('input', function () {
 topBottomMarginRangeInput.addEventListener('input', function () {
     const currentValue = topBottomMarginRangeInput.value
     currentValueTBMargin.textContent = currentValue
+})
+
+pageUpDownScrollOverlapRangeInput.addEventListener('input', function () {
+    const currentValue = pageUpDownScrollOverlapRangeInput.value
+    currentValuePageUpDownOverlap.textContent = currentValue
+})
+
+pageUpDownScrollOverlapLongpressRangeInput.addEventListener('input', function () {
+    const currentValue = pageUpDownScrollOverlapLongpressRangeInput.value
+    currentValuePageUpDownOverlapLongpress.textContent = currentValue
 })
 
 setHomepageSelect.addEventListener('input', function () {
@@ -495,6 +515,8 @@ generalSaveButton.addEventListener('click', () => {
     const iconTheme = iconThemeSelect.value
     const hideMethod = hideMethodSelect.value
     const pageUpDownScrollType = pageUpDownScrollTypeSelect.value
+    const pageUpDownScrollOverlap = pageUpDownScrollOverlapRangeInput.value
+    const pageUpDownScrollOverlapLongpress = pageUpDownScrollOverlapLongpressRangeInput.value
     if (setHomepage === 'homepage') {
         defHomepageURL = essHomepageURL
     } else if (setHomepage === 'blank') {
@@ -519,7 +541,9 @@ generalSaveButton.addEventListener('click', () => {
             theme: theme,
             iconTheme: iconTheme,
             hideMethod: hideMethod,
-            pageUpDownScrollType: pageUpDownScrollType
+            pageUpDownScrollType: pageUpDownScrollType,
+            pageUpDownScrollOverlap: pageUpDownScrollOverlap,
+            pageUpDownScrollOverlapLongpress: pageUpDownScrollOverlapLongpress
         })
         .then(() => {
             overrideTheme(theme)

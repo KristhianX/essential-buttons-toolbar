@@ -305,6 +305,26 @@
                 <option value="smooth">Smooth</option>
                 <option value="instant">Instant</option>
             </select>
+            <label for="pageUpDownScrollOverlap">Page Up/Down scroll overlap (px):</label>
+            <span class="currentValue" id="currentValuePageUpDownOverlap"></span>
+            <input
+                type="range"
+                id="pageUpDownScrollOverlap"
+                min="0"
+                max="200"
+                step="10"
+            />
+            <br />
+            <label for="pageUpDownScrollOverlapLongpress">Page Up/Down scroll overlap longpress (px):</label>
+            <span class="currentValue" id="currentValuePageUpDownOverlapLongpress"></span>
+            <input
+                type="range"
+                id="pageUpDownScrollOverlapLongpress"
+                min="0"
+                max="200"
+                step="10"
+            />
+            <br />
             <div class="tabFooter">
                 <button id="generalResetButton">Reset</button>
                 <button id="generalSaveButton">Save</button>
@@ -1362,10 +1382,10 @@
                         <p>🐾</p>
                     </div>
                     <div id="pageUpButtonDescription">
-                        <p>🐾</p>
+                        <p>Touch and long press overlaps are configurable in "General" tab.</p>
                     </div>
                     <div id="pageDownButtonDescription">
-                        <p>🐾</p>
+                        <p>Touch and long press overlaps are configurable in "General" tab.</p>
                     </div>
                     <div id="closeAllTabsButtonDescription">
                         <p>
