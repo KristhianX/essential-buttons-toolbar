@@ -55,8 +55,9 @@
             </span>
             <h2>Upgrade Complete!</h2>
             <div>
+                <br>
                 <h3>New in this version</h3>
-                <br /><br />
+                <br />
                 <div
                     style="
                         text-align: left;
@@ -65,19 +66,22 @@
                     "
                 >
                     <p>
-                        ➡️ Added the new <b>'Page up'</b> and
-                        <b>'Page down'</b> buttons! They can be added to your
-                        toolbar from the <b>'Buttons'</b> section. Special
-                        thanks to
+                        ➡️ Added options to set the
+                        <b>'scroll overlap'</b> amount for the 'Page Up' and
+                        'Page Down' buttons, for both <b>single press</b> and
+                        <b>long press!</b> Increase the amount if you want the
+                        buttons to scroll less, and decrease it to scroll more.
+                        <br><br>
+                        Special thanks to
                         <a href="https://github.com/defmikekoh"> @defmikekoh</a>
-                        for creating these new buttons.
+                        for adding this functionality!
+                        <br>
                         <a
-                            href="https://github.com/KristhianX/essential-buttons-toolbar/pull/54"
+                            href="https://github.com/KristhianX/essential-buttons-toolbar/pull/55"
                         >
                             More info
                         </a>
                     </p>
-                    <p>➡️ Color scheme changes.</p>
                     <br /><br />
                     <i>Thank you all for the support. Enjoy the update!</i>
                     <br /><br />
@@ -89,6 +93,7 @@
                 </div>
             </div>
             <div>
+                <br>
                 <h3>About</h3>
                 <p>
                     Free and open-source!
@@ -102,6 +107,7 @@
                 </p>
             </div>
             <div>
+                <br>
                 <h3>Support Me</h3>
                 <p>
                     Leave a
@@ -305,8 +311,13 @@
                 <option value="smooth">Smooth</option>
                 <option value="instant">Instant</option>
             </select>
-            <label for="pageUpDownScrollOverlap">Page Up/Down scroll overlap (px):</label>
-            <span class="currentValue" id="currentValuePageUpDownOverlap"></span>
+            <label for="pageUpDownScrollOverlap"
+                >Page Up/Down scroll overlap (px):</label
+            >
+            <span
+                class="currentValue"
+                id="currentValuePageUpDownOverlap"
+            ></span>
             <input
                 type="range"
                 id="pageUpDownScrollOverlap"
@@ -315,8 +326,13 @@
                 step="10"
             />
             <br />
-            <label for="pageUpDownScrollOverlapLongpress">Page Up/Down scroll overlap longpress (px):</label>
-            <span class="currentValue" id="currentValuePageUpDownOverlapLongpress"></span>
+            <label for="pageUpDownScrollOverlapLongpress"
+                >Page Up/Down scroll overlap longpress (px):</label
+            >
+            <span
+                class="currentValue"
+                id="currentValuePageUpDownOverlapLongpress"
+            ></span>
             <input
                 type="range"
                 id="pageUpDownScrollOverlapLongpress"
@@ -1382,10 +1398,16 @@
                         <p>🐾</p>
                     </div>
                     <div id="pageUpButtonDescription">
-                        <p>Touch and long press overlaps are configurable in "General" tab.</p>
+                        <p>
+                            Touch and long press overlaps are configurable in
+                            "General" tab.
+                        </p>
                     </div>
                     <div id="pageDownButtonDescription">
-                        <p>Touch and long press overlaps are configurable in "General" tab.</p>
+                        <p>
+                            Touch and long press overlaps are configurable in
+                            "General" tab.
+                        </p>
                     </div>
                     <div id="closeAllTabsButtonDescription">
                         <p>
